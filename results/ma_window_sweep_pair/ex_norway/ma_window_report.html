@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trend Filter MA Window Sweep</title>
+  <style>
+    body { margin:0; font-family:Georgia, serif; background:#f7f2e7; color:#17211a; }
+    main { max-width:1100px; margin:0 auto; padding:28px 20px 48px; }
+    section { background:rgba(255,250,241,.92); border:1px solid rgba(23,33,26,.12); border-radius:24px; padding:24px; box-shadow:0 18px 50px rgba(33,41,36,.08); margin-top:18px; }
+    table { width:100%; border-collapse:collapse; margin-top:12px; font-variant-numeric: tabular-nums; }
+    th, td { border-bottom:1px solid rgba(23,33,26,.08); text-align:left; padding:8px; }
+    th { font-size:.75rem; text-transform:uppercase; color:#5d685f; letter-spacing:.05em; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
+    .card { background:#fffdf8; border:1px solid rgba(23,33,26,.12); border-radius:18px; padding:14px; }
+    .label { text-transform:uppercase; letter-spacing:.1em; font-size:.72rem; color:#6c5842; }
+    .value { font-size:1.05rem; margin-top:4px; }
+  </style>
+</head>
+<body>
+  <main>
+    <section>
+      <h1>Trend Filter MA Window Sweep</h1>
+      <p>Thesis: ex_norway · L=12 / skip=1 / top_n=8 · MA windows: 12, 10</p>
+    </section>
+    <section>
+      <h2>Diagnostics</h2>
+      <div class="grid">
+        <div class="card"><div class="label">Selection Status</div><div class="value">selected</div></div>
+        <div class="card"><div class="label">PBO</div><div class="value">0.49206349206349204</div></div>
+        <div class="card"><div class="label">PBO Threshold</div><div class="value">0.3</div></div>
+        <div class="card"><div class="label">Candidates Tested</div><div class="value">2</div></div>
+        <div class="card"><div class="label">Neg Controls</div><div class="value">3/500 · 78/200</div></div>
+      </div>
+    </section>
+    <section>
+      <h2>MA Window Comparison</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>MA Window</th>
+            <th>Rank</th>
+            <th>Candidate</th>
+            <th>Median Sharpe</th>
+            <th>Overall Sharpe</th>
+            <th>Max DD</th>
+            <th>Total Return</th>
+            <th>Bootstrap Low</th>
+            <th>Deflated Sharpe</th>
+            <th>Fold Pass</th>
+            <th>Gate Boot</th>
+            <th>Gate DSR</th>
+            <th>Gate Neg</th>
+            <th>Selected</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>10</td><td>2</td><td>l12_s1_n8_strat=trend_filter_ma10</td><td>1.947</td><td>1.599</td><td>0.148</td><td>10.523</td><td>0.897</td><td>0.416</td><td>4</td><td>yes</td><td>yes</td><td>yes</td><td>no</td></tr><tr><td>12</td><td>1</td><td>l12_s1_n8_strat=trend_filter_ma12</td><td>2.096</td><td>1.665</td><td>0.148</td><td>12.597</td><td>1.006</td><td>0.436</td><td>4</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>

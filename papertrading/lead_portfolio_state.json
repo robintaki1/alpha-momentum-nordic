@@ -1,0 +1,57 @@
+{
+  "capital_sek": 50000.0,
+  "cash_sek": 0.8741425781317957,
+  "holdings": {
+    "BOL.ST": {
+      "cost_bps": 27.75,
+      "entry_date": "2026-03-02",
+      "entry_price_sek": 1582.5296638108412,
+      "shares": 3.9328597307379987
+    },
+    "ISS.CO": {
+      "cost_bps": 52.75,
+      "entry_date": "2026-03-02",
+      "entry_price_sek": 398.5163474554042,
+      "shares": 15.617595682687721
+    },
+    "JYSK.CO": {
+      "cost_bps": 52.75,
+      "entry_date": "2026-03-02",
+      "entry_price_sek": 3447.4719138107025,
+      "shares": 1.8053423909175166
+    },
+    "LUG.ST": {
+      "cost_bps": 27.75,
+      "entry_date": "2026-03-02",
+      "entry_price_sek": 1023.1895925752902,
+      "shares": 6.082809317709145
+    },
+    "LUMI.ST": {
+      "cost_bps": 27.75,
+      "entry_date": "2026-03-02",
+      "entry_price_sek": 1105.7052348151635,
+      "shares": 5.628866529279316
+    },
+    "PAAL-B.CO": {
+      "cost_bps": 65.25,
+      "entry_date": "2026-03-02",
+      "entry_price_sek": 14419.083252208413,
+      "shares": 0.4316409773517854
+    },
+    "SAAB-B.ST": {
+      "cost_bps": 27.75,
+      "entry_date": "2026-03-02",
+      "entry_price_sek": 3264.6579404674776,
+      "shares": 1.9064377649956132
+    },
+    "VWS.CO": {
+      "cost_bps": 52.75,
+      "entry_date": "2026-03-02",
+      "entry_price_sek": 13063.477725533521,
+      "shares": 0.4764326405467816
+    }
+  },
+  "last_holding_month": "2026-03",
+  "last_portfolio_value_sek": 49791.81164257813,
+  "last_trade_date": "2026-03-02"
+}

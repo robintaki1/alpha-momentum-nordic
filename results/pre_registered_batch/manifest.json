@@ -1,0 +1,82 @@
+{
+  "generated_at": "2026-03-19T13:11:19.654998+00:00",
+  "top_n_grid": [
+    8,
+    10,
+    12
+  ],
+  "lookbacks": [
+    12
+  ],
+  "skips": [
+    1
+  ],
+  "theses": [
+    "baseline",
+    "ex_norway"
+  ],
+  "profiles": [
+    "quick",
+    "mega",
+    "certification_baseline"
+  ],
+  "pbo_policy": {
+    "good_max": 0.3,
+    "hard_cutoff_min": 0.5
+  },
+  "holdout_policy": {
+    "sharpe_min": 0.3,
+    "must_beat_primary_benchmark": true
+  },
+  "decision_rule": "Eligible candidates must avoid PBO hard cutoff and pass holdout (Sharpe >= OOS_SHARPE_MIN and beat primary benchmark). Among eligible candidates, choose the one with the highest holdout Sharpe; if tied, choose the higher holdout total return.",
+  "hypotheses": [
+    {
+      "id": "baseline_full",
+      "label": "Baseline (no trend filter), full rebalance",
+      "strategy_variants": [
+        {
+          "strategy_id": "baseline",
+          "rebalance": "full",
+          "weighting": "equal"
+        }
+      ]
+    },
+    {
+      "id": "trend_filter_ma12",
+      "label": "Trend filter MA12, full rebalance",
+      "strategy_variants": [
+        {
+          "strategy_id": "trend_filter_ma12",
+          "rebalance": "full",
+          "weighting": "equal",
+          "trend_filter": true,
+          "ma_window": 12
+        }
+      ]
+    },
+    {
+      "id": "banded2",
+      "label": "Banded rebalance (buffer 2), no trend filter",
+      "strategy_variants": [
+        {
+          "strategy_id": "banded2",
+          "rebalance": "banded",
+          "band_buffer": 2,
+          "weighting": "equal"
+        }
+      ]
+    },
+    {
+      "id": "minhold3",
+      "label": "Min-hold 3 months, no trend filter",
+      "strategy_variants": [
+        {
+          "strategy_id": "minhold3",
+          "rebalance": "min_hold",
+          "min_hold_months": 3,
+          "weighting": "equal"
+        }
+      ]
+    }
+  ]
+}

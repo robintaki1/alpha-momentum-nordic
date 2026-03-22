@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Holdout Diagnostics</title>
+  <style>
+    body { margin:0; font-family:Georgia, serif; background:#f7f2e7; color:#17211a; }
+    main { max-width:980px; margin:0 auto; padding:28px 20px 48px; }
+    section { background:rgba(255,250,241,.92); border:1px solid rgba(23,33,26,.12); border-radius:24px; padding:24px; box-shadow:0 18px 50px rgba(33,41,36,.08); margin-top:18px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
+    .card { background:#fffdf8; border:1px solid rgba(23,33,26,.12); border-radius:18px; padding:14px; }
+    .label { text-transform:uppercase; letter-spacing:.1em; font-size:.72rem; color:#6c5842; }
+    .value { font-size:1.1rem; margin-top:4px; }
+    .muted { color:#5b6762; }
+    a { color:#b06b1d; }
+  </style>
+</head>
+<body>
+  <main>
+    <section>
+      <h1>Holdout Diagnostics</h1>
+      <p>Step 2 of the 2-step validation funnel: untouched holdout evaluation for the locked certification candidate.</p>
+      <a href="dashboard.html">Back to thesis dashboard</a>
+    </section>
+    
+    <section>
+      <h2>2-Step Validation Funnel</h2>
+      <p class="muted">This report uses a strict 2-step validation funnel before any paper trading. Step 1 is Phase 2 validation on 2000-01 to 2017-12, including anti-overfitting checks. Step 2 is the untouched final holdout on 2018-01 to 2026-01. Paper trading starts only after Step 2 passes.</p>
+      <div class="grid">
+        <div class="card">
+          <div class="label">Step 1A. Selection Boundary</div>
+          <div class="value">2000-01 to 2017-12</div>
+          <div class="muted">Parameters are chosen only inside the pre-declared research span. Candidates tested: 1. <a href="selection_summary.html">Open certification summary</a>.</div>
+        </div>
+        <div class="card">
+          <div class="label">Step 1B. Repeated OOS Folds</div>
+          <div class="value">5 folds · 120 OOS months</div>
+          <div class="muted">Validation windows 2008-01 to 2017-12. 4/5 folds clear Sharpe &gt;= 0.40. Combined Sharpe 1.355.</div>
+        </div>
+        <div class="card">
+          <div class="label">Step 1C. Anti-Overfitting Checks</div>
+          <div class="value">PBO n/a</div>
+          <div class="muted">Selection status selected. Bootstrap CI low 0.668. Deflated Sharpe 0.391. Cross shuffle 3/500; block null 63/200.</div>
+        </div>
+        <div class="card">
+          <div class="label">Step 2. Untouched Final Holdout</div>
+          <div class="value">2018-01 to 2026-01</div>
+          <div class="muted">Holdout passed. Net Sharpe 0.758. Phase 4 eligible: True.</div>
+        </div>
+        <div class="card">
+          <div class="label">Phase 4. Paper Trading</div>
+          <div class="value">Unlocked</div>
+          <div class="muted">Phase 4 may begin now because the untouched 2018-01 to 2026-01 holdout passed for this thesis. Operational paper-trading belongs in the forward-monitor dashboards, not this validation funnel.</div>
+        </div>
+      </div>
+    </section>
+    
+    <section>
+      <h2>Boundary Insight</h2>
+      <p class="muted"><strong>What this page is testing:</strong> the orange holdout block is the single post-selection evaluation window. It is not another rolling walk-forward stage on this shared holdout page.</p>
+      <div class="grid">
+        <div class="card" style="grid-column:1 / -1;"><div class="chart-block"><div class="chart-title">Test Period vs After-Test Period</div><svg viewBox="0 0 760 118" class="chart"><rect x="28.0" y="22.0" width="461.5" height="54" fill="#d9cab8" stroke="#8f7b5f" stroke-width="1"></rect><rect x="489.5" y="22.0" width="207.2" height="54" fill="#eadca7" stroke="#8f7b5f" stroke-width="2"></rect><rect x="696.7" y="22.0" width="51.3" height="54" fill="#efe6d7" stroke="#8f7b5f" stroke-width="1"></rect><line x1="489.5" y1="16" x2="489.5" y2="86" stroke="#17211a" stroke-width="3"></line><line x1="696.7" y1="16" x2="696.7" y2="86" stroke="#17211a" stroke-width="3"></line><line x1="28.0" y1="78" x2="28.0" y2="84" stroke="#d9cbb6" stroke-width="1"></line><line x1="171.1" y1="78" x2="171.1" y2="84" stroke="#d9cbb6" stroke-width="1"></line><line x1="314.3" y1="78" x2="314.3" y2="84" stroke="#d9cbb6" stroke-width="1"></line><line x1="459.6" y1="78" x2="459.6" y2="84" stroke="#d9cbb6" stroke-width="1"></line><line x1="602.7" y1="78" x2="602.7" y2="84" stroke="#d9cbb6" stroke-width="1"></line><line x1="745.9" y1="78" x2="745.9" y2="84" stroke="#d9cbb6" stroke-width="1"></line><text x="258.7" y="46.0" text-anchor="middle" font-size="11" font-weight="700">Selection history</text><text x="258.7" y="60.0" text-anchor="middle" font-size="9">Phase 2 research and locking</text><text x="593.1" y="46.0" text-anchor="middle" font-size="11" font-weight="700">One-shot holdout</text><text x="593.1" y="60.0" text-anchor="middle" font-size="9">this page&#x27;s test window</text><text x="28.0" y="110" text-anchor="middle">2000</text><text x="171.1" y="110" text-anchor="middle">2005</text><text x="314.3" y="110" text-anchor="middle">2011</text><text x="459.6" y="110" text-anchor="middle">2016</text><text x="602.7" y="110" text-anchor="middle">2022</text><text x="745.9" y="110" text-anchor="middle">2028</text></svg><div class="chart-note"><span style="display:inline-block;width:12px;height:12px;background:#d9cab8;margin-right:6px;border-radius:2px;"></span><strong>Selection history</strong>: 2000-01 to 2017-12 - Phase 2 research and locking</div><div class="chart-note"><span style="display:inline-block;width:12px;height:12px;background:#eadca7;margin-right:6px;border-radius:2px;"></span><strong>One-shot holdout</strong>: 2018-01 to 2026-01 - this page&#x27;s test window</div><div class="chart-note"><span style="display:inline-block;width:12px;height:12px;background:#efe6d7;margin-right:6px;border-radius:2px;"></span><strong>After holdout</strong>: 2026-02 to 2028-01 - paper/live or future appended data</div><div class="chart-note"><strong>Read:</strong> This page is meant to be a one-shot test: the candidate should already be frozen before the orange window begins.</div></div></div>
+        <div class="card" style="grid-column:1 / -1;"><div class="chart-block"><div class="chart-title">Phase 2 Walk-Forward That Led Into This Holdout</div><svg viewBox="0 0 760 196" class="chart"><line x1="118.0" y1="18" x2="118.0" y2="162" stroke="#e1d5c3" stroke-width="1" stroke-dasharray="2 3"></line><line x1="243.4" y1="18" x2="243.4" y2="162" stroke="#e1d5c3" stroke-width="1" stroke-dasharray="2 3"></line><line x1="368.8" y1="18" x2="368.8" y2="162" stroke="#e1d5c3" stroke-width="1" stroke-dasharray="2 3"></line><line x1="494.2" y1="18" x2="494.2" y2="162" stroke="#e1d5c3" stroke-width="1" stroke-dasharray="2 3"></line><line x1="619.7" y1="18" x2="619.7" y2="162" stroke="#e1d5c3" stroke-width="1" stroke-dasharray="2 3"></line><line x1="745.1" y1="18" x2="745.1" y2="162" stroke="#e1d5c3" stroke-width="1" stroke-dasharray="2 3"></line><rect x="118.0" y="20.0" width="280.0" height="16" fill="#9b8872" opacity="0.95"></rect><rect x="398.0" y="20.0" width="70.0" height="16" fill="#c27c3a"></rect><rect x="118.0" y="44.0" width="350.0" height="16" fill="#9b8872" opacity="0.95"></rect><rect x="468.0" y="44.0" width="70.0" height="16" fill="#c27c3a"></rect><rect x="118.0" y="68.0" width="420.0" height="16" fill="#9b8872" opacity="0.95"></rect><rect x="538.0" y="68.0" width="70.0" height="16" fill="#c27c3a"></rect><rect x="118.0" y="92.0" width="490.0" height="16" fill="#9b8872" opacity="0.95"></rect><rect x="608.0" y="92.0" width="70.0" height="16" fill="#c27c3a"></rect><rect x="118.0" y="116.0" width="560.0" height="16" fill="#9b8872" opacity="0.95"></rect><rect x="678.0" y="116.0" width="70.0" height="16" fill="#c27c3a"></rect><rect x="398.0" y="140.0" width="70.0" height="16" fill="#d79a5c"></rect><rect x="468.0" y="140.0" width="70.0" height="16" fill="#d79a5c"></rect><rect x="538.0" y="140.0" width="70.0" height="16" fill="#d79a5c"></rect><rect x="608.0" y="140.0" width="70.0" height="16" fill="#d79a5c"></rect><rect x="678.0" y="140.0" width="70.0" height="16" fill="#d79a5c"></rect><text x="110" y="33.0" text-anchor="end">Pass 1</text><text x="110" y="57.0" text-anchor="end">Pass 2</text><text x="110" y="81.0" text-anchor="end">Pass 3</text><text x="110" y="105.0" text-anchor="end">Pass 4</text><text x="110" y="129.0" text-anchor="end">Pass 5</text><text x="110" y="153.0" text-anchor="end">Phase 2 stitched OOS</text><text x="118.0" y="188" text-anchor="middle">2000</text><text x="243.4" y="188" text-anchor="middle">2003</text><text x="368.8" y="188" text-anchor="middle">2007</text><text x="494.2" y="188" text-anchor="middle">2010</text><text x="619.7" y="188" text-anchor="middle">2014</text><text x="745.1" y="188" text-anchor="middle">2017</text></svg><div class="chart-note"><span style="display:inline-block;width:12px;height:12px;background:#9b8872;margin-right:6px;border-radius:2px;"></span> Training history <span style="display:inline-block;width:12px;height:12px;background:#c27c3a;margin:0 6px 0 12px;border-radius:2px;"></span> New OOS slice <span style="display:inline-block;width:12px;height:12px;background:#d79a5c;margin:0 6px 0 12px;border-radius:2px;"></span> Stitched OOS record</div><div class="chart-note"><strong>Read:</strong> Each pass keeps the same anchor, expands train history, and tests only the next unseen slice. The bottom row is the realistic out-of-sample stream formed by stitching those orange slices together.</div></div></div>
+      </div>
+    </section>
+    <section>
+      <h2>Holdout Status</h2>
+      <div class="grid">
+        <div class="card"><div class="label">Status</div><div class="value">ok</div></div>
+        <div class="card"><div class="label">Phase 4 Eligible</div><div class="value">True</div></div>
+        <div class="card"><div class="label">Base Holdout Sharpe</div><div class="value">0.758</div></div>
+        <div class="card"><div class="label">Sharpe Gate</div><div class="value">True</div></div>
+      </div>
+    </section>
+    <section>
+      <h2>Holdout Window</h2>
+      <div class="grid">
+        <div class="card"><div class="label">Window</div><div class="value">2018-01 to 2026-01</div></div>
+        <div class="card"><div class="label">Period Label</div><div class="value">months</div></div>
+        <div class="card"><div class="label">Periods per Year</div><div class="value">12</div></div>
+      </div>
+    </section>
+    <section>
+      <h2>Primary Track (Holdout)</h2>
+      <div class="grid">
+        <div class="card"><div class="label">Track</div><div class="value">Full Nordics / next_open / base / cost=tiered_v1</div></div>
+        <div class="card"><div class="label">Net Sharpe</div><div class="value">0.758</div></div>
+        <div class="card"><div class="label">Total Return</div><div class="value">168.9%</div></div>
+        <div class="card"><div class="label">Max Drawdown</div><div class="value">29.7%</div></div>
+        <div class="card"><div class="label">Beats Benchmark</div><div class="value">True</div></div>
+        <div class="card"><div class="label">Benchmark Total Return</div><div class="value">149.3%</div></div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

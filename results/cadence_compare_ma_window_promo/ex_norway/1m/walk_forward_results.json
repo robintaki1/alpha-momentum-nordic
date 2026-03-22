@@ -1,0 +1,275 @@
+{
+  "cadence_id": "1m",
+  "cadence_label": "Monthly",
+  "canonical_offset_id": 0,
+  "holdout_window": {
+    "end": "2026-01",
+    "start": "2018-01"
+  },
+  "period_label": "months",
+  "periods_per_year": 12,
+  "phase4_gate": {
+    "base_main_net_sharpe": 0.6021490855494015,
+    "beats_primary_benchmark": true,
+    "meets_sharpe_gate": true,
+    "phase4_eligible": true
+  },
+  "rebalance_logic": "legacy_entries_exits",
+  "rebalance_logic_label": "Legacy Entry/Exit Only",
+  "results": {
+    "Full Nordics": {
+      "next_close": {
+        "base": {
+          "beats_primary_benchmark": true,
+          "max_drawdown": 0.31652733116589293,
+          "months": 97,
+          "net_sharpe": 0.6803045837575171,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411164,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 2.437314283009217
+        },
+        "high": {
+          "beats_primary_benchmark": true,
+          "max_drawdown": 0.31939910279459327,
+          "months": 97,
+          "net_sharpe": 0.6574462272679991,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411164,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 2.258219486823057
+        },
+        "low": {
+          "beats_primary_benchmark": true,
+          "max_drawdown": 0.31480120233164655,
+          "months": 97,
+          "net_sharpe": 0.6939802607319224,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411164,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 2.5493481463614405
+        }
+      },
+      "next_open": {
+        "base": {
+          "beats_primary_benchmark": true,
+          "max_drawdown": 0.34425786889320753,
+          "months": 97,
+          "net_sharpe": 0.6021490855494015,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411164,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 1.909923452137436
+        },
+        "high": {
+          "beats_primary_benchmark": true,
+          "max_drawdown": 0.353123924487021,
+          "months": 97,
+          "net_sharpe": 0.5796654276526058,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411164,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 1.7579078456813124
+        },
+        "low": {
+          "beats_primary_benchmark": true,
+          "max_drawdown": 0.33888709436377373,
+          "months": 97,
+          "net_sharpe": 0.6156047797828154,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411164,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 2.0050281918135484
+        }
+      }
+    },
+    "SE-only": {
+      "next_close": {
+        "base": {
+          "beats_primary_benchmark": false,
+          "max_drawdown": 0.4958021542359011,
+          "months": 97,
+          "net_sharpe": 0.33094459277247834,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411164,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 0.5094108531999688
+        },
+        "high": {
+          "beats_primary_benchmark": false,
+          "max_drawdown": 0.4958021542359011,
+          "months": 97,
+          "net_sharpe": 0.33094459277247834,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411164,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 0.5094108531999688
+        },
+        "low": {
+          "beats_primary_benchmark": false,
+          "max_drawdown": 0.4958021542359011,
+          "months": 97,
+          "net_sharpe": 0.33094459277247834,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411164,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 0.5094108531999688
+        }
+      },
+      "next_open": {
+        "base": {
+          "beats_primary_benchmark": false,
+          "max_drawdown": 0.49223849719843604,
+          "months": 97,
+          "net_sharpe": 0.2984628291407446,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411164,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 0.3909336024971366
+        },
+        "high": {
+          "beats_primary_benchmark": false,
+          "max_drawdown": 0.49223849719843604,
+          "months": 97,
+          "net_sharpe": 0.2984628291407446,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411164,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 0.3909336024971366
+        },
+        "low": {
+          "beats_primary_benchmark": false,
+          "max_drawdown": 0.49223849719843604,
+          "months": 97,
+          "net_sharpe": 0.2984628291407446,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411164,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 0.3909336024971366
+        }
+      }
+    },
+    "largest-third-by-market-cap": {
+      "next_close": {
+        "base": {
+          "beats_primary_benchmark": false,
+          "max_drawdown": 0.0,
+          "months": 97,
+          "net_sharpe": 0.0,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411164,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 0.0
+        },
+        "high": {
+          "beats_primary_benchmark": false,
+          "max_drawdown": 0.0,
+          "months": 97,
+          "net_sharpe": 0.0,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411164,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 0.0
+        },
+        "low": {
+          "beats_primary_benchmark": false,
+          "max_drawdown": 0.0,
+          "months": 97,
+          "net_sharpe": 0.0,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411164,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 0.0
+        }
+      },
+      "next_open": {
+        "base": {
+          "beats_primary_benchmark": false,
+          "max_drawdown": 0.0,
+          "months": 97,
+          "net_sharpe": 0.0,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411164,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 0.0
+        },
+        "high": {
+          "beats_primary_benchmark": false,
+          "max_drawdown": 0.0,
+          "months": 97,
+          "net_sharpe": 0.0,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411164,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 0.0
+        },
+        "low": {
+          "beats_primary_benchmark": false,
+          "max_drawdown": 0.0,
+          "months": 97,
+          "net_sharpe": 0.0,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411164,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 0.0
+        }
+      }
+    }
+  },
+  "schedule_type": "month_end",
+  "selected_params": {
+    "l": 12,
+    "ma_window": 10,
+    "rebalance": "full",
+    "skip": 1,
+    "strategy_id": "trend_filter_ma10",
+    "top_n": 5,
+    "trend_filter": true,
+    "weighting": "equal"
+  },
+  "selection_mode": "certification_baseline",
+  "thesis": {
+    "excluded_countries": [
+      "NO"
+    ],
+    "label": "Ex-Norway (Sweden and Denmark only)",
+    "name": "ex_norway",
+    "scope_note": "This is a separate thesis that removes Norway from the corrected baseline while keeping the same simple price-momentum implementation, costs, and gates."
+  }
+}

@@ -1,0 +1,159 @@
+{
+  "research_profile_sets": {
+    "default": {
+      "quick": {
+        "lookbacks": [9, 12, 15],
+        "skips": [0, 1],
+        "top_ns": [4, 5, 6],
+        "bootstrap_resamples": 500,
+        "cross_sectional_shuffle_runs": 100,
+        "block_shuffled_null_runs": 50
+      },
+      "mega": {
+        "lookbacks": [9, 12, 15],
+        "skips": [0, 1],
+        "top_ns": [4, 5, 6],
+        "bootstrap_resamples": 2000,
+        "cross_sectional_shuffle_runs": 500,
+        "block_shuffled_null_runs": 200
+      },
+      "certification_baseline": {
+        "lookbacks": [12],
+        "skips": [0, 1],
+        "top_ns": [4, 5, 6],
+        "bootstrap_resamples": 2000,
+        "cross_sectional_shuffle_runs": 500,
+        "block_shuffled_null_runs": 200
+      }
+    },
+    "literature": {
+      "quick": {
+        "lookbacks": [6, 9, 12],
+        "skips": [1],
+        "top_ns": [4, 5, 6],
+        "bootstrap_resamples": 500,
+        "cross_sectional_shuffle_runs": 100,
+        "block_shuffled_null_runs": 50
+      },
+      "mega": {
+        "lookbacks": [6, 9, 12],
+        "skips": [1],
+        "top_ns": [4, 5, 6],
+        "bootstrap_resamples": 2000,
+        "cross_sectional_shuffle_runs": 500,
+        "block_shuffled_null_runs": 200
+      },
+      "certification_baseline": {
+        "lookbacks": [6, 9, 12],
+        "skips": [1],
+        "top_ns": [4, 5, 6],
+        "bootstrap_resamples": 2000,
+        "cross_sectional_shuffle_runs": 500,
+        "block_shuffled_null_runs": 200
+      }
+    }
+  },
+  "research_thesis_settings": {
+    "baseline": {
+      "label": "Baseline (Sweden, Denmark, Norway)",
+      "excluded_countries": [],
+      "scope_note": "The corrected baseline scope now covers Sweden, Denmark, and Norway."
+    },
+    "ex_norway": {
+      "label": "Ex-Norway (Sweden and Denmark only)",
+      "excluded_countries": ["NO"],
+      "scope_note": "This is a separate thesis that removes Norway from the corrected baseline while keeping the same simple price-momentum implementation, costs, and gates."
+    }
+  },
+  "default_cadence_compare_cadences": ["1m"],
+  "cadence_compare_settings": {
+    "1w": {
+      "label": "Weekly",
+      "schedule_type": "iso_weekly",
+      "periods_per_year": 52,
+      "canonical_offset_id": 0,
+      "offset_ids": [0],
+      "offset_label_prefix": "week_parity"
+    },
+    "2w": {
+      "label": "Biweekly",
+      "schedule_type": "iso_biweekly",
+      "periods_per_year": 26,
+      "canonical_offset_id": 0,
+      "offset_ids": [0, 1],
+      "offset_label_prefix": "week_parity"
+    },
+    "1m": {
+      "label": "Monthly",
+      "schedule_type": "month_end",
+      "periods_per_year": 12,
+      "canonical_offset_id": 0,
+      "offset_ids": [0],
+      "offset_label_prefix": "month_offset"
+    },
+    "3m": {
+      "label": "Quarterly",
+      "schedule_type": "quarter_end",
+      "periods_per_year": 4,
+      "canonical_offset_id": 0,
+      "offset_ids": [0, 1, 2],
+      "offset_label_prefix": "month_offset"
+    },
+    "6m": {
+      "label": "Semiannual",
+      "schedule_type": "half_year_end",
+      "periods_per_year": 2,
+      "canonical_offset_id": 0,
+      "offset_ids": [0, 1, 2, 3, 4, 5],
+      "offset_label_prefix": "month_offset"
+    }
+  },
+  "rolling_origin_folds": [
+    {"fold_id": "fold_1", "train_start": "2000-01", "train_end": "2007-12", "validate_start": "2008-01", "validate_end": "2009-12"},
+    {"fold_id": "fold_2", "train_start": "2000-01", "train_end": "2009-12", "validate_start": "2010-01", "validate_end": "2011-12"},
+    {"fold_id": "fold_3", "train_start": "2000-01", "train_end": "2011-12", "validate_start": "2012-01", "validate_end": "2013-12"},
+    {"fold_id": "fold_4", "train_start": "2000-01", "train_end": "2013-12", "validate_start": "2014-01", "validate_end": "2015-12"},
+    {"fold_id": "fold_5", "train_start": "2000-01", "train_end": "2015-12", "validate_start": "2016-01", "validate_end": "2017-12"}
+  ],
+  "insample_end": "2017-12",
+  "oos_start": "2018-01",
+  "oos_end": "2026-01",
+  "oos_sharpe_min": 0.3,
+  "sim_capital_sek": 250000,
+  "max_order_fraction_of_60d_median_daily_value": 0.01,
+  "brokerage_min_sek": 1.0,
+  "brokerage_bps": 9.0,
+  "spread_bps_buckets": [
+    [50000000.0, 15.0],
+    [20000000.0, 25.0],
+    [10000000.0, 40.0],
+    [5000000.0, 60.0],
+    [0.0, 100.0]
+  ],
+  "participation_bps_buckets": [
+    [0.0025, 0.0],
+    [0.0050, 10.0],
+    [0.0075, 20.0],
+    [0.0100, 40.0]
+  ],
+  "low_price_threshold_sek": 50.0,
+  "low_price_addon_bps": 10.0,
+  "next_open_impact_multiplier": 1.25,
+  "next_close_impact_multiplier": 1.0,
+  "fx_friction_scenarios_bps": {"low": 10.0, "base": 25.0, "high": 50.0},
+  "delist_fallback_haircut": -0.30,
+  "mega_wf_passes_required": 4,
+  "bootstrap_block_length_months": 6,
+  "bootstrap_resamples": 2000,
+  "pbo_threshold_max": 0.30,
+  "pbo_target_slice_count": 10,
+  "pbo_min_slice_length_months": 6,
+  "cross_sectional_shuffle_runs": 500,
+  "block_shuffled_null_runs": 200,
+  "negative_control_pass_rate_max": 0.20,
+  "negative_control_bootstrap_resamples": 250,
+  "primary_selection_cost_model": "tiered_v1",
+  "primary_passive_benchmark_id": "XACT_NORDEN",
+  "secondary_opportunity_cost_benchmark_id": "VWRL_ALLWORLD",
+  "tertiary_opportunity_cost_benchmark_id": "SP500"
+}

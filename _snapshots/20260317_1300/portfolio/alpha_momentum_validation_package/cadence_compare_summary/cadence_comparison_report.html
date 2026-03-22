@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Cadence Summary Report</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --paper: #f6f0e3;
+      --paper-strong: rgba(255, 251, 244, 0.92);
+      --ink: #16211e;
+      --muted: #53615d;
+      --line: rgba(22, 33, 30, 0.12);
+      --accent: #b06b1d;
+      --shadow: 0 20px 60px rgba(22, 33, 30, 0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(176, 107, 29, 0.16), transparent 32%),
+        linear-gradient(180deg, #fbf6eb 0%, var(--paper) 100%);
+    }
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 40px 24px 56px;
+    }
+    .hero, .section {
+      background: var(--paper-strong);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 32px;
+      box-shadow: var(--shadow);
+    }
+    .section { margin-top: 24px; }
+    .eyebrow {
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 12px;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    h1 { margin-top: 0; font-size: clamp(2rem, 4vw, 3rem); }
+    h2, h3 { margin-top: 24px; }
+    p { color: var(--muted); line-height: 1.6; }
+    ul { margin: 12px 0 18px 18px; color: var(--muted); }
+    li { margin-bottom: 6px; }
+    a { color: var(--accent); }
+    .back {
+      display: inline-block;
+      margin-top: 12px;
+      text-decoration: none;
+      color: var(--accent);
+    }
+    @media (max-width: 720px) {
+      main { padding: 20px 14px 40px; }
+      .hero, .section { padding: 18px; border-radius: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <span class="eyebrow">Package Dashboard</span>
+      <h1>Cadence Summary Report</h1>
+      <p>Compact written version of the selected package verdict.</p>
+      <a class="back" href="dashboard.html">Back to package dashboard</a>
+    </section>
+    <section class="section">
+      <h1>Package Candidate Summary</h1>
+<ul>
+<li>Package model: `entry_exit_costs`</li>
+<li>Current state: `validated candidate`</li>
+<li>Current verdict: `Selected package winner: Ex-Norway (Sweden and Denmark only) / Monthly with holdout Sharpe 1.153.`</li>
+<li>Package scope: `selected_package_branch_only`</li>
+</ul>
+<h2>Authoritative Selection Snapshot</h2>
+<ul>
+<li>Locked params: `L=12 / skip=1 / top_n=5`</li>
+<li>Rigorous PBO (authoritative selection): `34.1%`</li>
+<li>Authoritative selection summary path: `C:\Users\robin\Desktop\alpha momentum\results\_timing_legacy_cert\ex_norway\1m\selection_summary.json`</li>
+</ul>
+<h2>Cadence Comparison Snapshot</h2>
+<ul>
+<li>Cadence summary path: `results\cadence_compare\summary\cadence_comparison.json`</li>
+<li>Lead monthly PBO (cadence summary): `34.1%`</li>
+<li>Lead holdout Sharpe (cadence summary): `1.153`</li>
+</ul>
+<h2>Experimental Rebuild (Not Authoritative)</h2>
+<ul>
+<li>Rebuild status: `No cadence pair currently passes certification plus holdout in the rebuild run.`</li>
+<li>Rebuild summary path: `results\cadence_compare_rebuild\summary\cadence_comparison.json`</li>
+<li>Rebuild lead monthly PBO: `42.9%`</li>
+</ul>
+<h2>Interpretation</h2>
+<ul>
+<li>This summary is intentionally limited to the package branch you selected to present.</li>
+<li>The cadence transaction-cost model is not the package source of truth.</li>
+<li>The next useful step is a scoped implementation branch, not more presentation around discarded ideas.</li>
+</ul>
+    </section>
+  </main>
+</body>
+</html>

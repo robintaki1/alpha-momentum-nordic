@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import json
 import math
@@ -72,7 +72,8 @@ def month_to_ordinal(month: str) -> int:
 
 
 def candidate_id(params: dict[str, Any]) -> str:
-    return f"l{params['l']}_s{params['skip']}_n{params['top_n']}"
+    strategy_id = params.get("strategy_id", "baseline")
+    return f"l{params['l']}_s{params['skip']}_n{params['top_n']}_strat={strategy_id}"
 
 
 def annualized_sharpe(returns: Sequence[float]) -> float:
@@ -206,7 +207,8 @@ def stationary_bootstrap_sharpe_ci(
     return (_quantile(sharpe_values, 0.025), _quantile(sharpe_values, 0.975))
 
 
-def leakage_detected(validate_start: str, holdout_start: str = config.OOS_START) -> bool:
+def leakage_detected(validate_start: str, holdout_start: str | None = None) -> bool:
+    holdout_start = holdout_start or config.OOS_START
     return month_to_ordinal(validate_start) >= month_to_ordinal(holdout_start)
 
 
@@ -288,28 +290,121 @@ def tiered_cost_breakdown(inputs: TieredCostInputs) -> CostBreakdown:
     )
 
 
+def _weights_for_selection(selected: Sequence[dict[str, Any]], weighting: str, top_n: int) -> list[float]:
+    if not selected:
+        return []
+    exposure = float(len(selected)) / float(max(1, top_n))
+    if weighting in ("cap", "inv_vol"):
+        raw_values = []
+        for item in selected:
+            value = item.get("weight_value")
+            if value is None:
+                raw_values.append(float("nan"))
+                continue
+            try:
+                numeric = float(value)
+            except (TypeError, ValueError):
+                numeric = float("nan")
+            if not math.isfinite(numeric) or numeric <= 0.0:
+                raw_values.append(float("nan"))
+            else:
+                raw_values.append(1.0 / numeric if weighting == "inv_vol" else numeric)
+        if not any(math.isfinite(value) for value in raw_values):
+            return [exposure / float(len(selected))] * len(selected)
+        cleaned = [value if math.isfinite(value) else 0.0 for value in raw_values]
+        total = sum(cleaned)
+        if total <= 0.0:
+            return [exposure / float(len(selected))] * len(selected)
+        return [exposure * value / total for value in cleaned]
+    return [exposure / float(len(selected))] * len(selected)
+
+
 def cross_sectional_score_shuffle_runs(
     months: Sequence[dict[str, Any]],
     top_n: int,
     n_runs: int,
     seed: int = 11,
 ) -> list[list[float]]:
+
     rng = random.Random(seed)
     all_runs: list[list[float]] = []
     for _ in range(n_runs):
         run_returns: list[float] = []
         for month in months:
             positions = month["positions"]
+            filter_on = month.get("filter_on", True)
+            if not filter_on:
+                run_returns.append(0.0)
+                continue
+            weighting = month.get("weighting", "equal")
+            baseline_return = month.get("baseline_return")
             shuffled_scores = [position["score"] for position in positions]
             rng.shuffle(shuffled_scores)
             shuffled_positions = []
             for position, score in zip(positions, shuffled_scores):
-                shuffled_positions.append({"score": score, "next_return": position["next_return"]})
+                shuffled_positions.append(
+                    {
+                        "score": score,
+                        "next_return": position["next_return"],
+                        "weight_value": position.get("weight_value"),
+                    }
+                )
             shuffled_positions.sort(key=lambda item: item["score"], reverse=True)
             selected = shuffled_positions[:top_n]
-            run_returns.append(statistics.fmean(item["next_return"] for item in selected))
+            if not selected:
+                run_returns.append(0.0)
+                continue
+            weights = _weights_for_selection(selected, weighting, top_n)
+            if not weights:
+                run_returns.append(0.0)
+                continue
+            selected_mean = sum(
+                weight * float(item["next_return"]) for weight, item in zip(weights, selected, strict=True)
+            )
+            try:
+                if baseline_return is not None:
+                    run_returns.append(selected_mean - float(baseline_return))
+                else:
+                    run_returns.append(selected_mean)
+            except (TypeError, ValueError):
+                run_returns.append(selected_mean)
         all_runs.append(run_returns)
     return all_runs
+
+
+def cross_sectional_score_actual_run(
+    months: Sequence[dict[str, Any]],
+    top_n: int,
+) -> list[float]:
+    run_returns: list[float] = []
+    for month in months:
+        positions = month["positions"]
+        filter_on = month.get("filter_on", True)
+        if not filter_on:
+            run_returns.append(0.0)
+            continue
+        weighting = month.get("weighting", "equal")
+        baseline_return = month.get("baseline_return")
+        ordered = sorted(positions, key=lambda item: item["score"], reverse=True)
+        selected = ordered[:top_n]
+        if not selected:
+            run_returns.append(0.0)
+            continue
+        weights = _weights_for_selection(selected, weighting, top_n)
+        if not weights:
+            run_returns.append(0.0)
+            continue
+        selected_mean = sum(
+            weight * float(item["next_return"]) for weight, item in zip(weights, selected, strict=True)
+        )
+        try:
+            if baseline_return is not None:
+                run_returns.append(selected_mean - float(baseline_return))
+            else:
+                run_returns.append(selected_mean)
+        except (TypeError, ValueError):
+            run_returns.append(selected_mean)
+    return run_returns
 
 
 def block_shuffled_return_path_runs(
@@ -374,7 +469,11 @@ def required_negative_controls(negative_controls: dict[str, Any]) -> dict[str, d
 
 def negative_controls_pass(negative_controls: dict[str, Any]) -> bool:
     controls = required_negative_controls(negative_controls)
-    for payload in controls.values():
+    gated_keys = getattr(config, "NEGATIVE_CONTROL_GATED_KEYS", tuple(controls.keys()))
+    for key in gated_keys:
+        payload = controls.get(key)
+        if payload is None:
+            return False
         run_count = payload["run_count"]
         pass_count = payload["pass_count"]
         if run_count <= 0:
@@ -493,45 +592,43 @@ def candidate_aggregates(manifest: dict[str, Any]) -> tuple[list[dict[str, Any]]
 
 
 def _attach_plateau_diagnostics(aggregates: list[dict[str, Any]]) -> None:
-    candidates_by_params = {
-        (item["params"]["l"], item["params"]["skip"], item["params"]["top_n"]): item for item in aggregates
-    }
-    l_values = sorted({item["params"]["l"] for item in aggregates})
-    skip_values = sorted({item["params"]["skip"] for item in aggregates})
-    top_n_values = sorted({item["params"]["top_n"] for item in aggregates})
-    grids = {"l": l_values, "skip": skip_values, "top_n": top_n_values}
-
+    grouped: dict[tuple[str, int, int], list[dict[str, Any]]] = {}
     for aggregate in aggregates:
         params = aggregate["params"]
-        neighbors: list[dict[str, Any]] = []
-        for key, values in grids.items():
-            current_index = values.index(params[key])
+        strategy_id = params.get("strategy_id", "baseline")
+        key = (strategy_id, int(params["l"]), int(params["skip"]))
+        grouped.setdefault(key, []).append(aggregate)
+
+    for group in grouped.values():
+        top_n_values = sorted({item["params"]["top_n"] for item in group})
+        by_top_n = {item["params"]["top_n"]: item for item in group}
+        for aggregate in group:
+            params = aggregate["params"]
+            neighbors: list[dict[str, Any]] = []
+            current_index = top_n_values.index(params["top_n"])
             for offset in (-1, 1):
                 neighbor_index = current_index + offset
-                if neighbor_index < 0 or neighbor_index >= len(values):
+                if neighbor_index < 0 or neighbor_index >= len(top_n_values):
                     continue
-                neighbor_params = dict(params)
-                neighbor_params[key] = values[neighbor_index]
-                lookup_key = (neighbor_params["l"], neighbor_params["skip"], neighbor_params["top_n"])
-                neighbor = candidates_by_params.get(lookup_key)
+                neighbor = by_top_n.get(top_n_values[neighbor_index])
                 if neighbor is not None:
                     neighbors.append(neighbor)
-        if neighbors:
-            neighbor_sharpes = [neighbor["median_validation_sharpe"] for neighbor in neighbors]
-            median_neighbor_sharpe = statistics.median(neighbor_sharpes)
-            ratio = (
-                median_neighbor_sharpe / aggregate["median_validation_sharpe"]
-                if aggregate["median_validation_sharpe"] not in (0.0, float("inf"), float("-inf"))
-                else 0.0
-            )
-        else:
-            median_neighbor_sharpe = float("-inf")
-            ratio = 0.0
-        aggregate["plateau_neighbor_median_sharpe"] = median_neighbor_sharpe
-        aggregate["plateau_neighbor_ratio"] = ratio
-        aggregate["gate_plateau_nonnegative"] = median_neighbor_sharpe >= 0.0
-        aggregate["gate_plateau_ratio"] = ratio >= 0.7
-        aggregate["neighbor_ids"] = [neighbor["candidate_id"] for neighbor in neighbors]
+            if neighbors:
+                neighbor_sharpes = [neighbor["median_validation_sharpe"] for neighbor in neighbors]
+                median_neighbor_sharpe = statistics.median(neighbor_sharpes)
+                ratio = (
+                    median_neighbor_sharpe / aggregate["median_validation_sharpe"]
+                    if aggregate["median_validation_sharpe"] not in (0.0, float("inf"), float("-inf"))
+                    else 0.0
+                )
+            else:
+                median_neighbor_sharpe = float("-inf")
+                ratio = 0.0
+            aggregate["plateau_neighbor_median_sharpe"] = median_neighbor_sharpe
+            aggregate["plateau_neighbor_ratio"] = ratio
+            aggregate["gate_plateau_nonnegative"] = median_neighbor_sharpe >= 0.0
+            aggregate["gate_plateau_ratio"] = ratio >= 0.7
+            aggregate["neighbor_ids"] = [neighbor["candidate_id"] for neighbor in neighbors]
 
 
 def _candidate_sort_key(aggregate: dict[str, Any]) -> tuple[Any, ...]:
@@ -543,6 +640,7 @@ def _candidate_sort_key(aggregate: dict[str, Any]) -> tuple[Any, ...]:
             aggregate["gate_negative_controls"],
         )
     )
+    strategy_id = aggregate.get("params", {}).get("strategy_id", "baseline")
     return (
         1 if hard_gate else 0,
         aggregate["median_validation_sharpe"],
@@ -553,6 +651,7 @@ def _candidate_sort_key(aggregate: dict[str, Any]) -> tuple[Any, ...]:
         -aggregate["params"]["l"],
         -aggregate["params"]["skip"],
         -aggregate["params"]["top_n"],
+        strategy_id,
     )
 
 
@@ -620,7 +719,7 @@ def selection_summary(aggregates: list[dict[str, Any]], negative_controls: dict[
             if not neighbor["gate_bootstrap"]:
                 failure_reasons.append("bootstrap CI lower bound <= 0")
             if not neighbor["gate_negative_controls"]:
-                failure_reasons.append("negative-control pass rate exceeded 5%")
+                failure_reasons.append("negative-control pass rate exceeded threshold")
             if not failure_reasons:
                 failure_reasons.append("lower rank than the locked candidate on median Sharpe, robustness, or drawdown")
             summary["neighbor_diagnostics"].append(
@@ -679,9 +778,11 @@ def load_locked_candidate(selection_summary_path: Path) -> dict[str, Any]:
 
 def evaluate_holdout_candidate(
     candidate: dict[str, Any],
-    holdout_start: str = config.OOS_START,
-    holdout_end: str = config.OOS_END,
+    holdout_start: str | None = None,
+    holdout_end: str | None = None,
 ) -> dict[str, Any]:
+    holdout_start = holdout_start or config.OOS_START
+    holdout_end = holdout_end or config.OOS_END
     evaluations = candidate["evaluations"]
     results: dict[str, Any] = {}
     for variant in REQUIRED_UNIVERSE_VARIANTS:
@@ -705,6 +806,7 @@ def evaluate_holdout_candidate(
                 strategy_returns = row["monthly_returns"]
                 primary_benchmark_returns = row.get("primary_benchmark_returns")
                 secondary_benchmark_returns = row.get("secondary_benchmark_returns")
+                tertiary_benchmark_returns = row.get("tertiary_benchmark_returns")
                 result_row = {
                     "net_sharpe": annualized_sharpe(strategy_returns),
                     "max_drawdown": max_drawdown(strategy_returns),
@@ -716,6 +818,8 @@ def evaluate_holdout_candidate(
                     result_row["beats_primary_benchmark"] = result_row["total_return"] > result_row["primary_benchmark_total_return"]
                 if secondary_benchmark_returns is not None:
                     result_row["secondary_benchmark_total_return"] = total_return(secondary_benchmark_returns)
+                if tertiary_benchmark_returns is not None:
+                    result_row["tertiary_benchmark_total_return"] = total_return(tertiary_benchmark_returns)
                 results[variant][execution_model][fx_scenario] = result_row
     base_main = results["Full Nordics"]["next_open"]["base"]
     phase4_eligible = bool(

@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quick Profile Summary</title>
+  <style>
+    body { margin:0; font-family:Georgia, serif; background:#f7f2e7; color:#17211a; }
+    main { max-width:980px; margin:0 auto; padding:28px 20px 48px; }
+    section { background:rgba(255,250,241,.92); border:1px solid rgba(23,33,26,.12); border-radius:24px; padding:24px; box-shadow:0 18px 50px rgba(33,41,36,.08); margin-top:18px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; }
+    .card { background:#fffdf8; border:1px solid rgba(23,33,26,.12); border-radius:18px; padding:14px; }
+    .label { text-transform:uppercase; letter-spacing:.1em; font-size:.72rem; color:#6c5842; }
+    .value { font-size:1.1rem; margin-top:4px; }
+    .muted { color:#5b6762; }
+    .card.full { grid-column: 1 / -1; }
+    .chart-block { display:flex; flex-direction:column; gap:6px; }
+    .chart-title { font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; color:#6c5842; }
+    .chart { width:100%; height:auto; }
+    .chart text { font-family:Georgia, serif; font-size:10px; fill:#5d685f; }
+    .chart-note { font-size:.78rem; color:#6c5842; }
+    .legend-line { font-weight:600; color:#7a6aa0; }
+    .legend-line.median { color:#4f7a67; }
+    .legend-line.band { color:#bfa47a; }
+    .badge-row { display:flex; align-items:center; gap:8px; margin:6px 0 6px; }
+    .badge { display:inline-block; padding:4px 8px; border-radius:999px; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; font-weight:700; }
+    .badge.good { background:#dcefe3; color:#2f5c46; border:1px solid #a9c7b4; }
+    .badge.caution { background:#f4ead7; color:#7a5a25; border:1px solid #d9c59a; }
+    .badge.weak { background:#f3d7d7; color:#7a2f2f; border:1px solid #d6a3a3; }
+    .badge.neutral { background:#ece7dd; color:#6c5842; border:1px solid #d7cdbc; }
+    .badge-detail { font-size:.78rem; color:#6c5842; }
+    .verdict-panel { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+    .verdict-panel .badge { font-size:.9rem; padding:6px 12px; }
+    .verdict-note { margin:6px 0 10px; color:#5b6762; font-size:.85rem; }
+    .verdict-list { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:6px; }
+    .verdict-item { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .verdict-label { font-weight:600; color:#4b4031; min-width:240px; }
+    details.trimmed { margin-top:12px; background:#fffdf8; border:1px dashed rgba(23,33,26,.18); border-radius:16px; padding:10px 12px; }
+    details.trimmed summary { cursor:pointer; font-weight:600; color:#6c5842; }
+    details.trimmed { margin-top:12px; background:#fffdf8; border:1px dashed rgba(23,33,26,.18); border-radius:16px; padding:10px 12px; }
+    details.trimmed summary { cursor:pointer; font-weight:600; color:#6c5842; }
+    table { width:100%; border-collapse:collapse; margin-top:12px; }
+    th, td { border-bottom:1px solid rgba(23,33,26,.08); text-align:left; padding:8px; }
+    th { font-size:.75rem; text-transform:uppercase; color:#5d685f; letter-spacing:.05em; }
+    a { color:#b06b1d; }
+  </style>
+</head>
+<body>
+  <main>
+    <section>
+      <h1>Quick Profile Summary</h1>
+      <p>Exploratory small-grid diagnostics for this thesis.</p>
+      <a href="dashboard.html">Back to thesis dashboard</a>
+    </section>
+    <section>
+      <h2>Status Snapshot</h2>
+      <div class="grid">
+        <div class="card"><div class="label">Selection Status</div><div class="value">selected</div></div>
+        <div class="card"><div class="label">PBO</div><div class="value">100.0%</div></div>
+        <div class="card"><div class="label">PBO Band</div><div class="value">n/a</div></div>
+        <div class="card"><div class="label">PBO Thresholds</div><div class="value">30.0% / 50.0%</div></div>
+        <div class="card"><div class="label">Candidates Tested</div><div class="value">1</div></div>
+        <div class="card"><div class="label">Negative Controls</div><div class="value">2/100 · 19/50</div></div>
+      </div>
+    </section>
+    <section><h2>Validation Verdict (Hard Gates)</h2><div class="verdict-panel"><span class="badge good">PASS</span><span class="badge-detail">All hard gates cleared.</span></div><p class="verdict-note"><strong>Candidate:</strong> l12_s1_n8_strat=trend_filter_ma10</p><p class="verdict-note"><strong>Passing grade:</strong> all hard gates below must be PASS. PBO >= 50.0% is automatic FAIL; 30.0% - 50.0% = PASS with caution.</p><ul class="verdict-list"><li class="verdict-item"><span class="verdict-label">Walk-forward Sharpe gate</span><span class="badge good">PASS</span><span class="badge-detail">4/5 folds >= 0.40 (need 4)</span></li><li class="verdict-item"><span class="verdict-label">Bootstrap CI gate</span><span class="badge good">PASS</span><span class="badge-detail">CI low 0.897 > 0</span></li><li class="verdict-item"><span class="verdict-label">Deflated Sharpe gate</span><span class="badge good">PASS</span><span class="badge-detail">score 0.462 > 0</span></li><li class="verdict-item"><span class="verdict-label">Negative controls gate</span><span class="badge good">PASS</span><span class="badge-detail">cross_sectional_shuffle 2.0% (max 20.0%)</span></li><li class="verdict-item"><span class="verdict-label">PBO hard cutoff</span><span class="badge good">PASS</span><span class="badge-detail">PBO 100.0% (good < 30.0%; hard cutoff >= 50.0%)</span></li></ul></section>
+    
+    <section>
+      <h2>2-Step Validation Funnel</h2>
+      <p class="muted">This report uses a strict 2-step validation funnel before any paper trading. Step 1 is Phase 2 validation on 2000-01 to 2017-12, including anti-overfitting checks. Step 2 is the untouched final holdout on 2018-01 to 2026-01. Paper trading starts only after Step 2 passes.</p>
+      <div class="grid">
+        <div class="card">
+          <div class="label">Step 1A. Selection Boundary</div>
+          <div class="value">2000-01 to 2017-12</div>
+          <div class="muted">Parameters are chosen only inside the pre-declared research span. Candidates tested: 1.</div>
+        </div>
+        <div class="card">
+          <div class="label">Step 1B. Repeated OOS Folds</div>
+          <div class="value">n/a</div>
+          <div class="muted">Validation windows n/a. 0/n/a folds clear Sharpe &gt;= 0.40. Combined Sharpe n/a.</div>
+        </div>
+        <div class="card">
+          <div class="label">Step 1C. Anti-Overfitting Checks</div>
+          <div class="value">PBO 100.0%</div>
+          <div class="muted">Selection status selected. Bootstrap CI low 0.897. Deflated Sharpe 0.462. Cross shuffle 2/100; block null 19/50.</div>
+        </div>
+        <div class="card">
+          <div class="label">Step 2. Untouched Final Holdout</div>
+          <div class="value">2018-01 to 2026-01</div>
+          <div class="muted">Holdout passed. Net Sharpe 1.492. Phase 4 eligible: True. <a href="holdout_results.html">Open holdout diagnostics</a>.</div>
+        </div>
+        <div class="card">
+          <div class="label">Phase 4. Paper Trading</div>
+          <div class="value">Unlocked</div>
+          <div class="muted">Phase 4 may begin now because the untouched 2018-01 to 2026-01 holdout passed for this thesis. Operational paper-trading belongs in the forward-monitor dashboards, not this validation funnel.</div>
+        </div>
+      </div>
+    </section>
+    
+    <section>
+      <h2>Top Candidates</h2>
+      <table>
+        <thead>
+          <tr><th>Candidate</th><th>Params</th><th>Median Sharpe</th><th>Fold Passes</th><th>Bootstrap</th><th>Deflated</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>l12_s1_n8_strat=trend_filter_ma10</td><td>L=12 / skip=1 / top_n=8 / strat=trend_filter_ma10 / trend_ma=10</td><td>1.947</td><td>4</td><td>yes</td><td>yes</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section>
+      <h2>Walk-Forward Timeline</h2>
+      <p class="muted">Status: n/a · Combined Sharpe n/a · Total Return n/a</p>
+      <p class="muted"><strong>Hard-gate pass/fail</strong> is shown in the Validation Verdict above. This timeline is diagnostic.</p>
+      <div class="badge-row"><span class="label">Walk-forward quality (diagnostic)</span><span class="badge neutral">n/a</span><span class="badge-detail">No walk-forward folds.</span></div>
+      <p class="muted"><strong>Result (diagnostic):</strong> Combined Sharpe n/a, Total Return n/a, 0/0 negative folds.</p>
+      <p class="muted"><strong>Gap summary:</strong> Sharpe n/a. Annualized Return n/a. n/a.</p>
+      <p class="muted"><strong>How to read:</strong> Green line = validation (out-of-sample). Gray dashed = train (in-sample). X-axis is the mid-year of each validation window; shaded bands show each validation window.</p>
+      <p class="muted"><strong>Benchmark context:</strong> The gold line is <strong>XACT Norden</strong>, the project's broad Nordic passive proxy. For the ex_norway thesis this still includes Norway, so it is a house benchmark rather than a thesis-matched ex-Norway passive comparator.</p>
+      <p class="muted"><strong>Integrity boundary:</strong> These validation windows are out-of-sample relative to each fold's training span. The untouched final holdout starts at 2018-01 and is not part of this walk-forward schedule.</p>
+      <p class="muted">Diagnostic summary (not a hard gate): n/a. Dashed horizontal line is the 0.4 reference; solid horizontal line is zero (break-even) when visible.</p>
+      <p class="muted"><strong>Interpretation:</strong> Validation close to train with few negatives = more stable; big gaps or repeated negatives = weaker robustness.</p>
+      <p class="muted"><strong>Higher-frequency view:</strong> The stitched validation equity and rolling Sharpe below update monthly, so you can see movement inside folds.</p>
+      <div class="grid">
+        <div class="card full">
+          <div class="muted">Walk-forward schedule not available.</div>
+        </div>
+        <div class="card full">
+          <div class="muted">Walk-forward data not available.</div>
+        </div>
+        <div class="card full">
+          <div class="muted">Walk-forward data not available.</div>
+        </div>
+        <div class="card full">
+          <div class="muted">Validation equity not available.</div>
+        </div>
+        <div class="card full">
+          <div class="muted">Rolling Sharpe not available.</div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>Monte Carlo Distribution</h2>
+      <p class="muted">Samples: n/a · Block length: n/a months</p>
+      <p class="muted">Method: stationary block bootstrap of historical monthly returns (not IID random-walk).</p>
+      <p class="muted"><strong>Integrity boundary:</strong> This bootstrap uses realized historical returns from the frozen candidate's validation record. It is diagnostic only and does not project or consume the untouched holdout.</p>
+      <div class="badge-row"><span class="label">Monte Carlo quality (not a gate)</span><span class="badge neutral">n/a</span><span class="badge-detail">No Monte Carlo metrics.</span></div>
+      <p class="muted"><strong>Result (diagnostic):</strong> n/a. No Monte Carlo metrics.</p>
+      <p class="muted"><strong>How to read histograms:</strong> X-axis = metric value, Y-axis = frequency across bootstrap samples. Taller bars = more likely outcomes. Higher Sharpe/return is better; lower drawdown is better. Markers show p05/median/p95.</p>
+      <p class="muted"><strong>How to read paths:</strong> X-axis = months from start; Y-axis = equity index (start=100). Thin lines are individual bootstrap paths; bold line is the median; shaded band is p10-p90.</p>
+      <p class="muted"><strong>Interpretation:</strong> Distributions centered above zero with tight spread are stronger; large left tails or very wide fans signal more uncertainty.</p>
+      <p class="muted"><strong>Quick read:</strong> Monte Carlo summary not available.</p>
+      
+      <div class="grid">
+        <div class="card">
+          <div class="muted">Histogram not available.</div>
+        </div>
+        <div class="card">
+          <div class="muted">Histogram not available.</div>
+        </div>
+        <div class="card">
+          <div class="muted">Histogram not available.</div>
+        </div>
+        <div class="card full">
+          <div class="muted">Monte Carlo paths not available.</div>
+        </div>
+      </div>
+      
+    </section>
+    <section>
+      <h2>Parameter Sensitivity</h2>
+      <p class="muted">Sensitivity data not available.</p>
+      <p class="muted" style="margin-top:8px;"><strong>How to read:</strong> X-axis = parameter value; Y-axis = median validation Sharpe. Flatter lines = more robust; steep slopes = sensitivity/overfit. Largest dot marks the best value. Table retains pass rates and counts.</p>
+    </section>
+  </main>
+</body>
+</html>

@@ -4,3 +4,11 @@ data/
 __pycache__/
 *.pyc
 build/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.cache/
+build_ninja*/
+vcpkg_installed/

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Package Candidate Summary</title>
+  <style>
+    body { margin:0; font-family:Georgia, serif; background:#f7f2e7; color:#17211a; }
+    main { max-width:980px; margin:0 auto; padding:28px 20px 48px; }
+    section { background:rgba(255,250,241,.92); border:1px solid rgba(23,33,26,.12); border-radius:24px; padding:24px; box-shadow:0 18px 50px rgba(33,41,36,.08); margin-top:18px; }
+    .status { display:flex; gap:12px; flex-wrap:wrap; margin-top:14px; }
+    .pill { display:inline-flex; padding:10px 14px; border-radius:999px; font-size:.95rem; border:1px solid transparent; }
+    .pill.warn { background:#f7ddd3; color:#7d3d2a; border-color:rgba(125,61,42,.18); }
+    .pill.good { background:#dcebdd; color:#295741; border-color:rgba(41,87,65,.18); }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin-top:16px; }
+    .card { display:block; text-decoration:none; color:inherit; background:#fffdf8; border:1px solid rgba(23,33,26,.12); border-radius:20px; padding:20px; }
+    .label { text-transform: uppercase; letter-spacing: .12em; font-size: .72rem; color: #6c5842; }
+    .card strong { display:block; margin-top:6px; font-size:1.2rem; overflow-wrap:anywhere; word-break: break-word; }
+    .card p { margin:8px 0 0; color:#5b6762; }
+    .path { display:inline-block; margin-top:10px; color:#b06b1d; }
+    a { color:#b06b1d; }
+  </style>
+</head>
+<body>
+  <main>
+    <section>
+      <h1>Current Candidate Decision</h1>
+      <p>This view is intentionally limited to the package branch you selected to present.</p>
+      <div class="status">
+        <span class="pill good">Current state: validated candidate</span>
+        <span class="pill warn">Trading model: entry_exit_costs</span>
+      </div>
+      <p style="margin-top:16px;"><strong>Current finding:</strong> A candidate currently clears the selected execution model and remains the package build-on strategy.</p>
+      <p><strong>Repo verdict:</strong> Selected package winner: Ex-Norway (Sweden and Denmark only) / Monthly with holdout Sharpe 1.153.</p>
+    </section>
+    <section>
+      <h2>Decision Details (Employer-Readable)</h2>
+      <div class="grid">
+        <div class="card">
+          <div class="label">Authoritative Locked Params</div>
+          <strong>L=12 / skip=1 / top_n=5</strong>
+          <p>Locked tuple from the authoritative selection summary.</p>
+        </div>
+        <div class="card">
+          <div class="label">Rigorous PBO (Authoritative)</div>
+          <strong>34.1%</strong>
+          <p>CSCV PBO threshold is 30% for a healthy warning level.</p>
+        </div>
+        <div class="card">
+          <div class="label">Negative Controls</div>
+          <strong>0/500 / 179/200</strong>
+          <p>Cross-sectional shuffle and block-shuffled null pass counts.</p>
+        </div>
+        <div class="card">
+          <div class="label">Cadence Summary Check</div>
+          <strong>PBO 34.1% / Holdout 1.153</strong>
+          <p>Lead monthly pair from the cadence comparison summary.</p>
+        </div>
+        <div class="card">
+          <div class="label">Authoritative Selection Path</div>
+          <strong>C:\Users\robin\Desktop\alpha momentum\results\_timing_legacy_cert\ex_norway\1m\selection_summary.json</strong>
+          <p>Source-of-truth selection summary for the package branch.</p>
+        </div>
+        <div class="card">
+          <div class="label">Cadence Summary Path</div>
+          <strong>results\cadence_compare\summary\cadence_comparison.json</strong>
+          <p>Authoritative cadence comparison dashboard path.</p>
+        </div>
+      </div>
+      <p style="margin-top:16px;">If you see different PBO numbers in experimental runs, they are not authoritative unless explicitly promoted to the package branch.</p>
+    </section>
+    <section>
+      <h2>Experimental Rebuild (Not Authoritative)</h2>
+      <div class="grid">
+        <div class="card">
+          <div class="label">Rebuild Status</div>
+          <strong>No cadence pair currently passes certification plus holdout in the rebuild run.</strong>
+          <p>Tracked for research context only. Does not override the package decision.</p>
+        </div>
+        <div class="card">
+          <div class="label">Rebuild Lead Monthly PBO</div>
+          <strong>42.9%</strong>
+          <p>Shown for transparency; not part of the package decision.</p>
+        </div>
+        <div class="card">
+          <div class="label">Rebuild Summary Path</div>
+          <strong>results\cadence_compare_rebuild\summary\cadence_comparison.json</strong>
+          <p>Optional research cycle output (separate results root).</p>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>Open Next</h2>
+      <div class="grid">
+        <a class="card" href="../PROJECT_STATUS.html">
+          <h3>Project Status</h3>
+          <p>Plain-English summary of what is active, what is blocked, and the next sensible branch.</p>
+          <span class="path">../PROJECT_STATUS.html</span>
+        </a>
+        <a class="card" href="../research_audit_dossier.html">
+          <h3>Research Dossier</h3>
+          <p>Short narrative of what the repo currently proves and why that matters.</p>
+          <span class="path">../research_audit_dossier.html</span>
+        </a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

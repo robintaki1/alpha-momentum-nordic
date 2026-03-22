@@ -1,1 +1,1 @@
-# Alpha Momentum research scripts package.
+# Alpha Momentum paper-trading scripts package.

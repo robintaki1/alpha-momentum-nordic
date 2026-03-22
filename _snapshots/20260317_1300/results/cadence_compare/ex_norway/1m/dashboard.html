@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pair Dashboard</title>
+  <style>
+    body { margin:0; font-family:Georgia, serif; background:#f7f2e7; color:#17211a; }
+    main { max-width:980px; margin:0 auto; padding:28px 20px 48px; }
+    section { background:rgba(255,250,241,.92); border:1px solid rgba(23,33,26,.12); border-radius:24px; padding:24px; box-shadow:0 18px 50px rgba(33,41,36,.08); margin-top:18px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin-top:16px; }
+    .card { display:block; text-decoration:none; color:inherit; background:#fffdf8; border:1px solid rgba(23,33,26,.12); border-radius:20px; padding:18px; }
+    .label { color:#6c5842; text-transform:uppercase; letter-spacing:.08em; font-size:.75rem; }
+    .value { font-size:1.4rem; margin-top:6px; }
+    a { color:#b06b1d; }
+  </style>
+</head>
+<body>
+  <main>
+    <section>
+      <h1>Ex-Norway (Sweden and Denmark only) - Monthly</h1>
+      <p>Thesis: <strong>ex_norway</strong> / Cadence: <strong>1m</strong></p>
+      <div class="grid">
+        <div class="card">
+          <div class="label">Selection Status</div>
+          <div class="value">selected</div>
+        </div>
+        <div class="card">
+          <div class="label">PBO</div>
+          <div class="value">34.1%</div>
+        </div>
+        <div class="card">
+          <div class="label">Holdout Sharpe</div>
+          <div class="value">1.153</div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>Open Next</h2>
+      <div class="grid">
+        <a class="card" href="../../summary/dashboard.html">
+          <div class="label">Cadence Summary</div>
+          <div class="value">Back to summary</div>
+        </a>
+        <a class="card" href="../../summary/cadence_comparison_report.html">
+          <div class="label">Cadence Report</div>
+          <div class="value">Open full comparison report</div>
+        </a>
+        <a class="card" href="../../../../portfolio/alpha_momentum_validation_package/dashboard.html">
+          <div class="label">Validation Package</div>
+          <div class="value">Open package dashboard</div>
+        </a>
+        <a class="card" href="../../../../portfolio/alpha_momentum_validation_package/full_research_report.html">
+          <div class="label">Full Research Results</div>
+          <div class="value">Open consolidated report</div>
+        </a>
+        <a class="card" href="../../../../portfolio/alpha_momentum_validation_package/research_audit_dossier.html">
+          <div class="label">Research Dossier</div>
+          <div class="value">Open audit narrative</div>
+        </a>
+        <a class="card" href="../../../_timing_legacy_cert/ex_norway/1m/selection_summary.json"><div class="label">Selection Summary</div><div class="value">Open selection summary</div></a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

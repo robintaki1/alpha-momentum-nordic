@@ -1,0 +1,1482 @@
+{
+  "authoritative_status": "no_validated_winner",
+  "authoritative_validation_model": "legacy_entry_exit_costs",
+  "pairs": [
+    {
+      "cadence": {
+        "cadence_id": "1m",
+        "cadence_label": "Monthly",
+        "canonical_offset_id": 0,
+        "rebalance_logic": "legacy_entries_exits",
+        "rebalance_logic_label": "Legacy Entry/Exit Only",
+        "schedule_type": "month_end"
+      },
+      "certification": {
+        "backtest_overfitting": {
+          "candidate_count": 6,
+          "combination_count": 252,
+          "interpretation": "healthy",
+          "lambda_logit_mean": 3.379365688758239,
+          "lambda_logit_median": 1.3862943611198908,
+          "mean_oos_rank_percentile": 0.6603174603174603,
+          "median_oos_rank_percentile": 0.8,
+          "method": "cscv_pbo_main_track_sharpe",
+          "passes_pbo_threshold": true,
+          "passes_threshold": true,
+          "pbo": 0.25396825396825395,
+          "pbo_threshold_max": 0.3,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "score_function": "annualized_sharpe",
+          "slice_count": 10,
+          "slice_length_months": 12.0,
+          "slice_length_periods": 12,
+          "status": "ok",
+          "threshold_max": 0.3,
+          "total_months": 120.0,
+          "total_periods": 120
+        },
+        "cadence_id": "1m",
+        "cadence_label": "Monthly",
+        "canonical_offset_id": 0,
+        "locked_candidate": null,
+        "mode": "certification_baseline",
+        "negative_controls": {
+          "block_shuffled_null": {
+            "pass_count": 160,
+            "run_count": 200
+          },
+          "cross_sectional_shuffle": {
+            "pass_count": 239,
+            "run_count": 500
+          }
+        },
+        "neighbor_diagnostics": [],
+        "period_label": "months",
+        "periods_per_year": 12,
+        "ranked_candidates": [
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.7031324287571208,
+            "bootstrap_ci_low": -0.06893945728311458,
+            "candidate_id": "l12_s0_n5",
+            "deflated_sharpe_probability": 0.8768677855581113,
+            "deflated_sharpe_score": 0.10947344210313463,
+            "fold_pass_count": 3,
+            "gate_bootstrap": false,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.4684055405173878,
+            "median_validation_sharpe": 0.9298423172016856,
+            "params": {
+              "l": 12,
+              "skip": 0,
+              "top_n": 5
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.8123922777742072,
+            "plateau_neighbor_ratio": 0.873688218685359,
+            "rank": 1,
+            "selected": false,
+            "universe_sensitivity_std": 0.3833443355372512
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.94398719895252,
+            "bootstrap_ci_low": 0.18283332307402875,
+            "candidate_id": "l12_s1_n5",
+            "deflated_sharpe_probability": 0.9658923257893726,
+            "deflated_sharpe_score": 0.17303058900925228,
+            "fold_pass_count": 4,
+            "gate_bootstrap": true,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": true,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.508646195802349,
+            "median_validation_sharpe": 0.8813800383286003,
+            "params": {
+              "l": 12,
+              "skip": 1,
+              "top_n": 5
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.7679100819556017,
+            "plateau_neighbor_ratio": 0.8712587630323729,
+            "rank": 2,
+            "selected": false,
+            "universe_sensitivity_std": 0.4393401511851602
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.7572980546788146,
+            "bootstrap_ci_low": -0.11506607096960585,
+            "candidate_id": "l12_s0_n8",
+            "deflated_sharpe_probability": 0.886667618809694,
+            "deflated_sharpe_score": 0.11246942275711368,
+            "fold_pass_count": 3,
+            "gate_bootstrap": false,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.4926092361209933,
+            "median_validation_sharpe": 0.7434045172198142,
+            "params": {
+              "l": 12,
+              "skip": 0,
+              "top_n": 8
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.6059778467095179,
+            "plateau_neighbor_ratio": 0.8151387739420191,
+            "rank": 3,
+            "selected": false,
+            "universe_sensitivity_std": 0.37630480307598857
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.9862598974085504,
+            "bootstrap_ci_low": 0.07697005065358022,
+            "candidate_id": "l12_s1_n8",
+            "deflated_sharpe_probability": 0.9291196159351225,
+            "deflated_sharpe_score": 0.1455136763496115,
+            "fold_pass_count": 3,
+            "gate_bootstrap": true,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.4874148452991658,
+            "median_validation_sharpe": 0.6059778467095179,
+            "params": {
+              "l": 12,
+              "skip": 1,
+              "top_n": 8
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.7434045172198142,
+            "plateau_neighbor_ratio": 1.2267849744945762,
+            "rank": 4,
+            "selected": false,
+            "universe_sensitivity_std": 0.4282027607655846
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.896967892033178,
+            "bootstrap_ci_low": 0.08002754451324431,
+            "candidate_id": "l12_s1_n10",
+            "deflated_sharpe_probability": 0.9158042417443961,
+            "deflated_sharpe_score": 0.1365608965739933,
+            "fold_pass_count": 3,
+            "gate_bootstrap": true,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.4657688588286112,
+            "median_validation_sharpe": 0.5354517008885609,
+            "params": {
+              "l": 12,
+              "skip": 1,
+              "top_n": 10
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.5469542863782557,
+            "plateau_neighbor_ratio": 1.021482022506618,
+            "rank": 5,
+            "selected": false,
+            "universe_sensitivity_std": 0.4045364082699012
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.8147585279520562,
+            "bootstrap_ci_low": -0.07395979374861389,
+            "candidate_id": "l12_s0_n10",
+            "deflated_sharpe_probability": 0.8777721963286411,
+            "deflated_sharpe_score": 0.11171522735955182,
+            "fold_pass_count": 3,
+            "gate_bootstrap": false,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.44256823788842037,
+            "median_validation_sharpe": 0.48793072604699356,
+            "params": {
+              "l": 12,
+              "skip": 0,
+              "top_n": 10
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.6394281090541876,
+            "plateau_neighbor_ratio": 1.310489532468187,
+            "rank": 6,
+            "selected": false,
+            "universe_sensitivity_std": 0.3733943131750892
+          }
+        ],
+        "rebalance_logic": "legacy_entries_exits",
+        "rebalance_logic_label": "Legacy Entry/Exit Only",
+        "schedule_type": "month_end",
+        "selection_status": "no_candidate_passed_hard_gates",
+        "thesis": {
+          "excluded_countries": [
+            "NO"
+          ],
+          "label": "Ex-Norway (Sweden and Denmark only)",
+          "name": "ex_norway",
+          "scope_note": "This is a separate thesis that removes Norway from the corrected baseline while keeping the same simple price-momentum implementation, costs, and gates."
+        }
+      },
+      "holdout": {
+        "cadence_id": "1m",
+        "cadence_label": "Monthly",
+        "canonical_offset_id": 0,
+        "rebalance_logic": "legacy_entries_exits",
+        "rebalance_logic_label": "Legacy Entry/Exit Only",
+        "schedule_type": "month_end",
+        "status": "blocked_by_missing_selection",
+        "thesis": {
+          "excluded_countries": [
+            "NO"
+          ],
+          "label": "Ex-Norway (Sweden and Denmark only)",
+          "name": "ex_norway",
+          "scope_note": "This is a separate thesis that removes Norway from the corrected baseline while keeping the same simple price-momentum implementation, costs, and gates."
+        }
+      },
+      "mega": {
+        "backtest_overfitting": {
+          "candidate_count": 18,
+          "combination_count": 252,
+          "interpretation": "overfitting_warning",
+          "lambda_logit_mean": 0.7536881391388931,
+          "lambda_logit_median": 1.178654996341646,
+          "mean_oos_rank_percentile": 0.6204481792717087,
+          "median_oos_rank_percentile": 0.7647058823529411,
+          "method": "cscv_pbo_main_track_sharpe",
+          "passes_pbo_threshold": false,
+          "passes_threshold": false,
+          "pbo": 0.3531746031746032,
+          "pbo_threshold_max": 0.3,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "score_function": "annualized_sharpe",
+          "slice_count": 10,
+          "slice_length_months": 12.0,
+          "slice_length_periods": 12,
+          "status": "ok",
+          "threshold_max": 0.3,
+          "total_months": 120.0,
+          "total_periods": 120
+        },
+        "cadence_id": "1m",
+        "cadence_label": "Monthly",
+        "canonical_offset_id": 0,
+        "locked_candidate": null,
+        "mode": "mega",
+        "negative_controls": {
+          "block_shuffled_null": {
+            "pass_count": 195,
+            "run_count": 200
+          },
+          "cross_sectional_shuffle": {
+            "pass_count": 267,
+            "run_count": 500
+          }
+        },
+        "neighbor_diagnostics": [],
+        "period_label": "months",
+        "periods_per_year": 12,
+        "ranked_candidates": [
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.8310823981253321,
+            "bootstrap_ci_low": 0.06965466359431649,
+            "candidate_id": "l9_s0_n8",
+            "deflated_sharpe_probability": 0.8087545669867363,
+            "deflated_sharpe_score": 0.08511468925264229,
+            "fold_pass_count": 3,
+            "gate_bootstrap": true,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.46629035172506106,
+            "median_validation_sharpe": 1.1851070948228097,
+            "params": {
+              "l": 9,
+              "skip": 0,
+              "top_n": 8
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.8706078674506279,
+            "plateau_neighbor_ratio": 0.7346237915998605,
+            "rank": 1,
+            "selected": false,
+            "universe_sensitivity_std": 0.39862151030951176
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.7945534967337489,
+            "bootstrap_ci_low": 0.09844870494478059,
+            "candidate_id": "l9_s0_n10",
+            "deflated_sharpe_probability": 0.7772799031594119,
+            "deflated_sharpe_score": 0.07581345130013092,
+            "fold_pass_count": 3,
+            "gate_bootstrap": true,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.4341080003892783,
+            "median_validation_sharpe": 1.0692058714385642,
+            "params": {
+              "l": 9,
+              "skip": 0,
+              "top_n": 10
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.6265017047813958,
+            "plateau_neighbor_ratio": 0.5859504904686582,
+            "rank": 2,
+            "selected": false,
+            "universe_sensitivity_std": 0.3856110612594942
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.831198966065657,
+            "bootstrap_ci_low": 0.18533573176643667,
+            "candidate_id": "l9_s0_n5",
+            "deflated_sharpe_probability": 0.8808192803564028,
+            "deflated_sharpe_score": 0.11264604377706558,
+            "fold_pass_count": 3,
+            "gate_bootstrap": true,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.45627054795662836,
+            "median_validation_sharpe": 0.9978112176814418,
+            "params": {
+              "l": 9,
+              "skip": 0,
+              "top_n": 5
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.9298423172016856,
+            "plateau_neighbor_ratio": 0.9318820040551442,
+            "rank": 3,
+            "selected": false,
+            "universe_sensitivity_std": 0.42819218607539083
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.7031324287571208,
+            "bootstrap_ci_low": -0.06893945728311458,
+            "candidate_id": "l12_s0_n5",
+            "deflated_sharpe_probability": 0.7276556759267832,
+            "deflated_sharpe_score": 0.057191827164212256,
+            "fold_pass_count": 3,
+            "gate_bootstrap": false,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.4684055405173878,
+            "median_validation_sharpe": 0.9298423172016856,
+            "params": {
+              "l": 12,
+              "skip": 0,
+              "top_n": 5
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.8123922777742072,
+            "plateau_neighbor_ratio": 0.873688218685359,
+            "rank": 4,
+            "selected": false,
+            "universe_sensitivity_std": 0.3833443355372512
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.94398719895252,
+            "bootstrap_ci_low": 0.18283332307402875,
+            "candidate_id": "l12_s1_n5",
+            "deflated_sharpe_probability": 0.8979308239163035,
+            "deflated_sharpe_score": 0.12048967432673574,
+            "fold_pass_count": 4,
+            "gate_bootstrap": true,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": true,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.508646195802349,
+            "median_validation_sharpe": 0.8813800383286003,
+            "params": {
+              "l": 12,
+              "skip": 1,
+              "top_n": 5
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.7111465170491691,
+            "plateau_neighbor_ratio": 0.8068557105034367,
+            "rank": 5,
+            "selected": false,
+            "universe_sensitivity_std": 0.4393401511851602
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.8631499883790932,
+            "bootstrap_ci_low": 0.12223725513964193,
+            "candidate_id": "l9_s1_n5",
+            "deflated_sharpe_probability": 0.8033211868178702,
+            "deflated_sharpe_score": 0.08572097612004004,
+            "fold_pass_count": 3,
+            "gate_bootstrap": true,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.4699930175693132,
+            "median_validation_sharpe": 0.7899988330345232,
+            "params": {
+              "l": 9,
+              "skip": 1,
+              "top_n": 5
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.8813800383286003,
+            "plateau_neighbor_ratio": 1.1156725826328957,
+            "rank": 6,
+            "selected": false,
+            "universe_sensitivity_std": 0.4361839403556289
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.9303831179896582,
+            "bootstrap_ci_low": 0.08640391224534834,
+            "candidate_id": "l15_s1_n8",
+            "deflated_sharpe_probability": 0.8268563652404928,
+            "deflated_sharpe_score": 0.09222507341772207,
+            "fold_pass_count": 4,
+            "gate_bootstrap": true,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": true,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.4693147828133556,
+            "median_validation_sharpe": 0.7502184712823861,
+            "params": {
+              "l": 15,
+              "skip": 1,
+              "top_n": 8
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.5554443216792464,
+            "plateau_neighbor_ratio": 0.7403767608251468,
+            "rank": 7,
+            "selected": false,
+            "universe_sensitivity_std": 0.41039533611755885
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.7572980546788146,
+            "bootstrap_ci_low": -0.11506607096960585,
+            "candidate_id": "l12_s0_n8",
+            "deflated_sharpe_probability": 0.7438506504050648,
+            "deflated_sharpe_score": 0.06095724564541696,
+            "fold_pass_count": 3,
+            "gate_bootstrap": false,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.4926092361209933,
+            "median_validation_sharpe": 0.7434045172198142,
+            "params": {
+              "l": 12,
+              "skip": 0,
+              "top_n": 8
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.6059778467095179,
+            "plateau_neighbor_ratio": 0.8151387739420191,
+            "rank": 8,
+            "selected": false,
+            "universe_sensitivity_std": 0.37630480307598857
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 2.122488918310272,
+            "bootstrap_ci_low": 0.2529765812875453,
+            "candidate_id": "l9_s1_n8",
+            "deflated_sharpe_probability": 0.8830183108261269,
+            "deflated_sharpe_score": 0.12267657024700365,
+            "fold_pass_count": 4,
+            "gate_bootstrap": true,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": true,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.45503387500975134,
+            "median_validation_sharpe": 0.6803861851885324,
+            "params": {
+              "l": 9,
+              "skip": 1,
+              "top_n": 8
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.7082502689079595,
+            "plateau_neighbor_ratio": 1.040953335511517,
+            "rank": 9,
+            "selected": false,
+            "universe_sensitivity_std": 0.4630981732501442
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.822778324050476,
+            "bootstrap_ci_low": 0.17146043156186996,
+            "candidate_id": "l15_s1_n5",
+            "deflated_sharpe_probability": 0.8283722972374221,
+            "deflated_sharpe_score": 0.09197787962190301,
+            "fold_pass_count": 3,
+            "gate_bootstrap": true,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.4831715113897942,
+            "median_validation_sharpe": 0.6322942010638151,
+            "params": {
+              "l": 15,
+              "skip": 1,
+              "top_n": 5
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.7502184712823861,
+            "plateau_neighbor_ratio": 1.1865022168796853,
+            "rank": 10,
+            "selected": false,
+            "universe_sensitivity_std": 0.39365712609292147
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 2.0816765090957023,
+            "bootstrap_ci_low": 0.3299898308128268,
+            "candidate_id": "l9_s1_n10",
+            "deflated_sharpe_probability": 0.9030316453691161,
+            "deflated_sharpe_score": 0.13298563952441184,
+            "fold_pass_count": 4,
+            "gate_bootstrap": true,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": true,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.39126767614136115,
+            "median_validation_sharpe": 0.6265017047813958,
+            "params": {
+              "l": 9,
+              "skip": 1,
+              "top_n": 10
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.6803861851885324,
+            "plateau_neighbor_ratio": 1.0860085136175943,
+            "rank": 11,
+            "selected": false,
+            "universe_sensitivity_std": 0.4682733703131347
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.9862598974085504,
+            "bootstrap_ci_low": 0.07697005065358022,
+            "candidate_id": "l12_s1_n8",
+            "deflated_sharpe_probability": 0.8200441007043189,
+            "deflated_sharpe_score": 0.0906729175409986,
+            "fold_pass_count": 3,
+            "gate_bootstrap": true,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.4874148452991658,
+            "median_validation_sharpe": 0.6059778467095179,
+            "params": {
+              "l": 12,
+              "skip": 1,
+              "top_n": 8
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.7434045172198142,
+            "plateau_neighbor_ratio": 1.2267849744945762,
+            "rank": 12,
+            "selected": false,
+            "universe_sensitivity_std": 0.4282027607655846
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.6099786387722574,
+            "bootstrap_ci_low": -0.02226877287665895,
+            "candidate_id": "l15_s0_n5",
+            "deflated_sharpe_probability": 0.7234502944267249,
+            "deflated_sharpe_score": 0.054793396252030696,
+            "fold_pass_count": 3,
+            "gate_bootstrap": false,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.4962382952642873,
+            "median_validation_sharpe": 0.595879041706492,
+            "params": {
+              "l": 15,
+              "skip": 0,
+              "top_n": 5
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.6322942010638151,
+            "plateau_neighbor_ratio": 1.0611116632883018,
+            "rank": 13,
+            "selected": false,
+            "universe_sensitivity_std": 0.3466002008592985
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.896967892033178,
+            "bootstrap_ci_low": 0.08002754451324431,
+            "candidate_id": "l12_s1_n10",
+            "deflated_sharpe_probability": 0.7949330983577744,
+            "deflated_sharpe_score": 0.08166129518717258,
+            "fold_pass_count": 3,
+            "gate_bootstrap": true,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.4657688588286112,
+            "median_validation_sharpe": 0.5354517008885609,
+            "params": {
+              "l": 12,
+              "skip": 1,
+              "top_n": 10
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.5554443216792464,
+            "plateau_neighbor_ratio": 1.0373378602729406,
+            "rank": 14,
+            "selected": false,
+            "universe_sensitivity_std": 0.4045364082699012
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.8853446320554015,
+            "bootstrap_ci_low": 0.05661137838807237,
+            "candidate_id": "l15_s1_n10",
+            "deflated_sharpe_probability": 0.7703048911446018,
+            "deflated_sharpe_score": 0.07312955414058414,
+            "fold_pass_count": 3,
+            "gate_bootstrap": true,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.439884203061114,
+            "median_validation_sharpe": 0.5049107966489749,
+            "params": {
+              "l": 15,
+              "skip": 1,
+              "top_n": 10
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.5354517008885609,
+            "plateau_neighbor_ratio": 1.0604877226676115,
+            "rank": 15,
+            "selected": false,
+            "universe_sensitivity_std": 0.38506936802265723
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.8147585279520562,
+            "bootstrap_ci_low": -0.07395979374861389,
+            "candidate_id": "l12_s0_n10",
+            "deflated_sharpe_probability": 0.7291318987304828,
+            "deflated_sharpe_score": 0.05856704338240104,
+            "fold_pass_count": 3,
+            "gate_bootstrap": false,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.44256823788842037,
+            "median_validation_sharpe": 0.48793072604699356,
+            "params": {
+              "l": 12,
+              "skip": 0,
+              "top_n": 10
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.6394281090541876,
+            "plateau_neighbor_ratio": 1.310489532468187,
+            "rank": 16,
+            "selected": false,
+            "universe_sensitivity_std": 0.3733943131750892
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.7313166406524991,
+            "bootstrap_ci_low": -0.12833726922568656,
+            "candidate_id": "l15_s0_n10",
+            "deflated_sharpe_probability": 0.6559295937302182,
+            "deflated_sharpe_score": 0.038235041105516204,
+            "fold_pass_count": 2,
+            "gate_bootstrap": false,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.4462545293118271,
+            "median_validation_sharpe": 0.26407180727061497,
+            "params": {
+              "l": 15,
+              "skip": 0,
+              "top_n": 10
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.48793072604699356,
+            "plateau_neighbor_ratio": 1.8477198724473185,
+            "rank": 17,
+            "selected": false,
+            "universe_sensitivity_std": 0.3380143856373906
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.7130045463490369,
+            "bootstrap_ci_low": -0.0773546438381999,
+            "candidate_id": "l15_s0_n8",
+            "deflated_sharpe_probability": 0.6948867425645922,
+            "deflated_sharpe_score": 0.04778588202676359,
+            "fold_pass_count": 2,
+            "gate_bootstrap": false,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.46760348693950393,
+            "median_validation_sharpe": 0.20252901609104637,
+            "params": {
+              "l": 15,
+              "skip": 0,
+              "top_n": 8
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.6696417794631531,
+            "plateau_neighbor_ratio": 3.30639921324714,
+            "rank": 18,
+            "selected": false,
+            "universe_sensitivity_std": 0.3342250208207672
+          }
+        ],
+        "rebalance_logic": "legacy_entries_exits",
+        "rebalance_logic_label": "Legacy Entry/Exit Only",
+        "schedule_type": "month_end",
+        "selection_status": "no_candidate_passed_hard_gates",
+        "thesis": {
+          "excluded_countries": [
+            "NO"
+          ],
+          "label": "Ex-Norway (Sweden and Denmark only)",
+          "name": "ex_norway",
+          "scope_note": "This is a separate thesis that removes Norway from the corrected baseline while keeping the same simple price-momentum implementation, costs, and gates."
+        }
+      },
+      "output_dir": "C:\\Users\\robin\\Desktop\\alpha momentum\\results\\cadence_compare_rebuild\\ex_norway\\1m",
+      "quick": {
+        "backtest_overfitting": {
+          "candidate_count": 18,
+          "combination_count": 252,
+          "interpretation": "overfitting_warning",
+          "lambda_logit_mean": 0.7536881391388931,
+          "lambda_logit_median": 1.178654996341646,
+          "mean_oos_rank_percentile": 0.6204481792717087,
+          "median_oos_rank_percentile": 0.7647058823529411,
+          "method": "cscv_pbo_main_track_sharpe",
+          "passes_pbo_threshold": false,
+          "passes_threshold": false,
+          "pbo": 0.3531746031746032,
+          "pbo_threshold_max": 0.3,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "score_function": "annualized_sharpe",
+          "slice_count": 10,
+          "slice_length_months": 12.0,
+          "slice_length_periods": 12,
+          "status": "ok",
+          "threshold_max": 0.3,
+          "total_months": 120.0,
+          "total_periods": 120
+        },
+        "cadence_id": "1m",
+        "cadence_label": "Monthly",
+        "canonical_offset_id": 0,
+        "locked_candidate": null,
+        "mode": "quick",
+        "negative_controls": {
+          "block_shuffled_null": {
+            "pass_count": 49,
+            "run_count": 50
+          },
+          "cross_sectional_shuffle": {
+            "pass_count": 46,
+            "run_count": 100
+          }
+        },
+        "neighbor_diagnostics": [],
+        "period_label": "months",
+        "periods_per_year": 12,
+        "ranked_candidates": [
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.8310823981253321,
+            "bootstrap_ci_low": 0.06965466359431649,
+            "candidate_id": "l9_s0_n8",
+            "deflated_sharpe_probability": 0.8087545669867363,
+            "deflated_sharpe_score": 0.08511468925264229,
+            "fold_pass_count": 3,
+            "gate_bootstrap": true,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.46629035172506106,
+            "median_validation_sharpe": 1.1851070948228097,
+            "params": {
+              "l": 9,
+              "skip": 0,
+              "top_n": 8
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.8706078674506279,
+            "plateau_neighbor_ratio": 0.7346237915998605,
+            "rank": 1,
+            "selected": false,
+            "universe_sensitivity_std": 0.39862151030951176
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.7945534967337489,
+            "bootstrap_ci_low": 0.09844870494478059,
+            "candidate_id": "l9_s0_n10",
+            "deflated_sharpe_probability": 0.7772799031594119,
+            "deflated_sharpe_score": 0.07581345130013092,
+            "fold_pass_count": 3,
+            "gate_bootstrap": true,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.4341080003892783,
+            "median_validation_sharpe": 1.0692058714385642,
+            "params": {
+              "l": 9,
+              "skip": 0,
+              "top_n": 10
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.6265017047813958,
+            "plateau_neighbor_ratio": 0.5859504904686582,
+            "rank": 2,
+            "selected": false,
+            "universe_sensitivity_std": 0.3856110612594942
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.831198966065657,
+            "bootstrap_ci_low": 0.18533573176643667,
+            "candidate_id": "l9_s0_n5",
+            "deflated_sharpe_probability": 0.8808192803564028,
+            "deflated_sharpe_score": 0.11264604377706558,
+            "fold_pass_count": 3,
+            "gate_bootstrap": true,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.45627054795662836,
+            "median_validation_sharpe": 0.9978112176814418,
+            "params": {
+              "l": 9,
+              "skip": 0,
+              "top_n": 5
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.9298423172016856,
+            "plateau_neighbor_ratio": 0.9318820040551442,
+            "rank": 3,
+            "selected": false,
+            "universe_sensitivity_std": 0.42819218607539083
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.7031324287571208,
+            "bootstrap_ci_low": -0.06893945728311458,
+            "candidate_id": "l12_s0_n5",
+            "deflated_sharpe_probability": 0.7276556759267832,
+            "deflated_sharpe_score": 0.057191827164212256,
+            "fold_pass_count": 3,
+            "gate_bootstrap": false,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.4684055405173878,
+            "median_validation_sharpe": 0.9298423172016856,
+            "params": {
+              "l": 12,
+              "skip": 0,
+              "top_n": 5
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.8123922777742072,
+            "plateau_neighbor_ratio": 0.873688218685359,
+            "rank": 4,
+            "selected": false,
+            "universe_sensitivity_std": 0.3833443355372512
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.94398719895252,
+            "bootstrap_ci_low": 0.18283332307402875,
+            "candidate_id": "l12_s1_n5",
+            "deflated_sharpe_probability": 0.8979308239163035,
+            "deflated_sharpe_score": 0.12048967432673574,
+            "fold_pass_count": 4,
+            "gate_bootstrap": true,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": true,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.508646195802349,
+            "median_validation_sharpe": 0.8813800383286003,
+            "params": {
+              "l": 12,
+              "skip": 1,
+              "top_n": 5
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.7111465170491691,
+            "plateau_neighbor_ratio": 0.8068557105034367,
+            "rank": 5,
+            "selected": false,
+            "universe_sensitivity_std": 0.4393401511851602
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.8631499883790932,
+            "bootstrap_ci_low": 0.12223725513964193,
+            "candidate_id": "l9_s1_n5",
+            "deflated_sharpe_probability": 0.8033211868178702,
+            "deflated_sharpe_score": 0.08572097612004004,
+            "fold_pass_count": 3,
+            "gate_bootstrap": true,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.4699930175693132,
+            "median_validation_sharpe": 0.7899988330345232,
+            "params": {
+              "l": 9,
+              "skip": 1,
+              "top_n": 5
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.8813800383286003,
+            "plateau_neighbor_ratio": 1.1156725826328957,
+            "rank": 6,
+            "selected": false,
+            "universe_sensitivity_std": 0.4361839403556289
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.9303831179896582,
+            "bootstrap_ci_low": 0.08640391224534834,
+            "candidate_id": "l15_s1_n8",
+            "deflated_sharpe_probability": 0.8268563652404928,
+            "deflated_sharpe_score": 0.09222507341772207,
+            "fold_pass_count": 4,
+            "gate_bootstrap": true,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": true,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.4693147828133556,
+            "median_validation_sharpe": 0.7502184712823861,
+            "params": {
+              "l": 15,
+              "skip": 1,
+              "top_n": 8
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.5554443216792464,
+            "plateau_neighbor_ratio": 0.7403767608251468,
+            "rank": 7,
+            "selected": false,
+            "universe_sensitivity_std": 0.41039533611755885
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.7572980546788146,
+            "bootstrap_ci_low": -0.11506607096960585,
+            "candidate_id": "l12_s0_n8",
+            "deflated_sharpe_probability": 0.7438506504050648,
+            "deflated_sharpe_score": 0.06095724564541696,
+            "fold_pass_count": 3,
+            "gate_bootstrap": false,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.4926092361209933,
+            "median_validation_sharpe": 0.7434045172198142,
+            "params": {
+              "l": 12,
+              "skip": 0,
+              "top_n": 8
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.6059778467095179,
+            "plateau_neighbor_ratio": 0.8151387739420191,
+            "rank": 8,
+            "selected": false,
+            "universe_sensitivity_std": 0.37630480307598857
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 2.122488918310272,
+            "bootstrap_ci_low": 0.2529765812875453,
+            "candidate_id": "l9_s1_n8",
+            "deflated_sharpe_probability": 0.8830183108261269,
+            "deflated_sharpe_score": 0.12267657024700365,
+            "fold_pass_count": 4,
+            "gate_bootstrap": true,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": true,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.45503387500975134,
+            "median_validation_sharpe": 0.6803861851885324,
+            "params": {
+              "l": 9,
+              "skip": 1,
+              "top_n": 8
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.7082502689079595,
+            "plateau_neighbor_ratio": 1.040953335511517,
+            "rank": 9,
+            "selected": false,
+            "universe_sensitivity_std": 0.4630981732501442
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.822778324050476,
+            "bootstrap_ci_low": 0.17146043156186996,
+            "candidate_id": "l15_s1_n5",
+            "deflated_sharpe_probability": 0.8283722972374221,
+            "deflated_sharpe_score": 0.09197787962190301,
+            "fold_pass_count": 3,
+            "gate_bootstrap": true,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.4831715113897942,
+            "median_validation_sharpe": 0.6322942010638151,
+            "params": {
+              "l": 15,
+              "skip": 1,
+              "top_n": 5
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.7502184712823861,
+            "plateau_neighbor_ratio": 1.1865022168796853,
+            "rank": 10,
+            "selected": false,
+            "universe_sensitivity_std": 0.39365712609292147
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 2.0816765090957023,
+            "bootstrap_ci_low": 0.3299898308128268,
+            "candidate_id": "l9_s1_n10",
+            "deflated_sharpe_probability": 0.9030316453691161,
+            "deflated_sharpe_score": 0.13298563952441184,
+            "fold_pass_count": 4,
+            "gate_bootstrap": true,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": true,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.39126767614136115,
+            "median_validation_sharpe": 0.6265017047813958,
+            "params": {
+              "l": 9,
+              "skip": 1,
+              "top_n": 10
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.6803861851885324,
+            "plateau_neighbor_ratio": 1.0860085136175943,
+            "rank": 11,
+            "selected": false,
+            "universe_sensitivity_std": 0.4682733703131347
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.9862598974085504,
+            "bootstrap_ci_low": 0.07697005065358022,
+            "candidate_id": "l12_s1_n8",
+            "deflated_sharpe_probability": 0.8200441007043189,
+            "deflated_sharpe_score": 0.0906729175409986,
+            "fold_pass_count": 3,
+            "gate_bootstrap": true,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.4874148452991658,
+            "median_validation_sharpe": 0.6059778467095179,
+            "params": {
+              "l": 12,
+              "skip": 1,
+              "top_n": 8
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.7434045172198142,
+            "plateau_neighbor_ratio": 1.2267849744945762,
+            "rank": 12,
+            "selected": false,
+            "universe_sensitivity_std": 0.4282027607655846
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.6099786387722574,
+            "bootstrap_ci_low": -0.02226877287665895,
+            "candidate_id": "l15_s0_n5",
+            "deflated_sharpe_probability": 0.7234502944267249,
+            "deflated_sharpe_score": 0.054793396252030696,
+            "fold_pass_count": 3,
+            "gate_bootstrap": false,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.4962382952642873,
+            "median_validation_sharpe": 0.595879041706492,
+            "params": {
+              "l": 15,
+              "skip": 0,
+              "top_n": 5
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.6322942010638151,
+            "plateau_neighbor_ratio": 1.0611116632883018,
+            "rank": 13,
+            "selected": false,
+            "universe_sensitivity_std": 0.3466002008592985
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.896967892033178,
+            "bootstrap_ci_low": 0.08002754451324431,
+            "candidate_id": "l12_s1_n10",
+            "deflated_sharpe_probability": 0.7949330983577744,
+            "deflated_sharpe_score": 0.08166129518717258,
+            "fold_pass_count": 3,
+            "gate_bootstrap": true,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.4657688588286112,
+            "median_validation_sharpe": 0.5354517008885609,
+            "params": {
+              "l": 12,
+              "skip": 1,
+              "top_n": 10
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.5554443216792464,
+            "plateau_neighbor_ratio": 1.0373378602729406,
+            "rank": 14,
+            "selected": false,
+            "universe_sensitivity_std": 0.4045364082699012
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.8853446320554015,
+            "bootstrap_ci_low": 0.05661137838807237,
+            "candidate_id": "l15_s1_n10",
+            "deflated_sharpe_probability": 0.7703048911446018,
+            "deflated_sharpe_score": 0.07312955414058414,
+            "fold_pass_count": 3,
+            "gate_bootstrap": true,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.439884203061114,
+            "median_validation_sharpe": 0.5049107966489749,
+            "params": {
+              "l": 15,
+              "skip": 1,
+              "top_n": 10
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.5354517008885609,
+            "plateau_neighbor_ratio": 1.0604877226676115,
+            "rank": 15,
+            "selected": false,
+            "universe_sensitivity_std": 0.38506936802265723
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.8147585279520562,
+            "bootstrap_ci_low": -0.07395979374861389,
+            "candidate_id": "l12_s0_n10",
+            "deflated_sharpe_probability": 0.7291318987304828,
+            "deflated_sharpe_score": 0.05856704338240104,
+            "fold_pass_count": 3,
+            "gate_bootstrap": false,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.44256823788842037,
+            "median_validation_sharpe": 0.48793072604699356,
+            "params": {
+              "l": 12,
+              "skip": 0,
+              "top_n": 10
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.6394281090541876,
+            "plateau_neighbor_ratio": 1.310489532468187,
+            "rank": 16,
+            "selected": false,
+            "universe_sensitivity_std": 0.3733943131750892
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.7313166406524991,
+            "bootstrap_ci_low": -0.12833726922568656,
+            "candidate_id": "l15_s0_n10",
+            "deflated_sharpe_probability": 0.6559295937302182,
+            "deflated_sharpe_score": 0.038235041105516204,
+            "fold_pass_count": 2,
+            "gate_bootstrap": false,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.4462545293118271,
+            "median_validation_sharpe": 0.26407180727061497,
+            "params": {
+              "l": 15,
+              "skip": 0,
+              "top_n": 10
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.48793072604699356,
+            "plateau_neighbor_ratio": 1.8477198724473185,
+            "rank": 17,
+            "selected": false,
+            "universe_sensitivity_std": 0.3380143856373906
+          },
+          {
+            "active_selection_universe_variants": [
+              "Full Nordics",
+              "SE-only"
+            ],
+            "bootstrap_ci_high": 1.7130045463490369,
+            "bootstrap_ci_low": -0.0773546438381999,
+            "candidate_id": "l15_s0_n8",
+            "deflated_sharpe_probability": 0.6948867425645922,
+            "deflated_sharpe_score": 0.04778588202676359,
+            "fold_pass_count": 2,
+            "gate_bootstrap": false,
+            "gate_deflated_sharpe": true,
+            "gate_fold_count": false,
+            "gate_negative_controls": false,
+            "max_drawdown": 0.46760348693950393,
+            "median_validation_sharpe": 0.20252901609104637,
+            "params": {
+              "l": 15,
+              "skip": 0,
+              "top_n": 8
+            },
+            "period_label": "months",
+            "periods_per_year": 12,
+            "plateau_neighbor_median_sharpe": 0.6696417794631531,
+            "plateau_neighbor_ratio": 3.30639921324714,
+            "rank": 18,
+            "selected": false,
+            "universe_sensitivity_std": 0.3342250208207672
+          }
+        ],
+        "rebalance_logic": "legacy_entries_exits",
+        "rebalance_logic_label": "Legacy Entry/Exit Only",
+        "schedule_type": "month_end",
+        "selection_status": "no_candidate_passed_hard_gates",
+        "thesis": {
+          "excluded_countries": [
+            "NO"
+          ],
+          "label": "Ex-Norway (Sweden and Denmark only)",
+          "name": "ex_norway",
+          "scope_note": "This is a separate thesis that removes Norway from the corrected baseline while keeping the same simple price-momentum implementation, costs, and gates."
+        }
+      },
+      "thesis": {
+        "excluded_countries": [
+          "NO"
+        ],
+        "label": "Ex-Norway (Sweden and Denmark only)",
+        "name": "ex_norway",
+        "scope_note": "This is a separate thesis that removes Norway from the corrected baseline while keeping the same simple price-momentum implementation, costs, and gates."
+      }
+    }
+  ],
+  "preserved_frozen_manifest": "C:\\Users\\robin\\Desktop\\alpha momentum\\results\\forward_monitor\\frozen_strategy_manifest.json",
+  "rebalance_logic": "legacy_entries_exits",
+  "rebalance_logic_label": "Legacy Entry/Exit Only",
+  "research_cycle": "rebalance_cadence_compare",
+  "results_root": "C:\\Users\\robin\\Desktop\\alpha momentum\\results\\cadence_compare_rebuild",
+  "winner": null
+}

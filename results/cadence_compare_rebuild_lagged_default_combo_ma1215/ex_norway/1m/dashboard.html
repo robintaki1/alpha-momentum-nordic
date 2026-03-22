@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pair Dashboard</title>
+  <style>
+    body { margin:0; font-family:Georgia, serif; background:#f7f2e7; color:#17211a; }
+    main { max-width:980px; margin:0 auto; padding:28px 20px 48px; }
+    section { background:rgba(255,250,241,.92); border:1px solid rgba(23,33,26,.12); border-radius:24px; padding:24px; box-shadow:0 18px 50px rgba(33,41,36,.08); margin-top:18px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin-top:16px; }
+    .card { display:block; text-decoration:none; color:inherit; background:#fffdf8; border:1px solid rgba(23,33,26,.12); border-radius:20px; padding:18px; }
+    .label { color:#6c5842; text-transform:uppercase; letter-spacing:.08em; font-size:.75rem; }
+    .value { font-size:1.4rem; margin-top:6px; }
+    .muted { color:#5b6762; }
+    .callout { background:#fff7eb; border:1px solid rgba(176,107,29,.28); border-radius:16px; padding:12px 14px; margin-top:12px; }
+    table { width:100%; border-collapse:collapse; margin-top:12px; }
+    th, td { border-bottom:1px solid rgba(23,33,26,.08); text-align:left; padding:8px; }
+    th { font-size:.75rem; text-transform:uppercase; color:#5d685f; letter-spacing:.05em; }
+    a { color:#b06b1d; }
+  </style>
+</head>
+<body>
+  <main>
+    <section>
+      <h1>Ex-Norway (Sweden and Denmark only) - Monthly</h1>
+      <p>Thesis: <strong>ex_norway</strong> / Cadence: <strong>1m</strong></p>
+      <p class="muted">Profile set: default (L=12 / skip=1 / top_n=5, 8, 10, 12, 15, 20 / strat=baseline, banded2, minhold3, vol_weighted, cap_weighted, trend_filter, trend_filter_banded2, trend_filter_minhold3, trend_filter_vol_weighted, trend_filter_banded2_ma12, trend_filter_minhold3_ma12, trend_filter_vol_weighted_ma12, trend_filter_banded2_ma15, trend_filter_minhold3_ma15, trend_filter_vol_weighted_ma15, trend_filter_ma12, trend_filter_ma15, trend_filter_ma6, trend_filter_ma7, trend_filter_ma8, trend_filter_ma9, trend_filter_ma11, trend_filter_ma13, trend_filter_ma14, trend_filter_ma16, trend_filter_ma17, trend_filter_ma18, liquidity_filter)</p>
+      <div class="grid">
+        <div class="card">
+          <div class="label">Selection Status</div>
+          <div class="value">no_candidate_passed_hard_gates</div>
+        </div>
+        <div class="card">
+          <div class="label">PBO</div>
+          <div class="value">14.7%</div>
+        </div>
+        <div class="card">
+          <div class="label">Holdout Sharpe</div>
+          <div class="value">n/a</div>
+        </div>
+      </div>
+      <p class="muted" style="margin-top:12px;">Locked params: n/a. Top ranked params: L=12 / skip=1 / top_n=5 / strat=trend_filter_minhold3 / min_hold=3, trend_ma=10.</p>
+      <div class="callout">
+        <strong>PBO is one signal, not the verdict.</strong>
+        <div class="muted">
+          PBO passes: True. Validation status is <strong>no_candidate_passed_hard_gates</strong> because hard-gate blockers remain: deflated_sharpe.
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>Diagnostics Snapshot (Rebuild)</h2>
+      <div class="grid">
+        <div class="card">
+          <div class="label">Certification PBO</div>
+          <div class="value">14.7%</div>
+          <div class="muted">Threshold 30.0% · Passes: True</div>
+          <div class="muted">Slices 10 · Slice length 12.0 months · Combos 252</div>
+          <div class="muted">OOS rank mean 0.792 · median 0.898</div>
+        </div>
+        <div class="card">
+          <div class="label">Quick / Mega PBO</div>
+          <div class="value">14.7% / 14.7%</div>
+          <div class="muted">Exploratory signals only.</div>
+        </div>
+        <div class="card">
+          <div class="label">Negative Controls</div>
+          <div class="value">0/500 · 69/200</div>
+          <div class="muted">Cross-sectional / block-shuffled null.</div>
+          <div class="muted">Threshold max pass-rate 20.0%.</div>
+        </div>
+        <div class="card">
+          <div class="label">Gate Pass Counts</div>
+          <div class="value">fold 15 · boot 16 · defl 0</div>
+          <div class="muted">Count of candidates clearing each gate.</div>
+        </div>
+        <div class="card">
+          <div class="label">Gate Fail Counts</div>
+          <div class="value">fold 153 · boot 152 · defl 168 · neg 0</div>
+          <div class="muted">Count of candidates failing each gate.</div>
+        </div>
+        <div class="card">
+          <div class="label">Hard-Gate Winners</div>
+          <div class="value">0</div>
+          <div class="muted">Candidates clearing all certification gates.</div>
+        </div>
+        <div class="card">
+          <div class="label">Top Candidate Blockers</div>
+          <div class="value">deflated_sharpe</div>
+          <div class="muted">Why the top candidate failed hard gates.</div>
+        </div>
+        <div class="card">
+          <div class="label">Holdout Status</div>
+          <div class="value">blocked_by_missing_selection</div>
+          <div class="muted">Phase 4 eligible: n/a</div>
+        </div>
+        <div class="card">
+          <div class="label">PBO Logit Diagnostics</div>
+          <div class="value">mean 1.975 · median 2.177</div>
+          <div class="muted">Lower is healthier; >0 implies OOS rank below median.</div>
+        </div>
+        <div class="card">
+          <div class="label">Model Confidence Score (Proxy)</div>
+          <div class="value">75 / 100</div>
+          <div class="muted">Composite of the four certification gates (fold/boot/deflated/controls).</div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>Return Curve (Top Candidate)</h2>
+      <svg viewBox="0 0 560 160" width="100%" height="160" preserveAspectRatio="none"><polyline points="0.0,148.7 4.7,150.9 9.3,151.3 14.0,151.8 18.7,150.9 23.3,150.6 28.0,152.2 32.7,152.2 37.3,152.2 42.0,152.2 46.7,152.2 51.3,159.2 56.0,158.2 60.7,158.9 65.3,160.0 70.0,159.5 74.7,157.1 79.3,156.7 84.0,156.4 88.7,155.9 93.3,155.8 98.0,155.9 102.7,155.5 107.3,155.1 112.0,154.9 116.7,154.7 121.3,155.0 126.0,153.5 130.7,153.3 135.3,154.6 140.0,154.9 144.7,153.8 149.3,154.1 154.0,153.5 158.7,153.4 163.3,153.1 168.0,152.2 172.7,152.7 177.3,152.9 182.0,152.5 186.7,152.1 191.3,152.5 196.0,153.2 200.7,154.2 205.3,155.6 210.0,156.5 214.7,156.0 219.3,155.6 224.0,155.4 228.7,154.3 233.3,153.4 238.0,153.5 242.7,153.6 247.3,155.3 252.0,154.1 256.7,153.7 261.3,153.5 266.0,153.3 270.7,153.3 275.3,152.8 280.0,152.4 284.7,151.2 289.3,151.3 294.0,151.2 298.7,150.6 303.3,150.4 308.0,151.3 312.7,150.0 317.3,150.2 322.0,149.7 326.7,148.8 331.3,148.1 336.0,147.8 340.7,148.5 345.3,147.1 350.0,146.3 354.7,146.0 359.3,145.1 364.0,145.0 368.7,145.1 373.3,144.7 378.0,144.5 382.7,144.7 387.3,143.9 392.0,143.8 396.7,141.8 401.3,139.9 406.0,138.5 410.7,138.9 415.3,138.2 420.0,139.7 424.7,138.1 429.3,141.3 434.0,142.0 438.7,140.4 443.3,139.8 448.0,141.6 452.7,142.6 457.3,142.3 462.0,142.9 466.7,142.3 471.3,141.8 476.0,142.1 480.7,141.1 485.3,141.3 490.0,141.5 494.7,141.8 499.3,141.5 504.0,140.3 508.7,140.4 513.3,139.3 518.0,139.0 522.7,137.6 527.3,136.3 532.0,136.9 536.7,137.5 541.3,137.5 546.0,136.4 550.7,135.8 555.3,136.8 560.0,137.0" fill="none" stroke="#9a8c6a" stroke-width="2" stroke-dasharray="4 4" /><polyline points="0.0,148.7 4.7,148.7 9.3,148.7 14.0,148.7 18.7,148.7 23.3,148.7 28.0,148.7 32.7,148.7 37.3,148.7 42.0,148.7 46.7,148.7 51.3,148.7 56.0,148.7 60.7,148.7 65.3,148.7 70.0,148.7 74.7,148.7 79.3,148.7 84.0,148.7 88.7,148.9 93.3,148.7 98.0,147.2 102.7,145.5 107.3,144.4 112.0,143.9 116.7,144.6 121.3,143.6 126.0,138.9 130.7,137.7 135.3,140.7 140.0,143.4 144.7,143.5 149.3,143.8 154.0,139.3 158.7,136.3 163.3,135.7 168.0,131.4 172.7,131.6 177.3,130.5 182.0,128.2 186.7,126.3 191.3,125.6 196.0,128.0 200.7,128.2 205.3,128.2 210.0,128.2 214.7,128.2 219.3,128.2 224.0,128.2 228.7,128.2 233.3,126.4 238.0,125.4 242.7,137.5 247.3,137.4 252.0,137.6 256.7,138.1 261.3,136.3 266.0,136.3 270.7,133.0 275.3,130.8 280.0,128.6 284.7,125.6 289.3,122.4 294.0,134.2 298.7,134.4 303.3,130.1 308.0,132.0 312.7,126.0 317.3,127.8 322.0,118.2 326.7,114.0 331.3,113.5 336.0,110.7 340.7,107.4 345.3,101.9 350.0,100.4 354.7,101.5 359.3,94.2 364.0,94.1 368.7,99.2 373.3,97.9 378.0,99.4 382.7,89.7 387.3,88.6 392.0,81.7 396.7,80.4 401.3,56.4 406.0,44.8 410.7,42.6 415.3,34.4 420.0,33.9 424.7,28.5 429.3,30.7 434.0,31.5 438.7,31.5 443.3,31.5 448.0,31.5 452.7,31.5 457.3,31.5 462.0,31.5 466.7,31.5 471.3,31.5 476.0,31.5 480.7,31.5 485.3,26.3 490.0,21.1 494.7,30.4 499.3,37.6 504.0,30.2 508.7,18.9 513.3,0.0 518.0,9.1 522.7,54.9 527.3,60.5 532.0,62.0 536.7,62.0 541.3,63.0 546.0,58.9 550.7,55.3 555.3,65.9 560.0,64.2" fill="none" stroke="#b06b1d" stroke-width="2.5" /></svg>
+      <p class="muted" style="margin-top:10px;">Gold line = candidate; dashed = primary benchmark if available.</p>
+    </section>
+    <section>
+      <h2>Return Curves (Top Candidates by Profile)</h2>
+      <div class="grid">
+        <div class="card">
+          <div class="label">Quick</div>
+          <svg viewBox="0 0 560 160" width="100%" height="160" preserveAspectRatio="none"><polyline points="0.0,148.7 4.7,150.9 9.3,151.3 14.0,151.8 18.7,150.9 23.3,150.6 28.0,152.2 32.7,152.2 37.3,152.2 42.0,152.2 46.7,152.2 51.3,159.2 56.0,158.2 60.7,158.9 65.3,160.0 70.0,159.5 74.7,157.1 79.3,156.7 84.0,156.4 88.7,155.9 93.3,155.8 98.0,155.9 102.7,155.5 107.3,155.1 112.0,154.9 116.7,154.7 121.3,155.0 126.0,153.5 130.7,153.3 135.3,154.6 140.0,154.9 144.7,153.8 149.3,154.1 154.0,153.5 158.7,153.4 163.3,153.1 168.0,152.2 172.7,152.7 177.3,152.9 182.0,152.5 186.7,152.1 191.3,152.5 196.0,153.2 200.7,154.2 205.3,155.6 210.0,156.5 214.7,156.0 219.3,155.6 224.0,155.4 228.7,154.3 233.3,153.4 238.0,153.5 242.7,153.6 247.3,155.3 252.0,154.1 256.7,153.7 261.3,153.5 266.0,153.3 270.7,153.3 275.3,152.8 280.0,152.4 284.7,151.2 289.3,151.3 294.0,151.2 298.7,150.6 303.3,150.4 308.0,151.3 312.7,150.0 317.3,150.2 322.0,149.7 326.7,148.8 331.3,148.1 336.0,147.8 340.7,148.5 345.3,147.1 350.0,146.3 354.7,146.0 359.3,145.1 364.0,145.0 368.7,145.1 373.3,144.7 378.0,144.5 382.7,144.7 387.3,143.9 392.0,143.8 396.7,141.8 401.3,139.9 406.0,138.5 410.7,138.9 415.3,138.2 420.0,139.7 424.7,138.1 429.3,141.3 434.0,142.0 438.7,140.4 443.3,139.8 448.0,141.6 452.7,142.6 457.3,142.3 462.0,142.9 466.7,142.3 471.3,141.8 476.0,142.1 480.7,141.1 485.3,141.3 490.0,141.5 494.7,141.8 499.3,141.5 504.0,140.3 508.7,140.4 513.3,139.3 518.0,139.0 522.7,137.6 527.3,136.3 532.0,136.9 536.7,137.5 541.3,137.5 546.0,136.4 550.7,135.8 555.3,136.8 560.0,137.0" fill="none" stroke="#9a8c6a" stroke-width="2" stroke-dasharray="4 4" /><polyline points="0.0,148.7 4.7,148.7 9.3,148.7 14.0,148.7 18.7,148.7 23.3,148.7 28.0,148.7 32.7,148.7 37.3,148.7 42.0,148.7 46.7,148.7 51.3,148.7 56.0,148.7 60.7,148.7 65.3,148.7 70.0,148.7 74.7,148.7 79.3,148.7 84.0,148.7 88.7,148.9 93.3,148.7 98.0,147.2 102.7,145.5 107.3,144.4 112.0,143.9 116.7,144.6 121.3,143.6 126.0,138.9 130.7,137.7 135.3,140.7 140.0,143.4 144.7,143.5 149.3,143.8 154.0,139.3 158.7,136.3 163.3,135.7 168.0,131.4 172.7,131.6 177.3,130.5 182.0,128.2 186.7,126.3 191.3,125.6 196.0,128.0 200.7,128.2 205.3,128.2 210.0,128.2 214.7,128.2 219.3,128.2 224.0,128.2 228.7,128.2 233.3,126.4 238.0,125.4 242.7,137.5 247.3,137.4 252.0,137.6 256.7,138.1 261.3,136.3 266.0,136.3 270.7,133.0 275.3,130.8 280.0,128.6 284.7,125.6 289.3,122.4 294.0,134.2 298.7,134.4 303.3,130.1 308.0,132.0 312.7,126.0 317.3,127.8 322.0,118.2 326.7,114.0 331.3,113.5 336.0,110.7 340.7,107.4 345.3,101.9 350.0,100.4 354.7,101.5 359.3,94.2 364.0,94.1 368.7,99.2 373.3,97.9 378.0,99.4 382.7,89.7 387.3,88.6 392.0,81.7 396.7,80.4 401.3,56.4 406.0,44.8 410.7,42.6 415.3,34.4 420.0,33.9 424.7,28.5 429.3,30.7 434.0,31.5 438.7,31.5 443.3,31.5 448.0,31.5 452.7,31.5 457.3,31.5 462.0,31.5 466.7,31.5 471.3,31.5 476.0,31.5 480.7,31.5 485.3,26.3 490.0,21.1 494.7,30.4 499.3,37.6 504.0,30.2 508.7,18.9 513.3,0.0 518.0,9.1 522.7,54.9 527.3,60.5 532.0,62.0 536.7,62.0 541.3,63.0 546.0,58.9 550.7,55.3 555.3,65.9 560.0,64.2" fill="none" stroke="#b06b1d" stroke-width="2.5" /></svg>
+        </div>
+        <div class="card">
+          <div class="label">Mega</div>
+          <svg viewBox="0 0 560 160" width="100%" height="160" preserveAspectRatio="none"><polyline points="0.0,148.7 4.7,150.9 9.3,151.3 14.0,151.8 18.7,150.9 23.3,150.6 28.0,152.2 32.7,152.2 37.3,152.2 42.0,152.2 46.7,152.2 51.3,159.2 56.0,158.2 60.7,158.9 65.3,160.0 70.0,159.5 74.7,157.1 79.3,156.7 84.0,156.4 88.7,155.9 93.3,155.8 98.0,155.9 102.7,155.5 107.3,155.1 112.0,154.9 116.7,154.7 121.3,155.0 126.0,153.5 130.7,153.3 135.3,154.6 140.0,154.9 144.7,153.8 149.3,154.1 154.0,153.5 158.7,153.4 163.3,153.1 168.0,152.2 172.7,152.7 177.3,152.9 182.0,152.5 186.7,152.1 191.3,152.5 196.0,153.2 200.7,154.2 205.3,155.6 210.0,156.5 214.7,156.0 219.3,155.6 224.0,155.4 228.7,154.3 233.3,153.4 238.0,153.5 242.7,153.6 247.3,155.3 252.0,154.1 256.7,153.7 261.3,153.5 266.0,153.3 270.7,153.3 275.3,152.8 280.0,152.4 284.7,151.2 289.3,151.3 294.0,151.2 298.7,150.6 303.3,150.4 308.0,151.3 312.7,150.0 317.3,150.2 322.0,149.7 326.7,148.8 331.3,148.1 336.0,147.8 340.7,148.5 345.3,147.1 350.0,146.3 354.7,146.0 359.3,145.1 364.0,145.0 368.7,145.1 373.3,144.7 378.0,144.5 382.7,144.7 387.3,143.9 392.0,143.8 396.7,141.8 401.3,139.9 406.0,138.5 410.7,138.9 415.3,138.2 420.0,139.7 424.7,138.1 429.3,141.3 434.0,142.0 438.7,140.4 443.3,139.8 448.0,141.6 452.7,142.6 457.3,142.3 462.0,142.9 466.7,142.3 471.3,141.8 476.0,142.1 480.7,141.1 485.3,141.3 490.0,141.5 494.7,141.8 499.3,141.5 504.0,140.3 508.7,140.4 513.3,139.3 518.0,139.0 522.7,137.6 527.3,136.3 532.0,136.9 536.7,137.5 541.3,137.5 546.0,136.4 550.7,135.8 555.3,136.8 560.0,137.0" fill="none" stroke="#9a8c6a" stroke-width="2" stroke-dasharray="4 4" /><polyline points="0.0,148.7 4.7,148.7 9.3,148.7 14.0,148.7 18.7,148.7 23.3,148.7 28.0,148.7 32.7,148.7 37.3,148.7 42.0,148.7 46.7,148.7 51.3,148.7 56.0,148.7 60.7,148.7 65.3,148.7 70.0,148.7 74.7,148.7 79.3,148.7 84.0,148.7 88.7,148.9 93.3,148.7 98.0,147.2 102.7,145.5 107.3,144.4 112.0,143.9 116.7,144.6 121.3,143.6 126.0,138.9 130.7,137.7 135.3,140.7 140.0,143.4 144.7,143.5 149.3,143.8 154.0,139.3 158.7,136.3 163.3,135.7 168.0,131.4 172.7,131.6 177.3,130.5 182.0,128.2 186.7,126.3 191.3,125.6 196.0,128.0 200.7,128.2 205.3,128.2 210.0,128.2 214.7,128.2 219.3,128.2 224.0,128.2 228.7,128.2 233.3,126.4 238.0,125.4 242.7,137.5 247.3,137.4 252.0,137.6 256.7,138.1 261.3,136.3 266.0,136.3 270.7,133.0 275.3,130.8 280.0,128.6 284.7,125.6 289.3,122.4 294.0,134.2 298.7,134.4 303.3,130.1 308.0,132.0 312.7,126.0 317.3,127.8 322.0,118.2 326.7,114.0 331.3,113.5 336.0,110.7 340.7,107.4 345.3,101.9 350.0,100.4 354.7,101.5 359.3,94.2 364.0,94.1 368.7,99.2 373.3,97.9 378.0,99.4 382.7,89.7 387.3,88.6 392.0,81.7 396.7,80.4 401.3,56.4 406.0,44.8 410.7,42.6 415.3,34.4 420.0,33.9 424.7,28.5 429.3,30.7 434.0,31.5 438.7,31.5 443.3,31.5 448.0,31.5 452.7,31.5 457.3,31.5 462.0,31.5 466.7,31.5 471.3,31.5 476.0,31.5 480.7,31.5 485.3,26.3 490.0,21.1 494.7,30.4 499.3,37.6 504.0,30.2 508.7,18.9 513.3,0.0 518.0,9.1 522.7,54.9 527.3,60.5 532.0,62.0 536.7,62.0 541.3,63.0 546.0,58.9 550.7,55.3 555.3,65.9 560.0,64.2" fill="none" stroke="#b06b1d" stroke-width="2.5" /></svg>
+        </div>
+        <div class="card">
+          <div class="label">Certification</div>
+          <svg viewBox="0 0 560 160" width="100%" height="160" preserveAspectRatio="none"><polyline points="0.0,148.7 4.7,150.9 9.3,151.3 14.0,151.8 18.7,150.9 23.3,150.6 28.0,152.2 32.7,152.2 37.3,152.2 42.0,152.2 46.7,152.2 51.3,159.2 56.0,158.2 60.7,158.9 65.3,160.0 70.0,159.5 74.7,157.1 79.3,156.7 84.0,156.4 88.7,155.9 93.3,155.8 98.0,155.9 102.7,155.5 107.3,155.1 112.0,154.9 116.7,154.7 121.3,155.0 126.0,153.5 130.7,153.3 135.3,154.6 140.0,154.9 144.7,153.8 149.3,154.1 154.0,153.5 158.7,153.4 163.3,153.1 168.0,152.2 172.7,152.7 177.3,152.9 182.0,152.5 186.7,152.1 191.3,152.5 196.0,153.2 200.7,154.2 205.3,155.6 210.0,156.5 214.7,156.0 219.3,155.6 224.0,155.4 228.7,154.3 233.3,153.4 238.0,153.5 242.7,153.6 247.3,155.3 252.0,154.1 256.7,153.7 261.3,153.5 266.0,153.3 270.7,153.3 275.3,152.8 280.0,152.4 284.7,151.2 289.3,151.3 294.0,151.2 298.7,150.6 303.3,150.4 308.0,151.3 312.7,150.0 317.3,150.2 322.0,149.7 326.7,148.8 331.3,148.1 336.0,147.8 340.7,148.5 345.3,147.1 350.0,146.3 354.7,146.0 359.3,145.1 364.0,145.0 368.7,145.1 373.3,144.7 378.0,144.5 382.7,144.7 387.3,143.9 392.0,143.8 396.7,141.8 401.3,139.9 406.0,138.5 410.7,138.9 415.3,138.2 420.0,139.7 424.7,138.1 429.3,141.3 434.0,142.0 438.7,140.4 443.3,139.8 448.0,141.6 452.7,142.6 457.3,142.3 462.0,142.9 466.7,142.3 471.3,141.8 476.0,142.1 480.7,141.1 485.3,141.3 490.0,141.5 494.7,141.8 499.3,141.5 504.0,140.3 508.7,140.4 513.3,139.3 518.0,139.0 522.7,137.6 527.3,136.3 532.0,136.9 536.7,137.5 541.3,137.5 546.0,136.4 550.7,135.8 555.3,136.8 560.0,137.0" fill="none" stroke="#9a8c6a" stroke-width="2" stroke-dasharray="4 4" /><polyline points="0.0,148.7 4.7,148.7 9.3,148.7 14.0,148.7 18.7,148.7 23.3,148.7 28.0,148.7 32.7,148.7 37.3,148.7 42.0,148.7 46.7,148.7 51.3,148.7 56.0,148.7 60.7,148.7 65.3,148.7 70.0,148.7 74.7,148.7 79.3,148.7 84.0,148.7 88.7,148.9 93.3,148.7 98.0,147.2 102.7,145.5 107.3,144.4 112.0,143.9 116.7,144.6 121.3,143.6 126.0,138.9 130.7,137.7 135.3,140.7 140.0,143.4 144.7,143.5 149.3,143.8 154.0,139.3 158.7,136.3 163.3,135.7 168.0,131.4 172.7,131.6 177.3,130.5 182.0,128.2 186.7,126.3 191.3,125.6 196.0,128.0 200.7,128.2 205.3,128.2 210.0,128.2 214.7,128.2 219.3,128.2 224.0,128.2 228.7,128.2 233.3,126.4 238.0,125.4 242.7,137.5 247.3,137.4 252.0,137.6 256.7,138.1 261.3,136.3 266.0,136.3 270.7,133.0 275.3,130.8 280.0,128.6 284.7,125.6 289.3,122.4 294.0,134.2 298.7,134.4 303.3,130.1 308.0,132.0 312.7,126.0 317.3,127.8 322.0,118.2 326.7,114.0 331.3,113.5 336.0,110.7 340.7,107.4 345.3,101.9 350.0,100.4 354.7,101.5 359.3,94.2 364.0,94.1 368.7,99.2 373.3,97.9 378.0,99.4 382.7,89.7 387.3,88.6 392.0,81.7 396.7,80.4 401.3,56.4 406.0,44.8 410.7,42.6 415.3,34.4 420.0,33.9 424.7,28.5 429.3,30.7 434.0,31.5 438.7,31.5 443.3,31.5 448.0,31.5 452.7,31.5 457.3,31.5 462.0,31.5 466.7,31.5 471.3,31.5 476.0,31.5 480.7,31.5 485.3,26.3 490.0,21.1 494.7,30.4 499.3,37.6 504.0,30.2 508.7,18.9 513.3,0.0 518.0,9.1 522.7,54.9 527.3,60.5 532.0,62.0 536.7,62.0 541.3,63.0 546.0,58.9 550.7,55.3 555.3,65.9 560.0,64.2" fill="none" stroke="#b06b1d" stroke-width="2.5" /></svg>
+        </div>
+      </div>
+      <p class="muted" style="margin-top:10px;">Each curve shows the top-ranked candidate for that profile.</p>
+    </section>
+    <section>
+      <h2>Fold Diagnostics (Top Candidate)</h2>
+      <table>
+        <thead>
+          <tr><th>Fold</th><th>Sharpe</th><th>Max Drawdown</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>fold_1</td><td>1.351</td><td>0.010</td></tr>
+<tr><td>fold_2</td><td>1.132</td><td>0.180</td></tr>
+<tr><td>fold_3</td><td>0.663</td><td>0.275</td></tr>
+<tr><td>fold_4</td><td>1.917</td><td>0.068</td></tr>
+<tr><td>fold_5</td><td>-0.371</td><td>0.385</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section>
+      <h2>Profile Comparison (Top Candidate)</h2>
+      <table>
+        <thead>
+          <tr><th>Profile</th><th>Candidate</th><th>Params</th><th>Median Sharpe</th><th>Total Return</th><th>Max Drawdown</th><th>PBO</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Quick</td><td>l12_s1_n5_strat=trend_filter_minhold3</td><td>L=12 / skip=1 / top_n=5 / strat=trend_filter_minhold3 / min_hold=3, trend_ma=10</td><td>1.132</td><td>3.716</td><td>0.385</td><td>14.7%</td></tr>
+<tr><td>Mega</td><td>l12_s1_n5_strat=trend_filter_minhold3</td><td>L=12 / skip=1 / top_n=5 / strat=trend_filter_minhold3 / min_hold=3, trend_ma=10</td><td>1.132</td><td>3.716</td><td>0.385</td><td>14.7%</td></tr>
+<tr><td>Certification</td><td>l12_s1_n5_strat=trend_filter_minhold3</td><td>L=12 / skip=1 / top_n=5 / strat=trend_filter_minhold3 / min_hold=3, trend_ma=10</td><td>1.132</td><td>3.716</td><td>0.385</td><td>14.7%</td></tr>
+        </tbody>
+      </table>
+      <p class="muted" style="margin-top:10px;">Use this to compare how the top candidate shifts across quick/mega/certification profiles.</p>
+    </section>
+    <section>
+      <h2>Top Candidates (Certification)</h2>
+      <table>
+        <thead>
+          <tr><th>Candidate</th><th>Params</th><th>Median Sharpe</th><th>Fold Passes</th><th>Bootstrap</th><th>Deflated</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>l12_s1_n5_strat=trend_filter_minhold3</td><td>L=12 / skip=1 / top_n=5 / strat=trend_filter_minhold3 / min_hold=3, trend_ma=10</td><td>1.132</td><td>4</td><td>yes</td><td>no</td></tr>
+<tr><td>l12_s1_n5_strat=trend_filter_minhold3_ma12</td><td>L=12 / skip=1 / top_n=5 / strat=trend_filter_minhold3_ma12 / min_hold=3, trend_ma=12</td><td>1.132</td><td>4</td><td>yes</td><td>no</td></tr>
+<tr><td>l12_s1_n5_strat=trend_filter_ma11</td><td>L=12 / skip=1 / top_n=5 / strat=trend_filter_ma11 / trend_ma=11</td><td>1.087</td><td>4</td><td>yes</td><td>no</td></tr>
+<tr><td>l12_s1_n5_strat=trend_filter</td><td>L=12 / skip=1 / top_n=5 / strat=trend_filter / trend_ma=10</td><td>1.087</td><td>4</td><td>yes</td><td>no</td></tr>
+<tr><td>l12_s1_n5_strat=trend_filter_ma9</td><td>L=12 / skip=1 / top_n=5 / strat=trend_filter_ma9 / trend_ma=9</td><td>1.087</td><td>4</td><td>yes</td><td>no</td></tr>
+        </tbody>
+      </table>
+      <p class="muted" style="margin-top:10px;">Use this to compare stability across neighbors and see which gates block progress.</p>
+    </section>
+  </main>
+</body>
+</html>

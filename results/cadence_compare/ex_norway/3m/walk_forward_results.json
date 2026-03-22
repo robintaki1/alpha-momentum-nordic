@@ -1,0 +1,17 @@
+{
+  "cadence_id": "3m",
+  "cadence_label": "Quarterly",
+  "canonical_offset_id": 0,
+  "rebalance_logic": "legacy_entries_exits",
+  "rebalance_logic_label": "Legacy Entry/Exit Only",
+  "schedule_type": "quarter_end",
+  "status": "blocked_by_missing_selection",
+  "thesis": {
+    "excluded_countries": [
+      "NO"
+    ],
+    "label": "Ex-Norway (Sweden and Denmark only)",
+    "name": "ex_norway",
+    "scope_note": "This is a separate thesis that removes Norway from the corrected baseline while keeping the same simple price-momentum implementation, costs, and gates."
+  }
+}

@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Alpha Momentum Legacy Monthly Monitor</title>
+  <style>
+    :root {
+      --ink:#17211a; --muted:#5d685f; --paper:#f6f1e7; --card:rgba(255,250,241,.92);
+      --line:rgba(23,33,26,.12); --accent:#1d5b45; --good:#2b603a; --warn:#8d5a18;
+      --good-soft:#d7e9d9; --warn-soft:#f3e0bc; --muted-soft:rgba(255,255,255,.6);
+      --shadow:0 18px 50px rgba(33,41,36,.08);
+    }
+    * { box-sizing:border-box; }
+    body {
+      margin:0; color:var(--ink); font-family:"Palatino Linotype", Georgia, serif;
+      background:
+        radial-gradient(circle at top left, rgba(29,91,69,.10), transparent 34%),
+        radial-gradient(circle at top right, rgba(141,90,24,.10), transparent 28%),
+        linear-gradient(180deg, #fbf8f2 0%, var(--paper) 100%);
+    }
+    main { max-width:1360px; margin:0 auto; padding:28px 20px 48px; }
+    .hero, .section, .card { border:1px solid var(--line); border-radius:26px; background:var(--card); box-shadow:var(--shadow); }
+    .hero, .section { padding:28px; }
+    .section { margin-top:20px; }
+    .hero-grid, .grid { display:grid; gap:18px; }
+    .hero-grid { grid-template-columns:minmax(0,1.3fr) minmax(320px,.9fr); }
+    .grid { grid-template-columns:repeat(auto-fit,minmax(420px,1fr)); }
+    h1 { margin:12px 0 0; font-size:clamp(2.3rem,4vw,3.8rem); line-height:.95; letter-spacing:-.04em; }
+    h2, h3, p { margin:0; }
+    p { color:var(--muted); line-height:1.6; }
+    .eyebrow, .badge {
+      display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px;
+      font:.78rem Consolas, "Courier New", monospace; letter-spacing:.06em; text-transform:uppercase;
+    }
+    .eyebrow { color:var(--accent); background:rgba(29,91,69,.08); border:1px solid rgba(29,91,69,.14); }
+    .badge.good { background:var(--good-soft); color:var(--good); }
+    .badge.warn { background:var(--warn-soft); color:var(--warn); }
+    .badge.muted { background:var(--muted-soft); color:var(--muted); }
+    .meta, .metrics { display:grid; gap:12px; }
+    .meta { grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); margin-top:18px; }
+    .metrics { grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:16px; }
+    .meta div, .metrics div { padding:14px; border-radius:16px; border:1px solid rgba(23,33,26,.08); background:rgba(255,255,255,.55); }
+    .meta span, .metrics span { display:block; color:var(--muted); font-size:.84rem; }
+    .meta strong, .metrics strong { display:block; margin-top:4px; font-size:1.04rem; }
+    .head { display:flex; justify-content:space-between; gap:12px; align-items:start; margin-bottom:14px; flex-wrap:wrap; }
+    .card { padding:18px; }
+    table { width:100%; border-collapse:collapse; margin-top:14px; font-size:.92rem; }
+    th, td { text-align:left; padding:10px 8px; border-bottom:1px solid rgba(23,33,26,.08); vertical-align:top; }
+    th { color:var(--muted); font:.78rem Consolas, "Courier New", monospace; text-transform:uppercase; letter-spacing:.05em; }
+    .artifact-list { display:grid; gap:10px; }
+    .artifact-list a { text-decoration:none; color:var(--ink); padding:12px 14px; border-radius:16px; border:1px solid rgba(23,33,26,.08); background:rgba(255,255,255,.55); display:flex; justify-content:space-between; }
+    .empty { color:var(--muted); font-style:italic; }
+    @media (max-width:960px) { .hero-grid { grid-template-columns:1fr; } }
+    @media (max-width:780px) { .metrics { grid-template-columns:1fr; } main { padding:18px 14px 38px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow">Legacy Monitor / Reference Package</span>
+          <h1>Alpha Momentum<br>Legacy Monthly Monitor</h1>
+          <p>This view preserves the old monthly candidate definitions for reference. The stricter cadence review is now authoritative, and no active validated lead exists yet.</p>
+          <div class="meta">
+            <div><span>Lead thesis</span><strong>Ex-Norway (Sweden and Denmark only)</strong></div>
+            <div><span>Authoritative verdict</span><strong>No cadence pair currently passes certification plus holdout under `legacy_entry_exit_costs`.</strong></div>
+            <div><span>Monitor start</span><strong>2026-02</strong></div>
+            <div><span>Current pick month</span><strong>2026-03</strong></div>
+            <div><span>Generated</span><strong>2026-03-18T14:30:51.060652+00:00</strong></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="head"><h3>What This Is For</h3><span class="badge warn">Watch</span></div>
+          <p>Use this to inspect the preserved monthly books, their audit trail, and the shadow comparison without treating them as an active paper-trading mandate.</p>
+          <div class="metrics">
+            <div><span>Current overlap</span><strong>5 names</strong></div>
+            <div><span>Share of smaller book</span><strong>62.5%</strong></div>
+            <div><span>Overlap names</span><strong>LUG.ST, LUMI.ST, PAAL-B.CO, SAAB-B.ST, VWS.CO</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="head"><div><h2>Legacy Monthly Picks</h2><p>These are the preserved monthly names formed with the older monthly selection assumptions: Full Nordics, next_open, base FX, and tiered_v1 costs.</p></div><span class="badge good">Ready</span></div>
+      <div class="grid">
+<article class="card">
+  <div class="head">
+    <div>
+      <h3>Ex-Norway (Sweden and Denmark only)</h3>
+      <p>L=12 / skip=1 / top_n=8 / strat=trend_filter / trend_ma=10</p>
+    </div>
+    <span class="badge good">Lead</span>
+  </div>
+  <p>This is a separate thesis that removes Norway from the corrected baseline while keeping the same simple price-momentum implementation, costs, and gates.</p>
+  <div class="metrics">
+    <div><span>Signal month</span><strong>2026-02</strong></div>
+    <div><span>Holding month</span><strong>2026-03</strong></div>
+    <div><span>Eligible names</span><strong>152</strong></div>
+    <div><span>Execution date</span><strong>2026-03-02T00:00:00</strong></div>
+    <div><span>New entries</span><strong>BOL.ST</strong></div>
+    <div><span>Exits vs last realized month</span><strong>BEIA-B.ST</strong></div>
+  </div>
+  <table>
+    <thead>
+      <tr><th>Pos</th><th>Ticker</th><th>Company</th><th>Country</th><th>Action</th><th>Score</th><th>ADV 60d</th><th>ADV use</th><th>1w cost bps</th><th>Data</th></tr>
+    </thead>
+    <tbody><tr><td>1</td><td>SAAB-B</td><td>Saab AB (publ)</td><td>SE</td><td>hold</td><td>1.896</td><td>1,103.6m SEK</td><td>0.0%</td><td>27.8</td><td>fresh</td></tr><tr><td>2</td><td>LUG</td><td>Lundin Gold Inc</td><td>SE</td><td>hold</td><td>1.647</td><td>230.7m SEK</td><td>0.0%</td><td>27.8</td><td>fresh</td></tr><tr><td>3</td><td>LUMI</td><td>Lundin Mining Corporation</td><td>SE</td><td>hold</td><td>1.595</td><td>134.2m SEK</td><td>0.0%</td><td>27.8</td><td>fresh</td></tr><tr><td>4</td><td>PAAL-B</td><td>Per Aarsleff Holding A/S</td><td>DK</td><td>hold</td><td>0.966</td><td>26.9m SEK</td><td>0.1%</td><td>65.2</td><td>fresh</td></tr><tr><td>5</td><td>VWS</td><td>Vestas Wind Systems A/S</td><td>DK</td><td>hold</td><td>0.950</td><td>623.3m SEK</td><td>0.0%</td><td>52.8</td><td>fresh</td></tr><tr><td>6</td><td>BOL</td><td>Boliden AB</td><td>SE</td><td>enter</td><td>0.879</td><td>775.0m SEK</td><td>0.0%</td><td>27.8</td><td>fresh</td></tr><tr><td>7</td><td>JYSK</td><td>Jyske Bank A/S</td><td>DK</td><td>hold</td><td>0.835</td><td>120.5m SEK</td><td>0.0%</td><td>52.8</td><td>fresh</td></tr><tr><td>8</td><td>ISS</td><td>ISS A/S</td><td>DK</td><td>hold</td><td>0.793</td><td>108.8m SEK</td><td>0.0%</td><td>52.8</td><td>fresh</td></tr></tbody>
+  </table>
+</article>
+
+<article class="card">
+  <div class="head">
+    <div>
+      <h3>Baseline (Sweden, Denmark, Norway)</h3>
+      <p>L=12 / skip=1 / top_n=8 / strat=trend_filter / trend_ma=10</p>
+    </div>
+    <span class="badge muted">Shadow</span>
+  </div>
+  <p>The corrected baseline scope now covers Sweden, Denmark, and Norway.</p>
+  <div class="metrics">
+    <div><span>Signal month</span><strong>2026-02</strong></div>
+    <div><span>Holding month</span><strong>2026-03</strong></div>
+    <div><span>Eligible names</span><strong>228</strong></div>
+    <div><span>Execution date</span><strong>2026-03-02T00:00:00</strong></div>
+    <div><span>New entries</span><strong>B2I.OL, HSHP.OL, PAAL-B.CO, VWS.CO</strong></div>
+    <div><span>Exits vs last realized month</span><strong>NORBT.OL, PEXIP.OL, PROT.OL, ZAP.OL</strong></div>
+  </div>
+  <table>
+    <thead>
+      <tr><th>Pos</th><th>Ticker</th><th>Company</th><th>Country</th><th>Action</th><th>Score</th><th>ADV 60d</th><th>ADV use</th><th>1w cost bps</th><th>Data</th></tr>
+    </thead>
+    <tbody><tr><td>1</td><td>SAAB-B</td><td>Saab AB (publ)</td><td>SE</td><td>hold</td><td>1.896</td><td>1,103.6m SEK</td><td>0.0%</td><td>27.8</td><td>fresh</td></tr><tr><td>2</td><td>LUG</td><td>Lundin Gold Inc</td><td>SE</td><td>hold</td><td>1.647</td><td>230.7m SEK</td><td>0.0%</td><td>27.8</td><td>fresh</td></tr><tr><td>3</td><td>LUMI</td><td>Lundin Mining Corporation</td><td>SE</td><td>hold</td><td>1.595</td><td>134.2m SEK</td><td>0.0%</td><td>27.8</td><td>fresh</td></tr><tr><td>4</td><td>B2I</td><td>B2 Impact ASA</td><td>NO</td><td>enter</td><td>1.165</td><td>5.4m SEK</td><td>0.6%</td><td>144.0</td><td>fresh</td></tr><tr><td>5</td><td>KIT</td><td>Kitron ASA</td><td>NO</td><td>hold</td><td>1.139</td><td>48.1m SEK</td><td>0.1%</td><td>65.2</td><td>fresh</td></tr><tr><td>6</td><td>HSHP</td><td>Himalaya Shipping Ltd</td><td>NO</td><td>enter</td><td>1.115</td><td>15.6m SEK</td><td>0.2%</td><td>84.0</td><td>fresh</td></tr><tr><td>7</td><td>PAAL-B</td><td>Per Aarsleff Holding A/S</td><td>DK</td><td>enter</td><td>0.966</td><td>26.9m SEK</td><td>0.1%</td><td>65.2</td><td>fresh</td></tr><tr><td>8</td><td>VWS</td><td>Vestas Wind Systems A/S</td><td>DK</td><td>enter</td><td>0.950</td><td>623.3m SEK</td><td>0.0%</td><td>52.8</td><td>fresh</td></tr></tbody>
+  </table>
+</article>
+</div>
+    </section>
+    <section class="section"><div class="head"><div><h2>Pre-Trade Audit</h2><p>These checks are allowed because they stress the frozen live books without reopening the search space.</p></div><span class="badge warn">Watch</span></div><div class="grid">
+<article class="card">
+  <div class="head">
+    <div>
+      <h3>Ex-Norway (Sweden and Denmark only)</h3>
+      <p>L=12 / skip=1 / top_n=8 / strat=trend_filter / trend_ma=10</p>
+    </div>
+    <span class="badge good">Ready</span>
+  </div>
+  <div class="metrics">
+    <div><span>Top country</span><strong>SE 50.0%</strong></div>
+    <div><span>Max ADV usage</span><strong>0.1%</strong></div>
+    <div><span>Average ADV usage</span><strong>0.0%</strong></div>
+    <div><span>Book avg 1w cost</span><strong>41.8 bps</strong></div>
+    <div><span>Estimated rebalance drag</span><strong>12.4 bps</strong></div>
+    <div><span>Name turnover</span><strong>12.5%</strong></div>
+  </div>
+  <div class="metrics">
+    <div><span>Stale as-of names</span><strong>0</strong></div>
+    <div><span>Missing as-of names</span><strong>0</strong></div>
+    <div><span>Missing ADV names</span><strong>0</strong></div>
+  </div>
+  <ul><li>No immediate pre-trade audit red flags were triggered by the frozen current book.</li></ul>
+</article>
+
+<article class="card">
+  <div class="head">
+    <div>
+      <h3>Baseline (Sweden, Denmark, Norway)</h3>
+      <p>L=12 / skip=1 / top_n=8 / strat=trend_filter / trend_ma=10</p>
+    </div>
+    <span class="badge warn">Watch</span>
+  </div>
+  <div class="metrics">
+    <div><span>Top country</span><strong>SE 37.5%</strong></div>
+    <div><span>Max ADV usage</span><strong>0.6%</strong></div>
+    <div><span>Average ADV usage</span><strong>0.1%</strong></div>
+    <div><span>Book avg 1w cost</span><strong>61.8 bps</strong></div>
+    <div><span>Estimated rebalance drag</span><strong>91.2 bps</strong></div>
+    <div><span>Name turnover</span><strong>50.0%</strong></div>
+  </div>
+  <div class="metrics">
+    <div><span>Stale as-of names</span><strong>0</strong></div>
+    <div><span>Missing as-of names</span><strong>0</strong></div>
+    <div><span>Missing ADV names</span><strong>0</strong></div>
+  </div>
+  <ul><li>Max single-name ADV usage is 0.58% of 60-day median value, which is worth watching.</li><li>This rebalance changes 50.0% of the book by name count.</li></ul>
+</article>
+</div></section>
+    <section class="section"><div class="head"><div><h2>Holdout Breadth And Name Dependence</h2><p>This uses the untouched holdout window, not the tiny live-monitor window, to check whether one or two names drove the preserved monthly result.</p></div><span class="badge warn">Watch</span></div><div class="grid">
+<article class="card">
+  <div class="head">
+    <div>
+      <h3>Ex-Norway (Sweden and Denmark only)</h3>
+      <p>L=12 / skip=1 / top_n=8 / strat=trend_filter / trend_ma=10</p>
+    </div>
+    <span class="badge good">Ready</span>
+  </div>
+  <p>Untouched holdout breadth check for 2018-01 to 2026-01. This asks whether the preserved monthly result stayed broad, not whether we can find a better model.</p>
+  <div class="metrics">
+    <div><span>Unique names held</span><strong>93</strong></div>
+    <div><span>Positive contributors</span><strong>58</strong></div>
+    <div><span>Negative contributors</span><strong>35</strong></div>
+    <div><span>Top name share of positive gains</span><strong>8.3%</strong></div>
+    <div><span>Top 3 share of positive gains</span><strong>23.7%</strong></div>
+    <div><span>Top name share of abs contribution</span><strong>6.8%</strong></div>
+  </div>
+  <div class="metrics">
+    <div><span>Base holdout Sharpe</span><strong>1.106</strong></div>
+    <div><span>Without top name Sharpe</span><strong>1.030</strong></div>
+    <div><span>Sharpe retained</span><strong>93.2%</strong></div>
+    <div><span>Without top 3 Sharpe</span><strong>0.956</strong></div>
+    <div><span>Top 3 Sharpe retained</span><strong>86.4%</strong></div>
+    <div><span>Without top name return</span><strong>553.6%</strong></div>
+  </div>
+  <table>
+    <thead>
+      <tr><th>Ticker</th><th>Company</th><th>Country</th><th>Months held</th><th>Cumulative net contribution</th><th>Share of positive gains</th><th>Share of abs contribution</th></tr>
+    </thead>
+    <tbody><tr><td>CHEMM</td><td>ChemoMetec A/S</td><td>DK</td><td>41</td><td>0.253</td><td>8.3%</td><td>6.8%</td></tr><tr><td>MIPS</td><td>MIPS AB</td><td>SE</td><td>28</td><td>0.233</td><td>7.7%</td><td>6.3%</td></tr><tr><td>SINCH</td><td>Sinch AB</td><td>SE</td><td>26</td><td>0.232</td><td>7.7%</td><td>6.3%</td></tr><tr><td>EVO</td><td>Evolution AB (publ)</td><td>SE</td><td>28</td><td>0.206</td><td>6.8%</td><td>5.6%</td></tr><tr><td>BONEX</td><td>Bonesupport Holding AB</td><td>SE</td><td>29</td><td>0.159</td><td>5.3%</td><td>4.3%</td></tr></tbody>
+  </table>
+  <ul><li>The holdout contribution profile looks reasonably broad for this equal-weight top-N implementation.</li></ul>
+</article>
+
+<article class="card">
+  <div class="head">
+    <div>
+      <h3>Baseline (Sweden, Denmark, Norway)</h3>
+      <p>L=12 / skip=1 / top_n=8 / strat=trend_filter / trend_ma=10</p>
+    </div>
+    <span class="badge good">Ready</span>
+  </div>
+  <p>Untouched holdout breadth check for 2018-01 to 2026-01. This asks whether the preserved monthly result stayed broad, not whether we can find a better model.</p>
+  <div class="metrics">
+    <div><span>Unique names held</span><strong>123</strong></div>
+    <div><span>Positive contributors</span><strong>58</strong></div>
+    <div><span>Negative contributors</span><strong>65</strong></div>
+    <div><span>Top name share of positive gains</span><strong>9.1%</strong></div>
+    <div><span>Top 3 share of positive gains</span><strong>24.4%</strong></div>
+    <div><span>Top name share of abs contribution</span><strong>6.0%</strong></div>
+  </div>
+  <div class="metrics">
+    <div><span>Base holdout Sharpe</span><strong>0.612</strong></div>
+    <div><span>Without top name Sharpe</span><strong>0.541</strong></div>
+    <div><span>Sharpe retained</span><strong>88.4%</strong></div>
+    <div><span>Without top 3 Sharpe</span><strong>0.385</strong></div>
+    <div><span>Top 3 Sharpe retained</span><strong>62.9%</strong></div>
+    <div><span>Without top name return</span><strong>140.9%</strong></div>
+  </div>
+  <table>
+    <thead>
+      <tr><th>Ticker</th><th>Company</th><th>Country</th><th>Months held</th><th>Cumulative net contribution</th><th>Share of positive gains</th><th>Share of abs contribution</th></tr>
+    </thead>
+    <tbody><tr><td>EVO</td><td>Evolution AB (publ)</td><td>SE</td><td>26</td><td>0.251</td><td>9.1%</td><td>6.0%</td></tr><tr><td>SINCH</td><td>Sinch AB</td><td>SE</td><td>23</td><td>0.246</td><td>8.9%</td><td>5.9%</td></tr><tr><td>CHEMM</td><td>ChemoMetec A/S</td><td>DK</td><td>28</td><td>0.175</td><td>6.3%</td><td>4.2%</td></tr><tr><td>AZT</td><td>Arcticzymes Technologies ASA</td><td>NO</td><td>12</td><td>0.168</td><td>6.1%</td><td>4.0%</td></tr><tr><td>LUG</td><td>Lundin Gold Inc</td><td>SE</td><td>20</td><td>0.135</td><td>4.9%</td><td>3.3%</td></tr></tbody>
+  </table>
+  <ul><li>The holdout contribution profile looks reasonably broad for this equal-weight top-N implementation.</li></ul>
+</article>
+</div></section>
+    <section class="section">
+      <div class="head"><div><h2>Recent Realized Monitoring Months</h2><p>These are the realized post-holdout months so far. They are for monitoring drift and overlap, not for reopening the model search.</p></div><span class="badge warn">Watch</span></div>
+      <table>
+        <thead>
+          <tr><th>Holding month</th><th>ex_norway net return</th><th>baseline net return</th><th>Overlap count</th><th>Overlap share</th><th>Overlap names</th></tr>
+        </thead>
+        <tbody><tr><td>2026-02</td><td>0.039</td><td>0.180</td><td>3</td><td>37.5%</td><td>LUG.ST, LUMI.ST, SAAB-B.ST</td></tr><tr><td>2026-03</td><td>-0.301</td><td>-0.309</td><td>5</td><td>62.5%</td><td>LUG.ST, LUMI.ST, PAAL-B.CO, SAAB-B.ST, VWS.CO</td></tr></tbody>
+      </table>
+    </section>
+    <section class="section">
+      <div class="head"><div><h2>Artifacts</h2><p>Use the CSV for spreadsheet tracking, the JSON for downstream automation, and this page for the quick side-by-side read.</p></div></div>
+      <div class="artifact-list">
+        <a href="forward_monitor_summary.json"><span>forward_monitor_summary.json</span><span>Summary payload</span></a>
+        <a href="frozen_strategy_manifest.json"><span>frozen_strategy_manifest.json</span><span>Explicit lead/shadow lockfile</span></a>
+        <a href="forward_monitor_picks.csv"><span>forward_monitor_picks.csv</span><span>Flat picks + history rows</span></a>
+        <a href="holdout_name_dependence.csv"><span>holdout_name_dependence.csv</span><span>Top contributors in untouched holdout</span></a>
+        <a href="project_status.html"><span>project_status.html</span><span>One-page current repo status</span></a>
+        <a href="research_audit_dossier.html"><span>research_audit_dossier.html</span><span>Employer-friendly validation summary</span></a>
+        <a href="../../portfolio/alpha_momentum_validation_package/cadence_compare_summary/dashboard.html"><span>portfolio/alpha_momentum_validation_package/cadence_compare_summary/dashboard.html</span><span>Authoritative cadence verdict</span></a>
+        <a href="../../portfolio/alpha_momentum_validation_package/cadence_compare_summary/cadence_comparison_report.html"><span>portfolio/alpha_momentum_validation_package/cadence_compare_summary/cadence_comparison_report.html</span><span>Written cadence comparison summary</span></a>
+        <a href="../../portfolio/alpha_momentum_validation_package/dashboard.html"><span>portfolio/alpha_momentum_validation_package/dashboard.html</span><span>Dedicated project folder for sharing</span></a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

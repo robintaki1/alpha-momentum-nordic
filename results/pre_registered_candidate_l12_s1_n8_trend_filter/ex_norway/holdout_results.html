@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Holdout Diagnostics</title>
+  <style>
+    body { margin:0; font-family:Georgia, serif; background:#f7f2e7; color:#17211a; }
+    main { max-width:980px; margin:0 auto; padding:28px 20px 48px; }
+    section { background:rgba(255,250,241,.92); border:1px solid rgba(23,33,26,.12); border-radius:24px; padding:24px; box-shadow:0 18px 50px rgba(33,41,36,.08); margin-top:18px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
+    .card { background:#fffdf8; border:1px solid rgba(23,33,26,.12); border-radius:18px; padding:14px; }
+    .label { text-transform:uppercase; letter-spacing:.1em; font-size:.72rem; color:#6c5842; }
+    .value { font-size:1.1rem; margin-top:4px; }
+    a { color:#b06b1d; }
+  </style>
+</head>
+<body>
+  <main>
+    <section>
+      <h1>Holdout Diagnostics</h1>
+      <p>Holdout evaluation for the locked certification candidate (if any).</p>
+      <a href="dashboard.html">Back to thesis dashboard</a>
+    </section>
+    <section>
+      <h2>Holdout Status</h2>
+      <div class="grid">
+        <div class="card"><div class="label">Status</div><div class="value">ok</div></div>
+        <div class="card"><div class="label">Phase 4 Eligible</div><div class="value">True</div></div>
+        <div class="card"><div class="label">Base Holdout Sharpe</div><div class="value">0.820</div></div>
+        <div class="card"><div class="label">Sharpe Gate</div><div class="value">True</div></div>
+      </div>
+    </section>
+    <section>
+      <h2>Holdout Window</h2>
+      <div class="grid">
+        <div class="card"><div class="label">Window</div><div class="value">2018-01 to 2026-01</div></div>
+        <div class="card"><div class="label">Period Label</div><div class="value">months</div></div>
+        <div class="card"><div class="label">Periods per Year</div><div class="value">12</div></div>
+      </div>
+    </section>
+    <section>
+      <h2>Primary Track (Holdout)</h2>
+      <div class="grid">
+        <div class="card"><div class="label">Track</div><div class="value">Full Nordics / next_open / base / cost=tiered_v1</div></div>
+        <div class="card"><div class="label">Net Sharpe</div><div class="value">0.820</div></div>
+        <div class="card"><div class="label">Total Return</div><div class="value">241.6%</div></div>
+        <div class="card"><div class="label">Max Drawdown</div><div class="value">37.6%</div></div>
+        <div class="card"><div class="label">Beats Benchmark</div><div class="value">True</div></div>
+        <div class="card"><div class="label">Benchmark Total Return</div><div class="value">149.3%</div></div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

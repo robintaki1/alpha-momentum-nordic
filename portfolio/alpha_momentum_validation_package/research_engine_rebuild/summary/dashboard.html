@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Alpha Momentum Cadence Compare</title>
+  <style>
+    body { margin:0; font-family:Georgia, serif; background:#f7f2e7; color:#17211a; }
+    main { max-width:1200px; margin:0 auto; padding:28px 20px 48px; }
+    section { background:rgba(255,250,241,.92); border:1px solid rgba(23,33,26,.12); border-radius:24px; padding:24px; box-shadow:0 18px 50px rgba(33,41,36,.08); margin-top:18px; }
+    table { width:100%; border-collapse:collapse; }
+    th, td { padding:10px 8px; border-bottom:1px solid rgba(23,33,26,.08); text-align:left; }
+    th { font: .78rem Consolas, monospace; text-transform:uppercase; letter-spacing:.05em; color:#5d685f; }
+  </style>
+</head>
+  <body>
+  <main>
+    <section>
+      <h1>Rebalance Cadence Comparison</h1>
+      <p>This dashboard re-runs the cadence sweep with the entry/exit-only cost logic for comparison.</p>
+      <p><strong>Rebalance logic:</strong> Legacy Entry/Exit Only</p>
+      <p><strong>Profile set:</strong> default (L=12 / skip=1 / top_n=5, 8, 10, 12, 15, 20 / strat=baseline, banded2, minhold3, vol_weighted, cap_weighted, trend_filter, liquidity_filter)</p>
+      <p><strong>Current research winner: Ex-Norway (Sweden and Denmark only) / Monthly with holdout Sharpe 1.5158505122117925.</strong></p>
+    </section>
+    <section>
+      <h2>Comparison Table</h2>
+      <table>
+        <thead>
+          <tr><th>Thesis</th><th>Cadence</th><th>Certification</th><th>PBO</th><th>Holdout Sharpe</th><th>Phase 4 Eligible</th><th>Artifacts</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Baseline (Sweden, Denmark, Norway)</td><td>Monthly</td><td>selected</td><td>0.123</td><td>1.3079954862365297</td><td>True</td><td><a href="../baseline/1m/dashboard.html">Open pair dashboard</a></td></tr><tr><td>Ex-Norway (Sweden and Denmark only)</td><td>Monthly</td><td>selected</td><td>0.131</td><td>1.5158505122117925</td><td>True</td><td><a href="../ex_norway/1m/dashboard.html">Open pair dashboard</a></td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>

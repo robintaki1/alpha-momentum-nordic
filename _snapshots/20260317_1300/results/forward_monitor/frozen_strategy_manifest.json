@@ -1,0 +1,57 @@
+{
+  "authoritative_active_validated_strategy": true,
+  "authoritative_validation_model": "legacy_entry_exit_costs",
+  "authoritative_verdict": "Selected package winner: Ex-Norway (Sweden and Denmark only) / Monthly with holdout Sharpe 1.153.",
+  "generated_at_utc": "2026-03-17T03:11:28.683031+00:00",
+  "governance": {
+    "legacy_reference_only": false,
+    "notes": [
+      "This manifest freezes the active paper-trading lead/shadow definitions under the authoritative package.",
+      "No parameter, thesis, or universe edits should be made without explicitly starting a new research cycle and replacing this manifest."
+    ],
+    "paper_trading_only": true,
+    "search_reopened": false
+  },
+  "lead_strategy": {
+    "current_pick_month": "2026-03",
+    "current_pick_security_ids": [
+      "SAAB-B.ST",
+      "LUG.ST",
+      "LUMI.ST",
+      "PAAL-B.CO",
+      "VWS.CO"
+    ],
+    "params": {
+      "l": 12,
+      "skip": 1,
+      "top_n": 5
+    },
+    "params_label": "L=12 / skip=1 / top_n=5",
+    "results_dir": "results\\ex_norway",
+    "selection_mode": "certification_baseline",
+    "selection_path": "C:\\Users\\robin\\Desktop\\alpha momentum\\results\\_timing_legacy_cert\\ex_norway\\1m\\selection_summary.json",
+    "thesis_label": "Ex-Norway (Sweden and Denmark only)",
+    "thesis_name": "ex_norway"
+  },
+  "shadow_control": {
+    "current_pick_month": "2026-03",
+    "current_pick_security_ids": [
+      "LUMI.ST",
+      "LUG.ST",
+      "KIT.OL",
+      "HSHP.OL"
+    ],
+    "params": {
+      "l": 12,
+      "skip": 0,
+      "top_n": 4
+    },
+    "params_label": "L=12 / skip=0 / top_n=4",
+    "results_dir": "results",
+    "selection_mode": "mega",
+    "selection_path": "results\\selection_summary.json",
+    "thesis_label": "Baseline (Sweden, Denmark, Norway)",
+    "thesis_name": "baseline"
+  },
+  "status": "paper_trading_active"
+}

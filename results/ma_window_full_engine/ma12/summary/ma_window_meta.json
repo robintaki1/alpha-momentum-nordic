@@ -1,0 +1,13 @@
+{
+  "generated_at": "2026-03-18T16:49:28.682539+00:00",
+  "thesis": "ex_norway",
+  "ma_window": 12,
+  "lookback": 12,
+  "skip": 1,
+  "top_n": 8,
+  "profiles": [
+    "quick",
+    "mega",
+    "certification_baseline"
+  ]
+}

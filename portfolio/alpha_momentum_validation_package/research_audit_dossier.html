@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Research Dossier</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --paper: #f6f0e3;
+      --paper-strong: rgba(255, 251, 244, 0.92);
+      --ink: #16211e;
+      --muted: #53615d;
+      --line: rgba(22, 33, 30, 0.12);
+      --accent: #b06b1d;
+      --shadow: 0 20px 60px rgba(22, 33, 30, 0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(176, 107, 29, 0.16), transparent 32%),
+        linear-gradient(180deg, #fbf6eb 0%, var(--paper) 100%);
+    }
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 40px 24px 56px;
+    }
+    .hero, .section {
+      background: var(--paper-strong);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 32px;
+      box-shadow: var(--shadow);
+    }
+    .section { margin-top: 24px; }
+    .eyebrow {
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 12px;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    h1 { margin-top: 0; font-size: clamp(2rem, 4vw, 3rem); }
+    h2, h3 { margin-top: 24px; }
+    p { color: var(--muted); line-height: 1.6; }
+    ul { margin: 12px 0 18px 18px; color: var(--muted); }
+    li { margin-bottom: 6px; }
+    a { color: var(--accent); }
+    .back {
+      display: inline-block;
+      margin-top: 12px;
+      text-decoration: none;
+      color: var(--accent);
+    }
+    @media (max-width: 720px) {
+      main { padding: 20px 14px 40px; }
+      .hero, .section { padding: 18px; border-radius: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <span class="eyebrow">Package Dashboard</span>
+      <h1>Research Dossier</h1>
+      <p>Employer-facing narrative of what the validation stack does and what the current verdict means.</p>
+      <a class="back" href="dashboard.html">Back to package dashboard</a>
+    </section>
+    <section class="section">
+      <h1>Alpha Momentum Research Dossier</h1>
+<p>Generated: `2026-03-18T14:30:51.060652+00:00`</p>
+<h2>Executive Summary</h2>
+<ul>
+<li>Active validated strategy under selected package model: `no`</li>
+<li>Package model: `entry_exit_costs`</li>
+<li>Current verdict: `No cadence pair currently passes certification plus holdout under `legacy_entry_exit_costs`.`</li>
+<li>Cadence comparison summary available: `yes`</li>
+<li>Current package focus: `validated candidate branch`</li>
+</ul>
+<p>This dossier is intentionally scoped to the package branch you chose to present. It highlights the candidate path that aligns with your preferred execution model and avoids promoting the discarded over-trading branch.</p>
+<h2>What This Project Demonstrates</h2>
+<ul>
+<li>Thesis-scoped research instead of unconstrained parameter fishing</li>
+<li>Fixed-fold validation with untouched holdout discipline</li>
+<li>Bootstrap, deflated-Sharpe, null-control, and CSCV PBO diagnostics</li>
+<li>Separate cadence-comparison research over weekly through semiannual schedules</li>
+<li>Packaging and reporting that make the repo readable for external reviewers</li>
+</ul>
+<h2>Current Operating Reality</h2>
+<ul>
+<li>The package currently presents a validated candidate under the selected entry/exit execution model.</li>
+<li>The discarded cadence transaction-cost model is not the package source of truth.</li>
+<li>The monitoring stack still exists, but the package story is anchored on the selected model rather than the over-trading branch.</li>
+<li>Current monitoring window: `2026-02 -&gt; 2026-03`</li>
+<li>Thesis branches tracked in this package build: `2`</li>
+</ul>
+<h2>Recommended Reading Order</h2>
+<p>1. `PROJECT_STATUS.html`</p>
+<p>2. `cadence_compare_summary/dashboard.html`</p>
+<p>3. `cadence_compare_summary/cadence_comparison_report.html`</p>
+<h2>Remaining Gaps</h2>
+<ul>
+<li>Liquid-subset diagnostics are still suspended because PTI market-cap history is missing.</li>
+<li>A more realistic banded rebalance model is still unimplemented.</li>
+<li>The next useful work should be a clearly scoped implementation branch, not silent parameter drift.</li>
+</ul>
+<h2>Artifact Index</h2>
+<ul>
+<li>`PROJECT_STATUS.html`: current plain-English repo status</li>
+<li>`cadence_compare_summary/dashboard.html`: authoritative current-state dashboard</li>
+<li>`cadence_compare_summary/cadence_comparison_report.html`: written verdict summary</li>
+</ul>
+<h2>Employer-Facing Interpretation</h2>
+<p>This project demonstrates a serious validation workflow: scoped hypotheses, fixed folds, robust diagnostics, untouched holdout evaluation, cadence-sensitive re-testing, and a shareable reporting layer. Under the selected entry/exit execution model, the repo retains a validated candidate, while the discarded transaction-cost branch remains an internal contrast point.</p>
+    </section>
+  </main>
+</body>
+</html>

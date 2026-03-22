@@ -1,0 +1,261 @@
+{
+  "holdout_window": {
+    "end": "2026-01",
+    "start": "2018-01"
+  },
+  "period_label": "months",
+  "periods_per_year": 12,
+  "phase4_gate": {
+    "base_main_net_sharpe": 1.4925615438077,
+    "beats_primary_benchmark": true,
+    "meets_sharpe_gate": true,
+    "phase4_eligible": true
+  },
+  "results": {
+    "Full Nordics": {
+      "next_close": {
+        "base": {
+          "beats_primary_benchmark": true,
+          "max_drawdown": 0.2624361589555322,
+          "months": 97,
+          "net_sharpe": 1.518157836658794,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411182,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 9.764255720786455
+        },
+        "high": {
+          "beats_primary_benchmark": true,
+          "max_drawdown": 0.2627375574253158,
+          "months": 97,
+          "net_sharpe": 1.4967227705415818,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411182,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 9.380858601975154
+        },
+        "low": {
+          "beats_primary_benchmark": true,
+          "max_drawdown": 0.26225531987366213,
+          "months": 97,
+          "net_sharpe": 1.5309765654397578,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411182,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 10.000898120333442
+        }
+      },
+      "next_open": {
+        "base": {
+          "beats_primary_benchmark": true,
+          "max_drawdown": 0.256832652077708,
+          "months": 97,
+          "net_sharpe": 1.4925615438077,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411182,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 9.060356833391292
+        },
+        "high": {
+          "beats_primary_benchmark": true,
+          "max_drawdown": 0.2571400869511311,
+          "months": 97,
+          "net_sharpe": 1.470792810419791,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411182,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 8.701545741838308
+        },
+        "low": {
+          "beats_primary_benchmark": true,
+          "max_drawdown": 0.2566481911536541,
+          "months": 97,
+          "net_sharpe": 1.50558127899996,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411182,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 9.281832905188564
+        }
+      }
+    },
+    "SE-only": {
+      "next_close": {
+        "base": {
+          "beats_primary_benchmark": true,
+          "max_drawdown": 0.23667274647141523,
+          "months": 97,
+          "net_sharpe": 1.4397396153705084,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411182,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 7.65517123981455
+        },
+        "high": {
+          "beats_primary_benchmark": true,
+          "max_drawdown": 0.23667274647141523,
+          "months": 97,
+          "net_sharpe": 1.4397396153705084,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411182,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 7.65517123981455
+        },
+        "low": {
+          "beats_primary_benchmark": true,
+          "max_drawdown": 0.23667274647141523,
+          "months": 97,
+          "net_sharpe": 1.4397396153705084,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411182,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 7.65517123981455
+        }
+      },
+      "next_open": {
+        "base": {
+          "beats_primary_benchmark": true,
+          "max_drawdown": 0.24627239888837482,
+          "months": 97,
+          "net_sharpe": 1.4329118817514224,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411182,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 7.594449219779731
+        },
+        "high": {
+          "beats_primary_benchmark": true,
+          "max_drawdown": 0.24627239888837482,
+          "months": 97,
+          "net_sharpe": 1.4329118817514224,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411182,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 7.594449219779731
+        },
+        "low": {
+          "beats_primary_benchmark": true,
+          "max_drawdown": 0.24627239888837482,
+          "months": 97,
+          "net_sharpe": 1.4329118817514224,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411182,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 7.594449219779731
+        }
+      }
+    },
+    "largest-third-by-market-cap": {
+      "next_close": {
+        "base": {
+          "beats_primary_benchmark": false,
+          "max_drawdown": 0.0,
+          "months": 97,
+          "net_sharpe": 0.0,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411182,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 0.0
+        },
+        "high": {
+          "beats_primary_benchmark": false,
+          "max_drawdown": 0.0,
+          "months": 97,
+          "net_sharpe": 0.0,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411182,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 0.0
+        },
+        "low": {
+          "beats_primary_benchmark": false,
+          "max_drawdown": 0.0,
+          "months": 97,
+          "net_sharpe": 0.0,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411182,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 0.0
+        }
+      },
+      "next_open": {
+        "base": {
+          "beats_primary_benchmark": false,
+          "max_drawdown": 0.0,
+          "months": 97,
+          "net_sharpe": 0.0,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411182,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 0.0
+        },
+        "high": {
+          "beats_primary_benchmark": false,
+          "max_drawdown": 0.0,
+          "months": 97,
+          "net_sharpe": 0.0,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411182,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 0.0
+        },
+        "low": {
+          "beats_primary_benchmark": false,
+          "max_drawdown": 0.0,
+          "months": 97,
+          "net_sharpe": 0.0,
+          "period_count": 97,
+          "period_label": "months",
+          "periods_per_year": 12,
+          "primary_benchmark_total_return": 1.4932903918411182,
+          "secondary_benchmark_total_return": 1.5497952536967756,
+          "total_return": 0.0
+        }
+      }
+    }
+  },
+  "selected_params": {
+    "l": 12,
+    "ma_window": 7,
+    "rebalance": "full",
+    "skip": 1,
+    "strategy_id": "trend_filter_ma7",
+    "top_n": 8,
+    "trend_filter": true,
+    "weighting": "equal"
+  },
+  "status": "ok"
+}

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Current Project Status</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --paper: #f6f0e3;
+      --paper-strong: rgba(255, 251, 244, 0.92);
+      --ink: #16211e;
+      --muted: #53615d;
+      --line: rgba(22, 33, 30, 0.12);
+      --accent: #b06b1d;
+      --shadow: 0 20px 60px rgba(22, 33, 30, 0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(176, 107, 29, 0.16), transparent 32%),
+        linear-gradient(180deg, #fbf6eb 0%, var(--paper) 100%);
+    }
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 40px 24px 56px;
+    }
+    .hero, .section {
+      background: var(--paper-strong);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 32px;
+      box-shadow: var(--shadow);
+    }
+    .section { margin-top: 24px; }
+    .eyebrow {
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 12px;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    h1 { margin-top: 0; font-size: clamp(2rem, 4vw, 3rem); }
+    h2, h3 { margin-top: 24px; }
+    p { color: var(--muted); line-height: 1.6; }
+    ul { margin: 12px 0 18px 18px; color: var(--muted); }
+    li { margin-bottom: 6px; }
+    a { color: var(--accent); }
+    .back {
+      display: inline-block;
+      margin-top: 12px;
+      text-decoration: none;
+      color: var(--accent);
+    }
+    @media (max-width: 720px) {
+      main { padding: 20px 14px 40px; }
+      .hero, .section { padding: 18px; border-radius: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <span class="eyebrow">Package Dashboard</span>
+      <h1>Current Project Status</h1>
+      <p>Plain-English snapshot of what is active, what is blocked, and what the next sensible implementation branch is.</p>
+      <a class="back" href="dashboard.html">Back to package dashboard</a>
+    </section>
+    <section class="section">
+      <h1>Current Project Status</h1>
+<ul>
+<li>Generated: `2026-03-17T03:11:28.683031+00:00`</li>
+<li>Package model: `entry_exit_costs`</li>
+<li>Package verdict: `Selected package winner: Ex-Norway (Sweden and Denmark only) / Monthly with holdout Sharpe 1.153.`</li>
+<li>Active validated strategy exists: `yes`</li>
+<li>Shareable package focus: `validated candidate branch`</li>
+</ul>
+<ul>
+<li>Lead selection source: `C:\Users\robin\Desktop\alpha momentum\results\_timing_legacy_cert\ex_norway\1m\selection_summary.json`</li>
+<li>Shadow selection source: `results\selection_summary.json`</li>
+</ul>
+<h2>What This Means</h2>
+<ul>
+<li>The package currently points to a validated candidate under the selected entry/exit execution model.</li>
+<li>The discarded cadence transaction-cost model is not the source of truth for this package.</li>
+<li>The repo is still strongest as a research and validation system rather than a finished production strategy stack.</li>
+</ul>
+<h2>Best Next Steps</h2>
+<ul>
+<li>Keep the evaluation rules fixed before running another branch.</li>
+<li>Prioritize a scoped implementation branch such as PTI market-cap/liquid-subset support or a realistic rebalance-band model.</li>
+<li>Use the cadence summary as the source of truth for whether a new branch improved the situation.</li>
+</ul>
+<h2>Main Remaining Gaps</h2>
+<ul>
+<li>Liquid-subset diagnostics are still suspended because PTI market-cap history is missing.</li>
+<li>A more realistic banded rebalance model is still unimplemented.</li>
+<li>The package is for research communication, not live deployment.</li>
+</ul>
+    </section>
+  </main>
+</body>
+</html>

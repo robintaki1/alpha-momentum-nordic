@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trend Filter Timeline</title>
+  <style>
+    body { margin:0; font-family:Georgia, serif; background:#f7f2e7; color:#17211a; }
+    main { max-width:1100px; margin:0 auto; padding:28px 20px 48px; }
+    section { background:rgba(255,250,241,.92); border:1px solid rgba(23,33,26,.12); border-radius:24px; padding:24px; box-shadow:0 18px 50px rgba(33,41,36,.08); margin-top:18px; }
+    .legend { display:flex; gap:18px; flex-wrap:wrap; margin-top:10px; font-size:.9rem; color:#5b6762; }
+    .legend-line { display:inline-block; width:32px; height:3px; border-radius:999px; margin-right:6px; vertical-align:middle; }
+    .legend-line.portfolio { background:#b06b1d; }
+    .legend-line.benchmark { background:#9a8c6a; border-top:2px dashed #9a8c6a; height:0; }
+    .legend-box { display:inline-block; width:18px; height:10px; background:#f4d6cc; border-radius:4px; margin-right:6px; vertical-align:middle; }
+    table { width:100%; border-collapse:collapse; margin-top:12px; font-variant-numeric: tabular-nums; }
+    th, td { border-bottom:1px solid rgba(23,33,26,.08); text-align:left; padding:8px; }
+    th { font-size:.75rem; text-transform:uppercase; color:#5d685f; letter-spacing:.05em; }
+    .off { background:#f7ddd3; }
+    .on { background:#dcebdd; }
+  </style>
+</head>
+<body>
+  <main>
+    <section>
+      <h1>Trend Filter Timeline</h1>
+      <p>l12_s1_n8_strat=trend_filter_ma10 - MA=10 - window=validation - on=84 (70.0%) / off=36</p>
+    </section>
+    <section>
+      <h2>Portfolio vs Benchmark</h2>
+      <svg class="return-curve" viewBox="0 0 920 260" width="100%" height="260" preserveAspectRatio="none"><rect x="52.0" y="20.0" width="110.7" height="198.0" fill="#f4d6cc" opacity="0.45" /><rect x="262.7" y="20.0" width="7.1" height="198.0" fill="#f4d6cc" opacity="0.45" /><rect x="348.4" y="20.0" width="50.0" height="198.0" fill="#f4d6cc" opacity="0.45" /><rect x="427.0" y="20.0" width="7.1" height="198.0" fill="#f4d6cc" opacity="0.45" /><rect x="705.6" y="20.0" width="78.6" height="198.0" fill="#f4d6cc" opacity="0.45" /><rect x="52.0" y="20.0" width="850.0" height="198.0" fill="none" stroke="#d9cdbd" stroke-width="1" /><line x1="52.0" y1="20.0" x2="902.0" y2="20.0" stroke="#d3c7b7" stroke-width="1" /><text x="46.0" y="23.0" text-anchor="end" font-size="10" fill="#6c5842">13.36x</text><line x1="52.0" y1="69.5" x2="902.0" y2="69.5" stroke="#d3c7b7" stroke-width="1" /><text x="46.0" y="72.5" text-anchor="end" font-size="10" fill="#6c5842">10.14x</text><line x1="52.0" y1="119.0" x2="902.0" y2="119.0" stroke="#d3c7b7" stroke-width="1" /><text x="46.0" y="122.0" text-anchor="end" font-size="10" fill="#6c5842">6.93x</text><line x1="52.0" y1="168.5" x2="902.0" y2="168.5" stroke="#d3c7b7" stroke-width="1" /><text x="46.0" y="171.5" text-anchor="end" font-size="10" fill="#6c5842">3.72x</text><line x1="52.0" y1="218.0" x2="902.0" y2="218.0" stroke="#d3c7b7" stroke-width="1" /><text x="46.0" y="221.0" text-anchor="end" font-size="10" fill="#6c5842">0.50x</text><polyline points="52.0,211.8 59.1,212.1 66.3,212.4 73.4,211.9 80.6,212.5 87.7,217.5 94.9,217.5 102.0,217.5 109.1,217.5 116.3,217.5 123.4,217.4 130.6,216.8 137.7,217.1 144.9,218.0 152.0,217.6 159.1,216.0 166.3,215.4 173.4,215.6 180.6,215.2 187.7,215.1 194.9,215.3 202.0,215.0 209.1,214.7 216.3,214.5 223.4,214.4 230.6,214.6 237.7,213.6 244.9,213.5 252.0,214.3 259.1,214.6 266.3,213.8 273.4,214.0 280.6,213.6 287.7,213.5 294.9,213.4 302.0,212.7 309.1,213.0 316.3,213.4 323.4,212.9 330.6,212.6 337.7,212.9 344.9,213.4 352.0,214.0 359.1,215.0 366.3,215.7 373.4,215.3 380.6,215.0 387.7,214.9 394.9,214.2 402.0,213.5 409.1,213.6 416.3,213.8 423.4,214.8 430.6,214.0 437.7,213.7 444.9,213.6 452.0,213.5 459.1,213.4 466.3,213.1 473.4,212.8 480.6,212.0 487.7,212.1 494.9,212.1 502.0,211.7 509.1,211.5 516.3,212.1 523.4,211.2 530.6,211.3 537.7,211.0 544.9,210.4 552.0,210.0 559.1,209.7 566.3,210.2 573.4,209.3 580.6,208.8 587.7,208.5 594.9,207.9 602.0,207.9 609.1,207.9 616.3,207.6 623.4,207.5 630.6,207.6 637.7,207.1 644.9,207.0 652.0,205.7 659.1,204.4 666.3,203.4 673.4,203.7 680.6,203.2 687.7,204.3 694.9,203.2 702.0,205.3 709.1,205.8 716.3,204.7 723.4,204.3 730.6,205.6 737.7,206.2 744.9,206.0 752.0,206.4 759.1,206.0 766.3,205.7 773.4,205.9 780.6,205.2 787.7,205.4 794.9,205.5 802.0,205.7 809.1,205.5 816.3,204.6 823.4,204.7 830.6,204.0 837.7,203.8 844.9,202.7 852.0,201.9 859.1,202.3 866.3,202.7 873.4,202.8 880.6,202.0 887.7,201.6 894.9,202.3 902.0,202.4" fill="none" stroke="#9a8c6a" stroke-width="2" stroke-dasharray="4 4" /><polyline points="52.0,210.3 59.1,210.3 66.3,210.3 73.4,210.3 80.6,210.3 87.7,210.3 94.9,210.3 102.0,210.3 109.1,210.3 116.3,210.3 123.4,210.3 130.6,210.3 137.7,210.3 144.9,210.3 152.0,210.3 159.1,209.2 166.3,208.9 173.4,208.5 180.6,207.3 187.7,207.0 194.9,206.2 202.0,205.0 209.1,204.5 216.3,204.3 223.4,204.8 230.6,204.8 237.7,201.7 244.9,200.9 252.0,203.4 259.1,203.5 266.3,202.1 273.4,202.7 280.6,199.0 287.7,197.0 294.9,196.6 302.0,193.8 309.1,194.2 316.3,193.6 323.4,191.8 330.6,191.1 337.7,190.3 344.9,190.5 352.0,190.5 359.1,190.5 366.3,190.5 373.4,190.5 380.6,190.5 387.7,190.5 394.9,188.7 402.0,187.9 409.1,187.7 416.3,185.9 423.4,186.0 430.6,187.3 437.7,186.9 444.9,185.5 452.0,185.5 459.1,182.3 466.3,180.0 473.4,178.4 480.6,175.3 487.7,171.2 494.9,168.2 502.0,166.6 509.1,161.7 516.3,163.2 523.4,155.5 530.6,157.4 537.7,148.0 544.9,141.9 552.0,140.9 559.1,138.4 566.3,135.9 573.4,134.2 580.6,133.0 587.7,126.0 594.9,120.7 602.0,119.8 609.1,125.1 616.3,123.3 623.4,126.1 630.6,116.2 637.7,113.8 644.9,102.3 652.0,98.7 659.1,72.9 666.3,61.7 673.4,57.6 680.6,48.1 687.7,58.2 694.9,49.4 702.0,50.6 709.1,50.6 716.3,50.6 723.4,50.6 730.6,50.6 737.7,50.6 744.9,50.6 752.0,50.6 759.1,50.6 766.3,50.6 773.4,50.6 780.6,44.9 787.7,43.0 794.9,38.3 802.0,47.7 809.1,55.2 816.3,48.7 823.4,36.1 830.6,20.0 837.7,26.2 844.9,22.1 852.0,31.1 859.1,36.9 866.3,33.5 873.4,31.7 880.6,32.2 887.7,24.3 894.9,50.5 902.0,48.3" fill="none" stroke="#b06b1d" stroke-width="2.5" /><text x="52.0" y="244.0" text-anchor="middle" font-size="10" fill="#6c5842">2008-01</text><text x="137.7" y="244.0" text-anchor="middle" font-size="10" fill="#6c5842">2009-01</text><text x="223.4" y="244.0" text-anchor="middle" font-size="10" fill="#6c5842">2010-01</text><text x="309.1" y="244.0" text-anchor="middle" font-size="10" fill="#6c5842">2011-01</text><text x="394.9" y="244.0" text-anchor="middle" font-size="10" fill="#6c5842">2012-01</text><text x="480.6" y="244.0" text-anchor="middle" font-size="10" fill="#6c5842">2013-01</text><text x="566.3" y="244.0" text-anchor="middle" font-size="10" fill="#6c5842">2014-01</text><text x="652.0" y="244.0" text-anchor="middle" font-size="10" fill="#6c5842">2015-01</text><text x="737.7" y="244.0" text-anchor="middle" font-size="10" fill="#6c5842">2016-01</text><text x="823.4" y="244.0" text-anchor="middle" font-size="10" fill="#6c5842">2017-01</text><text x="902.0" y="244.0" text-anchor="middle" font-size="10" fill="#6c5842">2017-12</text><text x="52.0" y="14.0" text-anchor="start" font-size="10" fill="#6c5842">Equity multiple</text></svg>
+      <div class="legend">
+        <div><span class="legend-line portfolio"></span>Portfolio equity</div>
+        <div><span class="legend-line benchmark"></span>Primary benchmark</div>
+        <div><span class="legend-box"></span>Filter OFF (cash)</div>
+      </div>
+    </section>
+    <section>
+      <h2>Timeline</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Signal Month</th>
+            <th>Holding Month</th>
+            <th>Filter</th>
+            <th>Reason</th>
+            <th>Benchmark Price</th>
+            <th>Benchmark MA</th>
+            <th>Price - MA</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="off"><td>2007-12</td><td>2008-01</td><td>off</td><td>price_below_ma</td><td>1.1494</td><td>1.1740</td><td>-0.0246</td></tr>
+<tr class="off"><td>2008-01</td><td>2008-02</td><td>off</td><td>price_below_ma</td><td>1.0359</td><td>1.1661</td><td>-0.1302</td></tr>
+<tr class="off"><td>2008-02</td><td>2008-03</td><td>off</td><td>price_below_ma</td><td>1.0134</td><td>1.1514</td><td>-0.1380</td></tr>
+<tr class="off"><td>2008-03</td><td>2008-04</td><td>off</td><td>price_below_ma</td><td>0.9918</td><td>1.1279</td><td>-0.1360</td></tr>
+<tr class="off"><td>2008-04</td><td>2008-05</td><td>off</td><td>price_below_ma</td><td>1.0334</td><td>1.1114</td><td>-0.0780</td></tr>
+<tr class="off"><td>2008-05</td><td>2008-06</td><td>off</td><td>price_below_ma</td><td>0.9897</td><td>1.0964</td><td>-0.1068</td></tr>
+<tr class="off"><td>2008-06</td><td>2008-07</td><td>off</td><td>price_below_ma</td><td>0.6161</td><td>1.0408</td><td>-0.4247</td></tr>
+<tr class="off"><td>2008-07</td><td>2008-08</td><td>off</td><td>price_below_ma</td><td>0.6161</td><td>0.9804</td><td>-0.3643</td></tr>
+<tr class="off"><td>2008-08</td><td>2008-09</td><td>off</td><td>price_below_ma</td><td>0.6161</td><td>0.9223</td><td>-0.3062</td></tr>
+<tr class="off"><td>2008-09</td><td>2008-10</td><td>off</td><td>price_below_ma</td><td>0.6161</td><td>0.8678</td><td>-0.2517</td></tr>
+<tr class="off"><td>2008-10</td><td>2008-11</td><td>off</td><td>price_below_ma</td><td>0.6161</td><td>0.8145</td><td>-0.1984</td></tr>
+<tr class="off"><td>2008-11</td><td>2008-12</td><td>off</td><td>price_below_ma</td><td>0.6171</td><td>0.7726</td><td>-0.1555</td></tr>
+<tr class="off"><td>2008-12</td><td>2009-01</td><td>off</td><td>price_below_ma</td><td>0.6649</td><td>0.7377</td><td>-0.0728</td></tr>
+<tr class="off"><td>2009-01</td><td>2009-02</td><td>off</td><td>price_below_ma</td><td>0.6407</td><td>0.7026</td><td>-0.0619</td></tr>
+<tr class="off"><td>2009-02</td><td>2009-03</td><td>off</td><td>price_below_ma</td><td>0.5756</td><td>0.6568</td><td>-0.0813</td></tr>
+<tr class="off"><td>2009-03</td><td>2009-04</td><td>off</td><td>price_below_ma</td><td>0.6020</td><td>0.6181</td><td>-0.0160</td></tr>
+<tr class="on"><td>2009-04</td><td>2009-05</td><td>on</td><td>price_above_ma</td><td>0.7268</td><td>0.6292</td><td>0.0977</td></tr>
+<tr class="on"><td>2009-05</td><td>2009-06</td><td>on</td><td>price_above_ma</td><td>0.7660</td><td>0.6442</td><td>0.1219</td></tr>
+<tr class="on"><td>2009-06</td><td>2009-07</td><td>on</td><td>price_above_ma</td><td>0.7580</td><td>0.6583</td><td>0.0997</td></tr>
+<tr class="on"><td>2009-07</td><td>2009-08</td><td>on</td><td>price_above_ma</td><td>0.7841</td><td>0.6751</td><td>0.1089</td></tr>
+<tr class="on"><td>2009-08</td><td>2009-09</td><td>on</td><td>price_above_ma</td><td>0.7884</td><td>0.6924</td><td>0.0961</td></tr>
+<tr class="on"><td>2009-09</td><td>2009-10</td><td>on</td><td>price_above_ma</td><td>0.7805</td><td>0.7087</td><td>0.0718</td></tr>
+<tr class="on"><td>2009-10</td><td>2009-11</td><td>on</td><td>price_above_ma</td><td>0.8015</td><td>0.7224</td><td>0.0791</td></tr>
+<tr class="on"><td>2009-11</td><td>2009-12</td><td>on</td><td>price_above_ma</td><td>0.8239</td><td>0.7407</td><td>0.0832</td></tr>
+<tr class="on"><td>2009-12</td><td>2010-01</td><td>on</td><td>price_above_ma</td><td>0.8340</td><td>0.7665</td><td>0.0675</td></tr>
+<tr class="on"><td>2010-01</td><td>2010-02</td><td>on</td><td>price_above_ma</td><td>0.8449</td><td>0.7908</td><td>0.0541</td></tr>
+<tr class="on"><td>2010-02</td><td>2010-03</td><td>on</td><td>price_above_ma</td><td>0.8268</td><td>0.8008</td><td>0.0260</td></tr>
+<tr class="on"><td>2010-03</td><td>2010-04</td><td>on</td><td>price_above_ma</td><td>0.9028</td><td>0.8145</td><td>0.0883</td></tr>
+<tr class="on"><td>2010-04</td><td>2010-05</td><td>on</td><td>price_above_ma</td><td>0.9122</td><td>0.8299</td><td>0.0823</td></tr>
+<tr class="on"><td>2010-05</td><td>2010-06</td><td>on</td><td>price_above_ma</td><td>0.8500</td><td>0.8365</td><td>0.0135</td></tr>
+<tr class="off"><td>2010-06</td><td>2010-07</td><td>off</td><td>price_below_ma</td><td>0.8312</td><td>0.8408</td><td>-0.0096</td></tr>
+<tr class="on"><td>2010-07</td><td>2010-08</td><td>on</td><td>price_above_ma</td><td>0.8914</td><td>0.8519</td><td>0.0395</td></tr>
+<tr class="on"><td>2010-08</td><td>2010-09</td><td>on</td><td>price_above_ma</td><td>0.8728</td><td>0.8590</td><td>0.0138</td></tr>
+<tr class="on"><td>2010-09</td><td>2010-10</td><td>on</td><td>price_above_ma</td><td>0.9018</td><td>0.8668</td><td>0.0350</td></tr>
+<tr class="on"><td>2010-10</td><td>2010-11</td><td>on</td><td>price_above_ma</td><td>0.9100</td><td>0.8744</td><td>0.0356</td></tr>
+<tr class="on"><td>2010-11</td><td>2010-12</td><td>on</td><td>price_above_ma</td><td>0.9226</td><td>0.8822</td><td>0.0405</td></tr>
+<tr class="on"><td>2010-12</td><td>2011-01</td><td>on</td><td>price_above_ma</td><td>0.9680</td><td>0.8963</td><td>0.0717</td></tr>
+<tr class="on"><td>2011-01</td><td>2011-02</td><td>on</td><td>price_above_ma</td><td>0.9472</td><td>0.9007</td><td>0.0464</td></tr>
+<tr class="on"><td>2011-02</td><td>2011-03</td><td>on</td><td>price_above_ma</td><td>0.9182</td><td>0.9013</td><td>0.0169</td></tr>
+<tr class="on"><td>2011-03</td><td>2011-04</td><td>on</td><td>price_above_ma</td><td>0.9531</td><td>0.9116</td><td>0.0415</td></tr>
+<tr class="on"><td>2011-04</td><td>2011-05</td><td>on</td><td>price_above_ma</td><td>0.9769</td><td>0.9262</td><td>0.0507</td></tr>
+<tr class="on"><td>2011-05</td><td>2011-06</td><td>on</td><td>price_above_ma</td><td>0.9546</td><td>0.9325</td><td>0.0221</td></tr>
+<tr class="off"><td>2011-06</td><td>2011-07</td><td>off</td><td>price_below_ma</td><td>0.9214</td><td>0.9374</td><td>-0.0160</td></tr>
+<tr class="off"><td>2011-07</td><td>2011-08</td><td>off</td><td>price_below_ma</td><td>0.8713</td><td>0.9343</td><td>-0.0630</td></tr>
+<tr class="off"><td>2011-08</td><td>2011-09</td><td>off</td><td>price_below_ma</td><td>0.7981</td><td>0.9231</td><td>-0.1250</td></tr>
+<tr class="off"><td>2011-09</td><td>2011-10</td><td>off</td><td>price_below_ma</td><td>0.7503</td><td>0.9059</td><td>-0.1556</td></tr>
+<tr class="off"><td>2011-10</td><td>2011-11</td><td>off</td><td>price_below_ma</td><td>0.7788</td><td>0.8870</td><td>-0.1082</td></tr>
+<tr class="off"><td>2011-11</td><td>2011-12</td><td>off</td><td>price_below_ma</td><td>0.8006</td><td>0.8723</td><td>-0.0718</td></tr>
+<tr class="off"><td>2011-12</td><td>2012-01</td><td>off</td><td>price_below_ma</td><td>0.8097</td><td>0.8615</td><td>-0.0518</td></tr>
+<tr class="on"><td>2012-01</td><td>2012-02</td><td>on</td><td>price_above_ma</td><td>0.8613</td><td>0.8523</td><td>0.0090</td></tr>
+<tr class="on"><td>2012-02</td><td>2012-03</td><td>on</td><td>price_above_ma</td><td>0.9113</td><td>0.8457</td><td>0.0656</td></tr>
+<tr class="on"><td>2012-03</td><td>2012-04</td><td>on</td><td>price_above_ma</td><td>0.9021</td><td>0.8405</td><td>0.0616</td></tr>
+<tr class="on"><td>2012-04</td><td>2012-05</td><td>on</td><td>price_above_ma</td><td>0.8898</td><td>0.8373</td><td>0.0524</td></tr>
+<tr class="off"><td>2012-05</td><td>2012-06</td><td>off</td><td>price_below_ma</td><td>0.8127</td><td>0.8315</td><td>-0.0187</td></tr>
+<tr class="on"><td>2012-06</td><td>2012-07</td><td>on</td><td>price_above_ma</td><td>0.8714</td><td>0.8388</td><td>0.0326</td></tr>
+<tr class="on"><td>2012-07</td><td>2012-08</td><td>on</td><td>price_above_ma</td><td>0.8956</td><td>0.8533</td><td>0.0422</td></tr>
+<tr class="on"><td>2012-08</td><td>2012-09</td><td>on</td><td>price_above_ma</td><td>0.9041</td><td>0.8659</td><td>0.0383</td></tr>
+<tr class="on"><td>2012-09</td><td>2012-10</td><td>on</td><td>price_above_ma</td><td>0.9142</td><td>0.8772</td><td>0.0370</td></tr>
+<tr class="on"><td>2012-10</td><td>2012-11</td><td>on</td><td>price_above_ma</td><td>0.9166</td><td>0.8879</td><td>0.0287</td></tr>
+<tr class="on"><td>2012-11</td><td>2012-12</td><td>on</td><td>price_above_ma</td><td>0.9391</td><td>0.8957</td><td>0.0434</td></tr>
+<tr class="on"><td>2012-12</td><td>2013-01</td><td>on</td><td>price_above_ma</td><td>0.9609</td><td>0.9007</td><td>0.0603</td></tr>
+<tr class="on"><td>2013-01</td><td>2013-02</td><td>on</td><td>price_above_ma</td><td>1.0208</td><td>0.9125</td><td>0.1083</td></tr>
+<tr class="on"><td>2013-02</td><td>2013-03</td><td>on</td><td>price_above_ma</td><td>1.0138</td><td>0.9249</td><td>0.0889</td></tr>
+<tr class="on"><td>2013-03</td><td>2013-04</td><td>on</td><td>price_above_ma</td><td>1.0162</td><td>0.9453</td><td>0.0709</td></tr>
+<tr class="on"><td>2013-04</td><td>2013-05</td><td>on</td><td>price_above_ma</td><td>1.0426</td><td>0.9624</td><td>0.0802</td></tr>
+<tr class="on"><td>2013-05</td><td>2013-06</td><td>on</td><td>price_above_ma</td><td>1.0605</td><td>0.9789</td><td>0.0816</td></tr>
+<tr class="on"><td>2013-06</td><td>2013-07</td><td>on</td><td>price_above_ma</td><td>1.0138</td><td>0.9899</td><td>0.0240</td></tr>
+<tr class="on"><td>2013-07</td><td>2013-08</td><td>on</td><td>price_above_ma</td><td>1.0800</td><td>1.0064</td><td>0.0735</td></tr>
+<tr class="on"><td>2013-08</td><td>2013-09</td><td>on</td><td>price_above_ma</td><td>1.0722</td><td>1.0220</td><td>0.0502</td></tr>
+<tr class="on"><td>2013-09</td><td>2013-10</td><td>on</td><td>price_above_ma</td><td>1.0986</td><td>1.0380</td><td>0.0607</td></tr>
+<tr class="on"><td>2013-10</td><td>2013-11</td><td>on</td><td>price_above_ma</td><td>1.1422</td><td>1.0561</td><td>0.0861</td></tr>
+<tr class="on"><td>2013-11</td><td>2013-12</td><td>on</td><td>price_above_ma</td><td>1.1749</td><td>1.0715</td><td>0.1034</td></tr>
+<tr class="on"><td>2013-12</td><td>2014-01</td><td>on</td><td>price_above_ma</td><td>1.1928</td><td>1.0894</td><td>0.1034</td></tr>
+<tr class="on"><td>2014-01</td><td>2014-02</td><td>on</td><td>price_above_ma</td><td>1.1570</td><td>1.1035</td><td>0.0535</td></tr>
+<tr class="on"><td>2014-02</td><td>2014-03</td><td>on</td><td>price_above_ma</td><td>1.2255</td><td>1.1218</td><td>0.1037</td></tr>
+<tr class="on"><td>2014-03</td><td>2014-04</td><td>on</td><td>price_above_ma</td><td>1.2659</td><td>1.1423</td><td>0.1236</td></tr>
+<tr class="on"><td>2014-04</td><td>2014-05</td><td>on</td><td>price_above_ma</td><td>1.2830</td><td>1.1692</td><td>0.1138</td></tr>
+<tr class="on"><td>2014-05</td><td>2014-06</td><td>on</td><td>price_above_ma</td><td>1.3297</td><td>1.1942</td><td>0.1355</td></tr>
+<tr class="on"><td>2014-06</td><td>2014-07</td><td>on</td><td>price_above_ma</td><td>1.3328</td><td>1.2203</td><td>0.1126</td></tr>
+<tr class="on"><td>2014-07</td><td>2014-08</td><td>on</td><td>price_above_ma</td><td>1.3266</td><td>1.2431</td><td>0.0836</td></tr>
+<tr class="on"><td>2014-08</td><td>2014-09</td><td>on</td><td>price_above_ma</td><td>1.3484</td><td>1.2637</td><td>0.0847</td></tr>
+<tr class="on"><td>2014-09</td><td>2014-10</td><td>on</td><td>price_above_ma</td><td>1.3601</td><td>1.2822</td><td>0.0779</td></tr>
+<tr class="on"><td>2014-10</td><td>2014-11</td><td>on</td><td>price_above_ma</td><td>1.3500</td><td>1.2979</td><td>0.0521</td></tr>
+<tr class="on"><td>2014-11</td><td>2014-12</td><td>on</td><td>price_above_ma</td><td>1.3904</td><td>1.3213</td><td>0.0692</td></tr>
+<tr class="on"><td>2014-12</td><td>2015-01</td><td>on</td><td>price_above_ma</td><td>1.3943</td><td>1.3381</td><td>0.0562</td></tr>
+<tr class="on"><td>2015-01</td><td>2015-02</td><td>on</td><td>price_above_ma</td><td>1.4955</td><td>1.3611</td><td>0.1344</td></tr>
+<tr class="on"><td>2015-02</td><td>2015-03</td><td>on</td><td>price_above_ma</td><td>1.5935</td><td>1.3921</td><td>0.2014</td></tr>
+<tr class="on"><td>2015-03</td><td>2015-04</td><td>on</td><td>price_above_ma</td><td>1.6628</td><td>1.4254</td><td>0.2373</td></tr>
+<tr class="on"><td>2015-04</td><td>2015-05</td><td>on</td><td>price_above_ma</td><td>1.6417</td><td>1.4563</td><td>0.1854</td></tr>
+<tr class="on"><td>2015-05</td><td>2015-06</td><td>on</td><td>price_above_ma</td><td>1.6799</td><td>1.4917</td><td>0.1882</td></tr>
+<tr class="on"><td>2015-06</td><td>2015-07</td><td>on</td><td>price_above_ma</td><td>1.6013</td><td>1.5169</td><td>0.0843</td></tr>
+<tr class="on"><td>2015-07</td><td>2015-08</td><td>on</td><td>price_above_ma</td><td>1.6822</td><td>1.5492</td><td>0.1331</td></tr>
+<tr class="off"><td>2015-08</td><td>2015-09</td><td>off</td><td>price_below_ma</td><td>1.5219</td><td>1.5663</td><td>-0.0444</td></tr>
+<tr class="off"><td>2015-09</td><td>2015-10</td><td>off</td><td>price_below_ma</td><td>1.4838</td><td>1.5757</td><td>-0.0919</td></tr>
+<tr class="off"><td>2015-10</td><td>2015-11</td><td>off</td><td>price_below_ma</td><td>1.5663</td><td>1.5929</td><td>-0.0266</td></tr>
+<tr class="off"><td>2015-11</td><td>2015-12</td><td>off</td><td>price_below_ma</td><td>1.5966</td><td>1.6030</td><td>-0.0064</td></tr>
+<tr class="off"><td>2015-12</td><td>2016-01</td><td>off</td><td>price_below_ma</td><td>1.5040</td><td>1.5940</td><td>-0.0900</td></tr>
+<tr class="off"><td>2016-01</td><td>2016-02</td><td>off</td><td>price_below_ma</td><td>1.4550</td><td>1.5733</td><td>-0.1183</td></tr>
+<tr class="off"><td>2016-02</td><td>2016-03</td><td>off</td><td>price_below_ma</td><td>1.4706</td><td>1.5562</td><td>-0.0856</td></tr>
+<tr class="off"><td>2016-03</td><td>2016-04</td><td>off</td><td>price_below_ma</td><td>1.4387</td><td>1.5320</td><td>-0.0934</td></tr>
+<tr class="off"><td>2016-04</td><td>2016-05</td><td>off</td><td>price_below_ma</td><td>1.4690</td><td>1.5188</td><td>-0.0498</td></tr>
+<tr class="off"><td>2016-05</td><td>2016-06</td><td>off</td><td>price_below_ma</td><td>1.4970</td><td>1.5003</td><td>-0.0033</td></tr>
+<tr class="off"><td>2016-06</td><td>2016-07</td><td>off</td><td>price_below_ma</td><td>1.4783</td><td>1.4959</td><td>-0.0176</td></tr>
+<tr class="on"><td>2016-07</td><td>2016-08</td><td>on</td><td>price_above_ma</td><td>1.5313</td><td>1.5007</td><td>0.0306</td></tr>
+<tr class="on"><td>2016-08</td><td>2016-09</td><td>on</td><td>price_above_ma</td><td>1.5188</td><td>1.4959</td><td>0.0229</td></tr>
+<tr class="on"><td>2016-09</td><td>2016-10</td><td>on</td><td>price_above_ma</td><td>1.5095</td><td>1.4872</td><td>0.0223</td></tr>
+<tr class="on"><td>2016-10</td><td>2016-11</td><td>on</td><td>price_above_ma</td><td>1.4939</td><td>1.4862</td><td>0.0077</td></tr>
+<tr class="on"><td>2016-11</td><td>2016-12</td><td>on</td><td>price_above_ma</td><td>1.5110</td><td>1.4918</td><td>0.0192</td></tr>
+<tr class="on"><td>2016-12</td><td>2017-01</td><td>on</td><td>price_above_ma</td><td>1.5733</td><td>1.5021</td><td>0.0712</td></tr>
+<tr class="on"><td>2017-01</td><td>2017-02</td><td>on</td><td>price_above_ma</td><td>1.5655</td><td>1.5148</td><td>0.0507</td></tr>
+<tr class="on"><td>2017-02</td><td>2017-03</td><td>on</td><td>price_above_ma</td><td>1.6207</td><td>1.5299</td><td>0.0908</td></tr>
+<tr class="on"><td>2017-03</td><td>2017-04</td><td>on</td><td>price_above_ma</td><td>1.6355</td><td>1.5438</td><td>0.0917</td></tr>
+<tr class="on"><td>2017-04</td><td>2017-05</td><td>on</td><td>price_above_ma</td><td>1.7157</td><td>1.5675</td><td>0.1481</td></tr>
+<tr class="on"><td>2017-05</td><td>2017-06</td><td>on</td><td>price_above_ma</td><td>1.7756</td><td>1.5919</td><td>0.1836</td></tr>
+<tr class="on"><td>2017-06</td><td>2017-07</td><td>on</td><td>price_above_ma</td><td>1.7460</td><td>1.6147</td><td>0.1313</td></tr>
+<tr class="on"><td>2017-07</td><td>2017-08</td><td>on</td><td>price_above_ma</td><td>1.7149</td><td>1.6352</td><td>0.0797</td></tr>
+<tr class="on"><td>2017-08</td><td>2017-09</td><td>on</td><td>price_above_ma</td><td>1.7110</td><td>1.6569</td><td>0.0541</td></tr>
+<tr class="on"><td>2017-09</td><td>2017-10</td><td>on</td><td>price_above_ma</td><td>1.7709</td><td>1.6829</td><td>0.0880</td></tr>
+<tr class="on"><td>2017-10</td><td>2017-11</td><td>on</td><td>price_above_ma</td><td>1.8012</td><td>1.7057</td><td>0.0955</td></tr>
+<tr class="on"><td>2017-11</td><td>2017-12</td><td>on</td><td>price_above_ma</td><td>1.7476</td><td>1.7239</td><td>0.0237</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>

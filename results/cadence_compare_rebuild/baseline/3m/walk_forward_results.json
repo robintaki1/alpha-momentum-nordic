@@ -1,0 +1,15 @@
+{
+  "cadence_id": "3m",
+  "cadence_label": "Quarterly",
+  "canonical_offset_id": 0,
+  "rebalance_logic": "legacy_entries_exits",
+  "rebalance_logic_label": "Legacy Entry/Exit Only",
+  "schedule_type": "quarter_end",
+  "status": "blocked_by_missing_selection",
+  "thesis": {
+    "excluded_countries": [],
+    "label": "Baseline (Sweden, Denmark, Norway)",
+    "name": "baseline",
+    "scope_note": "The corrected baseline scope now covers Sweden, Denmark, and Norway."
+  }
+}

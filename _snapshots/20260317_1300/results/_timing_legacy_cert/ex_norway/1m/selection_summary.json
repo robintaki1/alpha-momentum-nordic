@@ -1,0 +1,288 @@
+{
+  "backtest_overfitting": {
+    "candidate_count": 6,
+    "combination_count": 252,
+    "interpretation": "overfitting_warning",
+    "lambda_logit_mean": 0.5112516681420758,
+    "lambda_logit_median": 1.3862943611198908,
+    "mean_oos_rank_percentile": 0.6095238095238095,
+    "median_oos_rank_percentile": 0.8,
+    "method": "cscv_pbo_main_track_sharpe",
+    "passes_pbo_threshold": false,
+    "passes_threshold": false,
+    "pbo": 0.3412698412698413,
+    "pbo_threshold_max": 0.3,
+    "period_label": "months",
+    "periods_per_year": 12,
+    "score_function": "annualized_sharpe",
+    "slice_count": 10,
+    "slice_length_months": 12.0,
+    "slice_length_periods": 12,
+    "status": "ok",
+    "threshold_max": 0.3,
+    "total_months": 120.0,
+    "total_periods": 120
+  },
+  "cadence_id": "1m",
+  "cadence_label": "Monthly",
+  "canonical_offset_id": 0,
+  "locked_candidate": {
+    "active_selection_universe_variants": [
+      "Full Nordics",
+      "SE-only"
+    ],
+    "bootstrap_ci_high": 1.9662779351752635,
+    "bootstrap_ci_low": 0.2796455072628797,
+    "candidate_id": "l12_s1_n5",
+    "deflated_sharpe_probability": 0.9706376929186089,
+    "deflated_sharpe_score": 0.18225693700950593,
+    "fold_pass_count": 4,
+    "gate_bootstrap": true,
+    "gate_deflated_sharpe": true,
+    "gate_fold_count": true,
+    "gate_negative_controls": true,
+    "max_drawdown": 0.4697374318620494,
+    "median_validation_sharpe": 0.6296815085755844,
+    "params": {
+      "l": 12,
+      "skip": 1,
+      "top_n": 5
+    },
+    "period_label": "months",
+    "periods_per_year": 12,
+    "plateau_neighbor_median_sharpe": 0.857669822194119,
+    "plateau_neighbor_ratio": 1.3620692532869065,
+    "rank": 1,
+    "selected": true,
+    "universe_sensitivity_std": 0.137565760566925
+  },
+  "mode": "certification_baseline",
+  "negative_controls": {
+    "block_shuffled_null": {
+      "pass_count": 179,
+      "run_count": 200
+    },
+    "cross_sectional_shuffle": {
+      "pass_count": 0,
+      "run_count": 500
+    }
+  },
+  "neighbor_diagnostics": [
+    {
+      "candidate_id": "l12_s0_n5",
+      "params": {
+        "l": 12,
+        "skip": 0,
+        "top_n": 5
+      },
+      "reasons": [
+        "fewer than 4 of 5 folds cleared Sharpe > 0.4"
+      ]
+    },
+    {
+      "candidate_id": "l12_s1_n8",
+      "params": {
+        "l": 12,
+        "skip": 1,
+        "top_n": 8
+      },
+      "reasons": [
+        "fewer than 4 of 5 folds cleared Sharpe > 0.4"
+      ]
+    }
+  ],
+  "period_label": "months",
+  "periods_per_year": 12,
+  "ranked_candidates": [
+    {
+      "active_selection_universe_variants": [
+        "Full Nordics",
+        "SE-only"
+      ],
+      "bootstrap_ci_high": 1.9662779351752635,
+      "bootstrap_ci_low": 0.2796455072628797,
+      "candidate_id": "l12_s1_n5",
+      "deflated_sharpe_probability": 0.9706376929186089,
+      "deflated_sharpe_score": 0.18225693700950593,
+      "fold_pass_count": 4,
+      "gate_bootstrap": true,
+      "gate_deflated_sharpe": true,
+      "gate_fold_count": true,
+      "gate_negative_controls": true,
+      "max_drawdown": 0.4697374318620494,
+      "median_validation_sharpe": 0.6296815085755844,
+      "params": {
+        "l": 12,
+        "skip": 1,
+        "top_n": 5
+      },
+      "period_label": "months",
+      "periods_per_year": 12,
+      "plateau_neighbor_median_sharpe": 0.857669822194119,
+      "plateau_neighbor_ratio": 1.3620692532869065,
+      "rank": 1,
+      "selected": true,
+      "universe_sensitivity_std": 0.137565760566925
+    },
+    {
+      "active_selection_universe_variants": [
+        "Full Nordics",
+        "SE-only"
+      ],
+      "bootstrap_ci_high": 1.8207882193074503,
+      "bootstrap_ci_low": 0.16504051971633502,
+      "candidate_id": "l12_s0_n5",
+      "deflated_sharpe_probability": 0.9590058889530508,
+      "deflated_sharpe_score": 0.16331909425606067,
+      "fold_pass_count": 3,
+      "gate_bootstrap": true,
+      "gate_deflated_sharpe": true,
+      "gate_fold_count": false,
+      "gate_negative_controls": true,
+      "max_drawdown": 0.4284268189185928,
+      "median_validation_sharpe": 1.1295179380123201,
+      "params": {
+        "l": 12,
+        "skip": 0,
+        "top_n": 5
+      },
+      "period_label": "months",
+      "periods_per_year": 12,
+      "plateau_neighbor_median_sharpe": 0.5989484284054427,
+      "plateau_neighbor_ratio": 0.5302690716532115,
+      "rank": 2,
+      "selected": false,
+      "universe_sensitivity_std": 0.09721874208515918
+    },
+    {
+      "active_selection_universe_variants": [
+        "Full Nordics",
+        "SE-only"
+      ],
+      "bootstrap_ci_high": 1.9439666479170736,
+      "bootstrap_ci_low": 0.07448113943290136,
+      "candidate_id": "l12_s1_n8",
+      "deflated_sharpe_probability": 0.9258984775420559,
+      "deflated_sharpe_score": 0.1420209175586225,
+      "fold_pass_count": 3,
+      "gate_bootstrap": true,
+      "gate_deflated_sharpe": true,
+      "gate_fold_count": false,
+      "gate_negative_controls": true,
+      "max_drawdown": 0.49043579229711953,
+      "median_validation_sharpe": 0.585821706375918,
+      "params": {
+        "l": 12,
+        "skip": 1,
+        "top_n": 8
+      },
+      "period_label": "months",
+      "periods_per_year": 12,
+      "plateau_neighbor_median_sharpe": 0.5682153482353012,
+      "plateau_neighbor_ratio": 0.9699458761104374,
+      "rank": 3,
+      "selected": false,
+      "universe_sensitivity_std": 0.05098377214629557
+    },
+    {
+      "active_selection_universe_variants": [
+        "Full Nordics",
+        "SE-only"
+      ],
+      "bootstrap_ci_high": 1.7463384262281179,
+      "bootstrap_ci_low": -0.08129044952144188,
+      "candidate_id": "l12_s0_n8",
+      "deflated_sharpe_probability": 0.8697578488314192,
+      "deflated_sharpe_score": 0.10674847401561086,
+      "fold_pass_count": 3,
+      "gate_bootstrap": false,
+      "gate_deflated_sharpe": true,
+      "gate_fold_count": false,
+      "gate_negative_controls": true,
+      "max_drawdown": 0.4845318252529771,
+      "median_validation_sharpe": 0.5682153482353012,
+      "params": {
+        "l": 12,
+        "skip": 0,
+        "top_n": 8
+      },
+      "period_label": "months",
+      "periods_per_year": 12,
+      "plateau_neighbor_median_sharpe": 0.585821706375918,
+      "plateau_neighbor_ratio": 1.0309853617916107,
+      "rank": 4,
+      "selected": false,
+      "universe_sensitivity_std": 0.03804304174225376
+    },
+    {
+      "active_selection_universe_variants": [
+        "Full Nordics",
+        "SE-only"
+      ],
+      "bootstrap_ci_high": 1.8556273090498723,
+      "bootstrap_ci_low": 0.06140526088947132,
+      "candidate_id": "l12_s1_n10",
+      "deflated_sharpe_probability": 0.9018517102076742,
+      "deflated_sharpe_score": 0.12632125461499394,
+      "fold_pass_count": 3,
+      "gate_bootstrap": true,
+      "gate_deflated_sharpe": true,
+      "gate_fold_count": false,
+      "gate_negative_controls": true,
+      "max_drawdown": 0.4774340150465718,
+      "median_validation_sharpe": 0.4484174926851711,
+      "params": {
+        "l": 12,
+        "skip": 1,
+        "top_n": 10
+      },
+      "period_label": "months",
+      "periods_per_year": 12,
+      "plateau_neighbor_median_sharpe": 0.5111460331409127,
+      "plateau_neighbor_ratio": 1.1398887007732825,
+      "rank": 5,
+      "selected": false,
+      "universe_sensitivity_std": 0.054027344461429205
+    },
+    {
+      "active_selection_universe_variants": [
+        "Full Nordics",
+        "SE-only"
+      ],
+      "bootstrap_ci_high": 1.8134662630866056,
+      "bootstrap_ci_low": -0.05891137408970161,
+      "candidate_id": "l12_s0_n10",
+      "deflated_sharpe_probability": 0.867511396323426,
+      "deflated_sharpe_score": 0.10839043308584453,
+      "fold_pass_count": 3,
+      "gate_bootstrap": false,
+      "gate_deflated_sharpe": true,
+      "gate_fold_count": false,
+      "gate_negative_controls": true,
+      "max_drawdown": 0.46941879185272994,
+      "median_validation_sharpe": 0.43647035990590727,
+      "params": {
+        "l": 12,
+        "skip": 0,
+        "top_n": 10
+      },
+      "period_label": "months",
+      "periods_per_year": 12,
+      "plateau_neighbor_median_sharpe": 0.5083164204602362,
+      "plateau_neighbor_ratio": 1.1646069633910932,
+      "rank": 6,
+      "selected": false,
+      "universe_sensitivity_std": 0.054072403224807275
+    }
+  ],
+  "schedule_type": "month_end",
+  "selection_status": "selected",
+  "thesis": {
+    "excluded_countries": [
+      "NO"
+    ],
+    "label": "Ex-Norway (Sweden and Denmark only)",
+    "name": "ex_norway",
+    "scope_note": "This is a separate thesis that removes Norway from the corrected baseline while keeping the same simple price-momentum implementation, costs, and gates."
+  }
+}

@@ -2,6 +2,11 @@
 
 This checklist is only for the current bootstrap blockers. It does not scaffold Phase 1.
 
+Current status note:
+
+- This file is infrastructure-only.
+- It does not imply that the project currently has an active validated strategy or that live/paper trading should start.
+
 ## 1. Install Python on Windows
 
 - Install Python 3.12 x64.
@@ -27,33 +32,20 @@ py -m pip install -r requirements.txt
 
 Current `requirements.txt` covers:
 
+- `numpy`
+- `pandas`
+- `requests`
 - `pyarrow`
-- `pybind11`
 
-## 3. Install CMake on Windows
-
-Install CMake separately so the `cmake` CLI is available on `PATH`.
-
-Example with `winget`:
-
-```powershell
-winget install Kitware.CMake
-```
-
-Verification:
-
-```powershell
-cmake --version
-```
-
-## 4. Quick dependency check
+## 3. Quick dependency check
 
 Run this from the project root:
 
 ```powershell
 @'
 import pyarrow
-import pybind11
+import pandas
+import numpy
 print("Python packages OK")
 '@ | py -
 ```

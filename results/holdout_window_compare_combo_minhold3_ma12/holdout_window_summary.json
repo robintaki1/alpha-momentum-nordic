@@ -1,0 +1,55 @@
+{
+  "n_trials": 54,
+  "params": {
+    "l": 12,
+    "ma_window": 12,
+    "min_hold_months": 3,
+    "rebalance": "min_hold",
+    "skip": 1,
+    "strategy_id": "trend_filter_minhold3_ma12",
+    "top_n": 5,
+    "trend_filter": true,
+    "weighting": "equal"
+  },
+  "source_params_file": "C:\\Users\\robin\\Desktop\\alpha momentum\\results\\cadence_compare_rebuild_lagged_combo_only\\ex_norway\\1m\\walk_forward_results.json",
+  "thesis": {
+    "excluded_countries": [
+      "NO"
+    ],
+    "label": "Ex-Norway (Sweden and Denmark only)",
+    "name": "ex_norway",
+    "scope_note": "This is a separate thesis that removes Norway from the corrected baseline while keeping the same simple price-momentum implementation, costs, and gates."
+  },
+  "window_reports": [
+    {
+      "chart_png": "holdout_200501_to_201501_chart.png",
+      "report_html": "holdout_200501_to_201501.html",
+      "window": "2005-01 to 2015-01"
+    },
+    {
+      "chart_png": "holdout_201501_to_202501_chart.png",
+      "report_html": "holdout_201501_to_202501.html",
+      "window": "2015-01 to 2025-01"
+    }
+  ],
+  "windows": [
+    {
+      "beats_primary_benchmark": true,
+      "benchmark_cagr": 0.04071819610611471,
+      "net_sharpe": 1.2982667656269165,
+      "primary_benchmark_total_return": 0.4954638116431431,
+      "strategy_cagr": 0.29056807940977025,
+      "total_return": 12.093053274432297,
+      "window": "2005-01 to 2015-01"
+    },
+    {
+      "beats_primary_benchmark": true,
+      "benchmark_cagr": 0.11447089465063298,
+      "net_sharpe": 1.028523541727564,
+      "primary_benchmark_total_return": 1.982700892857145,
+      "strategy_cagr": 0.24748967288014367,
+      "total_return": 8.29763880603062,
+      "window": "2015-01 to 2025-01"
+    }
+  ]
+}

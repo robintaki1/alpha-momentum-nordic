@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Certification Summary</title>
+  <style>
+    body { margin:0; font-family:Georgia, serif; background:#f7f2e7; color:#17211a; }
+    main { max-width:980px; margin:0 auto; padding:28px 20px 48px; }
+    section { background:rgba(255,250,241,.92); border:1px solid rgba(23,33,26,.12); border-radius:24px; padding:24px; box-shadow:0 18px 50px rgba(33,41,36,.08); margin-top:18px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; }
+    .card { background:#fffdf8; border:1px solid rgba(23,33,26,.12); border-radius:18px; padding:14px; }
+    .label { text-transform:uppercase; letter-spacing:.1em; font-size:.72rem; color:#6c5842; }
+    .value { font-size:1.1rem; margin-top:4px; }
+    table { width:100%; border-collapse:collapse; margin-top:12px; }
+    th, td { border-bottom:1px solid rgba(23,33,26,.08); text-align:left; padding:8px; }
+    th { font-size:.75rem; text-transform:uppercase; color:#5d685f; letter-spacing:.05em; }
+    a { color:#b06b1d; }
+  </style>
+</head>
+<body>
+  <main>
+    <section>
+      <h1>Certification Summary</h1>
+      <p>Certification gate outputs for this cadence pair.</p>
+      <a href="dashboard.html">Back to pair dashboard</a>
+    </section>
+    <section>
+      <h2>Status Snapshot</h2>
+      <div class="grid">
+        <div class="card"><div class="label">Selection Status</div><div class="value">no_candidate_passed_hard_gates</div></div>
+        <div class="card"><div class="label">PBO</div><div class="value">8.7%</div></div>
+        <div class="card"><div class="label">PBO Threshold</div><div class="value">30.0%</div></div>
+        <div class="card"><div class="label">Candidates Tested</div><div class="value">54</div></div>
+        <div class="card"><div class="label">Negative Controls</div><div class="value">0/500 &middot; 85/200</div></div>
+        <div class="card"><div class="label">Gate Pass Counts</div><div class="value">fold 5 / bootstrap 1 / deflated 0</div></div>
+      </div>
+    </section>
+    <section>
+      <h2>Top Candidates</h2>
+      <table>
+        <thead>
+          <tr><th>Candidate</th><th>Params</th><th>Median Sharpe</th><th>Fold Passes</th><th>Bootstrap</th><th>Deflated</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>l12_s1_n5_strat=trend_filter_ma12</td><td>L=12 / skip=1 / top_n=5 / strat=trend_filter_ma12 / trend_ma=12</td><td>0.813</td><td>4</td><td>no</td><td>no</td></tr>
+<tr><td>l12_s1_n5_strat=trend_filter</td><td>L=12 / skip=1 / top_n=5 / strat=trend_filter / trend_ma=10</td><td>0.736</td><td>4</td><td>yes</td><td>no</td></tr>
+<tr><td>l12_s1_n8_strat=trend_filter_ma12</td><td>L=12 / skip=1 / top_n=8 / strat=trend_filter_ma12 / trend_ma=12</td><td>0.710</td><td>3</td><td>no</td><td>no</td></tr>
+<tr><td>l12_s1_n8_strat=trend_filter</td><td>L=12 / skip=1 / top_n=8 / strat=trend_filter / trend_ma=10</td><td>0.710</td><td>3</td><td>no</td><td>no</td></tr>
+<tr><td>l12_s1_n5_strat=minhold3</td><td>L=12 / skip=1 / top_n=5 / strat=minhold3 / min_hold=3</td><td>0.563</td><td>4</td><td>no</td><td>no</td></tr>
+<tr><td>l12_s1_n5_strat=baseline</td><td>L=12 / skip=1 / top_n=5 / strat=baseline</td><td>0.523</td><td>4</td><td>no</td><td>no</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>

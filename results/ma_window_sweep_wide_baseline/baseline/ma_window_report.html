@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trend Filter MA Window Sweep</title>
+  <style>
+    body { margin:0; font-family:Georgia, serif; background:#f7f2e7; color:#17211a; }
+    main { max-width:1100px; margin:0 auto; padding:28px 20px 48px; }
+    section { background:rgba(255,250,241,.92); border:1px solid rgba(23,33,26,.12); border-radius:24px; padding:24px; box-shadow:0 18px 50px rgba(33,41,36,.08); margin-top:18px; }
+    table { width:100%; border-collapse:collapse; margin-top:12px; font-variant-numeric: tabular-nums; }
+    th, td { border-bottom:1px solid rgba(23,33,26,.08); text-align:left; padding:8px; }
+    th { font-size:.75rem; text-transform:uppercase; color:#5d685f; letter-spacing:.05em; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
+    .card { background:#fffdf8; border:1px solid rgba(23,33,26,.12); border-radius:18px; padding:14px; }
+    .label { text-transform:uppercase; letter-spacing:.1em; font-size:.72rem; color:#6c5842; }
+    .value { font-size:1.05rem; margin-top:4px; }
+  </style>
+</head>
+<body>
+  <main>
+    <section>
+      <h1>Trend Filter MA Window Sweep</h1>
+      <p>Thesis: baseline · L=12 / skip=1 / top_n=8 · MA windows: 6, 7, 12, 15, 13, 14, 11, 9, 10, 8</p>
+    </section>
+    <section>
+      <h2>Diagnostics</h2>
+      <div class="grid">
+        <div class="card"><div class="label">Selection Status</div><div class="value">selected</div></div>
+        <div class="card"><div class="label">PBO</div><div class="value">0.14682539682539683</div></div>
+        <div class="card"><div class="label">PBO Threshold</div><div class="value">0.3</div></div>
+        <div class="card"><div class="label">Candidates Tested</div><div class="value">10</div></div>
+        <div class="card"><div class="label">Neg Controls</div><div class="value">26/500 · 64/200</div></div>
+      </div>
+    </section>
+    <section>
+      <h2>MA Window Comparison</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>MA Window</th>
+            <th>Rank</th>
+            <th>Candidate</th>
+            <th>Median Sharpe</th>
+            <th>Overall Sharpe</th>
+            <th>Max DD</th>
+            <th>Total Return</th>
+            <th>Bootstrap Low</th>
+            <th>Deflated Sharpe</th>
+            <th>Fold Pass</th>
+            <th>Gate Boot</th>
+            <th>Gate DSR</th>
+            <th>Gate Neg</th>
+            <th>Selected</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>6</td><td>1</td><td>l12_s1_n8_strat=trend_filter_ma6</td><td>1.561</td><td>1.468</td><td>0.224</td><td>10.719</td><td>0.832</td><td>0.292</td><td>5</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td></tr><tr><td>7</td><td>2</td><td>l12_s1_n8_strat=trend_filter_ma7</td><td>1.479</td><td>1.403</td><td>0.224</td><td>9.743</td><td>0.810</td><td>0.273</td><td>5</td><td>yes</td><td>yes</td><td>yes</td><td>no</td></tr><tr><td>8</td><td>10</td><td>l12_s1_n8_strat=trend_filter_ma8</td><td>1.218</td><td>1.242</td><td>0.224</td><td>6.872</td><td>0.678</td><td>0.225</td><td>5</td><td>yes</td><td>yes</td><td>yes</td><td>no</td></tr><tr><td>9</td><td>8</td><td>l12_s1_n8_strat=trend_filter_ma9</td><td>1.218</td><td>1.238</td><td>0.224</td><td>6.811</td><td>0.674</td><td>0.224</td><td>5</td><td>yes</td><td>yes</td><td>yes</td><td>no</td></tr><tr><td>10</td><td>9</td><td>l12_s1_n8_strat=trend_filter_ma10</td><td>1.218</td><td>1.257</td><td>0.224</td><td>7.059</td><td>0.708</td><td>0.229</td><td>5</td><td>yes</td><td>yes</td><td>yes</td><td>no</td></tr><tr><td>11</td><td>7</td><td>l12_s1_n8_strat=trend_filter_ma11</td><td>1.307</td><td>1.278</td><td>0.224</td><td>7.633</td><td>0.739</td><td>0.236</td><td>5</td><td>yes</td><td>yes</td><td>yes</td><td>no</td></tr><tr><td>12</td><td>3</td><td>l12_s1_n8_strat=trend_filter_ma12</td><td>1.441</td><td>1.292</td><td>0.224</td><td>7.871</td><td>0.746</td><td>0.239</td><td>5</td><td>yes</td><td>yes</td><td>yes</td><td>no</td></tr><tr><td>13</td><td>5</td><td>l12_s1_n8_strat=trend_filter_ma13</td><td>1.335</td><td>1.190</td><td>0.224</td><td>6.682</td><td>0.669</td><td>0.209</td><td>5</td><td>yes</td><td>yes</td><td>yes</td><td>no</td></tr><tr><td>14</td><td>6</td><td>l12_s1_n8_strat=trend_filter_ma14</td><td>1.335</td><td>1.190</td><td>0.224</td><td>6.682</td><td>0.669</td><td>0.209</td><td>5</td><td>yes</td><td>yes</td><td>yes</td><td>no</td></tr><tr><td>15</td><td>4</td><td>l12_s1_n8_strat=trend_filter_ma15</td><td>1.335</td><td>1.103</td><td>0.224</td><td>5.248</td><td>0.568</td><td>0.185</td><td>4</td><td>yes</td><td>yes</td><td>yes</td><td>no</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>

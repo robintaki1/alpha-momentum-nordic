@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Alpha Momentum Research Package</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --paper: #f6f0e3;
+      --paper-strong: rgba(255, 251, 244, 0.92);
+      --ink: #16211e;
+      --muted: #53615d;
+      --line: rgba(22, 33, 30, 0.12);
+      --accent: #b06b1d;
+      --warn: #7d3d2a;
+      --warn-soft: #f7ddd3;
+      --good: #295741;
+      --good-soft: #dcebdd;
+      --shadow: 0 20px 60px rgba(22, 33, 30, 0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(176, 107, 29, 0.16), transparent 32%),
+        linear-gradient(180deg, #fbf6eb 0%, var(--paper) 100%);
+    }
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 40px 24px 56px;
+    }
+    .hero, .section {
+      background: var(--paper-strong);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 32px;
+      box-shadow: var(--shadow);
+    }
+    .section {
+      margin-top: 28px;
+      padding: 24px;
+      border-radius: 24px;
+    }
+    .eyebrow {
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 12px;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      line-height: 1.05;
+      margin-bottom: 16px;
+    }
+    .hero p {
+      max-width: 820px;
+      font-size: 1.05rem;
+      color: var(--muted);
+    }
+    .status-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+      border: 1px solid transparent;
+    }
+    .pill.warn {
+      background: var(--warn-soft);
+      color: var(--warn);
+      border-color: rgba(125, 61, 42, 0.18);
+    }
+    .pill.good {
+      background: var(--good-soft);
+      color: var(--good);
+      border-color: rgba(41, 87, 65, 0.18);
+    }
+    .grid, .notes {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .card, .note {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      background: #fffdf8;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 20px;
+    }
+    .label {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+    .card {
+      min-height: 220px;
+      transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 36px rgba(22, 33, 30, 0.1);
+      border-color: rgba(176, 107, 29, 0.35);
+    }
+    .card.primary {
+      background: linear-gradient(180deg, #fff7eb 0%, #fffdf8 100%);
+      border-color: rgba(176, 107, 29, 0.28);
+    }
+    .card h2 {
+      font-size: 1.45rem;
+      margin-bottom: 12px;
+    }
+    .card h3, .note h3, .value, .path {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .card p, .note p {
+      color: var(--muted);
+    }
+    .path {
+      display: inline-block;
+      margin-top: 10px;
+      font-size: 0.92rem;
+      color: var(--accent);
+      word-break: break-word;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+      background: #fffdf8;
+      border-radius: 18px;
+      overflow: hidden;
+    }
+    .metric-table th, .metric-table td { vertical-align: middle; }
+    .bar-cell { display: flex; align-items: center; gap: 10px; }
+    .bar-track {
+      flex: 1;
+      height: 10px;
+      background: rgba(22, 33, 30, 0.08);
+      border-radius: 999px;
+      overflow: hidden;
+      min-width: 120px;
+    }
+    .bar-fill { height: 100%; }
+    .bar-fill.auth { background: var(--good); }
+    .bar-fill.rebuild { background: var(--accent); }
+    .bar-value { min-width: 64px; text-align: right; font-variant-numeric: tabular-nums; }
+    .metric-note { color: var(--muted); font-size: 0.85rem; margin-top: 4px; }
+    .return-panel {
+      margin-top: 16px;
+      background: #fffdf8;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+    }
+    .return-curve {
+      display: block;
+      width: 100%;
+    }
+    .return-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 10px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .curve-stats {
+      margin-top: 6px;
+    }
+    .legend-line {
+      display: inline-block;
+      width: 26px;
+      height: 0;
+      border-top: 3px solid #295741;
+      margin-right: 6px;
+      transform: translateY(-2px);
+    }
+    .legend-line.benchmark {
+      border-top: 3px dashed #b06b1d;
+    }
+    .gate-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      border: 1px solid transparent;
+    }
+    .gate-pass {
+      background: var(--good-soft);
+      color: var(--good);
+      border-color: rgba(41, 87, 65, 0.18);
+    }
+    .gate-fail {
+      background: var(--warn-soft);
+      color: var(--warn);
+      border-color: rgba(125, 61, 42, 0.18);
+    }
+    .gate-na {
+      background: rgba(22, 33, 30, 0.08);
+      color: var(--muted);
+      border-color: rgba(22, 33, 30, 0.12);
+    }
+    th, td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    th {
+      background: rgba(176, 107, 29, 0.08);
+      font-size: 0.92rem;
+    }
+    tr:last-child td { border-bottom: 0; }
+    a { color: var(--accent); }
+    @media (max-width: 720px) {
+      main { padding: 20px 14px 40px; }
+      .hero, .section { padding: 18px; border-radius: 18px; }
+      th, td { padding: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <span class="eyebrow">Portfolio Folder</span>
+      <h1>Alpha Momentum Research Package</h1>
+      <p>This package is the clean front door to the project: what the validation stack does, where the current decision stands, and what branch makes sense next.</p>
+      <div class="status-row">
+        <span class="pill warn">Current state: research phase</span>
+        <span class="pill warn">Package model: entry_exit_costs</span>
+      </div>
+      <p style="margin-top: 18px;"><strong>Current finding:</strong> The selected execution model has not yet promoted a live candidate.</p>
+      <p><strong>Repo verdict:</strong> No cadence pair currently passes certification plus holdout under `legacy_entry_exit_costs`.</p>
+    </section>
+
+    <section class="section">
+      <h2>Open These First</h2>
+      <div class="grid">
+
+      <a class="card primary" href="cadence_compare_summary/dashboard.html">
+        <span class="eyebrow">Start Here</span>
+        <h2>Validated Candidate Summary</h2>
+        <p>The simplest visual summary of the selected model and the current validated-candidate decision.</p>
+        <span class="path">cadence_compare_summary/dashboard.html</span>
+      </a>
+
+      <a class="card" href="research_engine_rebuild/summary/dashboard.html">
+        <span class="eyebrow">Experimental</span>
+        <h2>Research Engine Rebuild</h2>
+        <p>Rebuilt cadence comparison outputs for diagnostics only (not authoritative).</p>
+        <span class="path">research_engine_rebuild/summary/dashboard.html</span>
+      </a>
+        <a class="card" href="PROJECT_STATUS.html">
+          <span class="eyebrow">One Page</span>
+          <h2>Current Project Status</h2>
+          <p>Plain-English snapshot of what is active, what is blocked, and what the next sensible implementation branch is.</p>
+          <span class="path">PROJECT_STATUS.html</span>
+        </a>
+
+      <a class="card" href="cadence_compare_summary/cadence_comparison_report.html">
+        <span class="eyebrow">Written Verdict</span>
+        <h2>Cadence Summary Report</h2>
+        <p>Compact written version of the selected package verdict.</p>
+        <span class="path">cadence_compare_summary/cadence_comparison_report.html</span>
+      </a>
+        <a class="card" href="research_audit_dossier.html">
+          <span class="eyebrow">Written Summary</span>
+          <h2>Research Dossier</h2>
+          <p>Short employer-facing narrative of what the validation stack does and what the current verdict means.</p>
+          <span class="path">research_audit_dossier.html</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>How To Read The Package</h2>
+      <div class="notes">
+        <div class="note">
+          <h3>Current Verdict</h3>
+          <p>The package follows the selected entry/exit execution model rather than the discarded over-trading branch.</p>
+        </div>
+        <div class="note">
+          <h3>Written Narrative</h3>
+          <p>Use <a href="research_audit_dossier.html">research_audit_dossier.html</a> when you want the plain-English explanation instead of the raw run tree.</p>
+        </div>
+        <div class="note">
+          <h3>Next Branch</h3>
+          <p>The package currently points toward scoped implementation work such as PTI market-cap/liquid-subset support rather than strategy promotion.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Validation Context (Plain-English)</h2>
+      <p>This section makes the key numbers and sources explicit so an external reader understands what is authoritative versus experimental.</p>
+      <div class="notes">
+        <div class="note">
+          <div class="label">Authoritative Locked Params</div>
+          <h3>L=12 / skip=1 / top_n=8 / strat=trend_filter / trend_ma=10</h3>
+          <p>Locked tuple from the authoritative selection summary for the package branch.</p>
+        </div>
+        <div class="note">
+          <div class="label">Rigorous PBO (Authoritative)</div>
+          <h3>13.1%</h3>
+          <p>CSCV PBO from the authoritative selection summary. Threshold is 30% for a healthy warning level.</p>
+        </div>
+        <div class="note">
+          <div class="label">Rebuild Locked Params</div>
+          <h3>L=12 / skip=1 / top_n=8 / strat=trend_filter / trend_ma=10</h3>
+          <p>Locked tuple from the rebuild lead pair.</p>
+        </div>
+        <div class="note">
+          <div class="label">Rigorous PBO (Rebuild)</div>
+          <h3>13.1%</h3>
+          <p>CSCV PBO from the rebuild summary (diagnostic).</p>
+        </div>
+        <div class="note">
+          <div class="label">Cadence Summary (Lead Monthly)</div>
+          <h3>PBO 20.6% / Holdout n/a</h3>
+          <p>Monthly lead-pair diagnostics from the cadence comparison summary.</p>
+        </div>
+        <div class="note">
+          <div class="label">Authoritative Selection Path</div>
+          <h3>C:\Users\robin\Desktop\alpha momentum\results\cadence_compare_rebuild\ex_norway\1m\selection_summary.json</h3>
+          <p>Source-of-truth selection summary for this package branch.</p>
+        </div>
+        <div class="note">
+          <div class="label">Cadence Summary Path</div>
+          <h3>results\cadence_compare\summary\cadence_comparison.json</h3>
+          <p>Authoritative cadence comparison dashboard path.</p>
+        </div>
+        <div class="note">
+          <div class="label">Experimental Rebuild</div>
+          <h3>Rebuild winner: Ex-Norway (Sweden and Denmark only) / Monthly with holdout Sharpe 1.516.</h3>
+          <p>Rebuild path: results\cadence_compare_rebuild\summary\cadence_comparison.json. Lead monthly PBO: 13.1%.</p>
+        </div>
+      </div>
+      <p style="margin-top:16px;">If you see different numbers in experimental runs, they do not override the package unless explicitly promoted.</p>
+    </section>
+
+    <section class="section">
+      <h2>Validation Gates (Authoritative + Rebuild)</h2>
+      <p>These gates define whether a candidate can be promoted. PBO is diagnostic only.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Gate</th>
+            <th>Threshold</th>
+            <th>Authoritative</th>
+            <th>Pass?</th>
+            <th>Rebuild</th>
+            <th>Pass?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Fold robustness</td>
+            <td>&gt;= 4 of 5 folds with Sharpe &gt; 0.4</td>
+            <td>4 / 5</td>
+            <td><span class="gate-tag gate-pass">PASS</span></td>
+            <td>4 / 5</td>
+            <td><span class="gate-tag gate-pass">PASS</span></td>
+          </tr>
+          <tr>
+            <td>Bootstrap CI</td>
+            <td>Lower bound &gt; 0</td>
+            <td>0.914</td>
+            <td><span class="gate-tag gate-pass">PASS</span></td>
+            <td>0.914</td>
+            <td><span class="gate-tag gate-pass">PASS</span></td>
+          </tr>
+          <tr>
+            <td>Deflated Sharpe</td>
+            <td>Score &gt; 0</td>
+            <td>0.277</td>
+            <td><span class="gate-tag gate-pass">PASS</span></td>
+            <td>0.277</td>
+            <td><span class="gate-tag gate-pass">PASS</span></td>
+          </tr>
+          <tr>
+            <td>Negative controls</td>
+            <td>Cross-sectional pass rate &le; 20.0%</td>
+            <td>25/500 (5.0%)</td>
+            <td><span class="gate-tag gate-pass">PASS</span></td>
+            <td>25/500 (5.0%)</td>
+            <td><span class="gate-tag gate-pass">PASS</span></td>
+          </tr>
+          <tr>
+            <td>PBO (diagnostic)</td>
+            <td>&le; 30.0%</td>
+            <td>13.1%</td>
+            <td><span class="gate-tag gate-pass">PASS</span></td>
+            <td>13.1%</td>
+            <td><span class="gate-tag gate-pass">PASS</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <h3 style="margin-top:18px;">Holdout Gate (Phase 4)</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Check</th>
+            <th>Threshold</th>
+            <th>Authoritative</th>
+            <th>Pass?</th>
+            <th>Rebuild</th>
+            <th>Pass?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Sharpe gate</td>
+            <td>&gt;= 0.3</td>
+            <td>n/a</td>
+            <td><span class="gate-tag gate-na">n/a</span></td>
+            <td>1.516</td>
+            <td><span class="gate-tag gate-pass">PASS</span></td>
+          </tr>
+          <tr>
+            <td>Benchmark gate</td>
+            <td>Beats primary benchmark</td>
+            <td>n/a</td>
+            <td><span class="gate-tag gate-na">n/a</span></td>
+            <td>yes</td>
+            <td><span class="gate-tag gate-pass">PASS</span></td>
+          </tr>
+          <tr>
+            <td>Phase 4 eligible</td>
+            <td>Sharpe gate + benchmark gate</td>
+            <td>n/a</td>
+            <td><span class="gate-tag gate-na">n/a</span></td>
+            <td>yes</td>
+            <td><span class="gate-tag gate-pass">PASS</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+<section class="section"><h2>Rebuild Lead (Locked) vs Benchmark</h2><p class="muted">Rebuild locked candidate curve over 120 months in the testing window. Candidate: l12_s1_n8_strat=trend_filter. Flat months (cash): 31. Flat months occur when the trend filter is off. Primary benchmark shown for comparison.</p><p class="muted curve-stats">Lead total multiple: 12.21x (CAGR 28.4%) Â· Benchmark total multiple: 1.51x (CAGR 4.2%)</p><div class="return-panel"><svg class="return-curve" viewBox="0 0 640 200" width="100%" height="200" preserveAspectRatio="none"><rect x="52.0" y="12.0" width="572.0" height="154.0" fill="none" stroke="rgba(22,33,30,0.18)" /><line x1="52.0" y1="166.00" x2="624.0" y2="166.00" stroke="rgba(22,33,30,0.08)" /><line x1="46.0" y1="166.00" x2="52.0" y2="166.00" stroke="rgba(22,33,30,0.35)" /><text x="42.0" y="169.00" text-anchor="end" font-size="10" fill="#6c5842">0.50</text><line x1="52.0" y1="114.67" x2="624.0" y2="114.67" stroke="rgba(22,33,30,0.08)" /><line x1="46.0" y1="114.67" x2="52.0" y2="114.67" stroke="rgba(22,33,30,0.35)" /><text x="42.0" y="117.67" text-anchor="end" font-size="10" fill="#6c5842">5.18</text><line x1="52.0" y1="63.33" x2="624.0" y2="63.33" stroke="rgba(22,33,30,0.08)" /><line x1="46.0" y1="63.33" x2="52.0" y2="63.33" stroke="rgba(22,33,30,0.35)" /><text x="42.0" y="66.33" text-anchor="end" font-size="10" fill="#6c5842">9.86</text><line x1="52.0" y1="12.00" x2="624.0" y2="12.00" stroke="rgba(22,33,30,0.08)" /><line x1="46.0" y1="12.00" x2="52.0" y2="12.00" stroke="rgba(22,33,30,0.35)" /><text x="42.0" y="15.00" text-anchor="end" font-size="10" fill="#6c5842">14.53</text><line x1="52.00" y1="166.0" x2="52.00" y2="172.0" stroke="rgba(22,33,30,0.35)" /><text x="52.00" y="186.0" text-anchor="middle" font-size="10" fill="#6c5842">0</text><line x1="338.00" y1="166.0" x2="338.00" y2="172.0" stroke="rgba(22,33,30,0.35)" /><text x="338.00" y="186.0" text-anchor="middle" font-size="10" fill="#6c5842">60</text><line x1="624.00" y1="166.0" x2="624.00" y2="172.0" stroke="rgba(22,33,30,0.35)" /><text x="624.00" y="186.0" text-anchor="middle" font-size="10" fill="#6c5842">120</text><polyline points="52.00,160.52 56.77,160.52 61.53,160.52 66.30,160.52 71.07,160.52 75.83,160.52 80.60,160.52 85.37,160.52 90.13,160.52 94.90,160.52 99.67,160.52 104.43,160.52 109.20,160.52 113.97,160.52 118.73,160.52 123.50,160.52 128.27,160.09 133.03,159.64 137.80,159.17 142.57,158.64 147.33,158.41 152.10,157.83 156.87,157.02 161.63,156.67 166.40,156.55 171.17,156.87 175.93,156.92 180.70,154.81 185.47,154.30 190.23,155.97 195.00,156.04 199.77,154.39 204.53,154.85 209.30,152.15 214.07,150.56 218.83,150.46 223.60,148.89 228.37,148.92 233.13,149.03 237.90,147.83 242.67,146.84 247.43,146.56 252.20,146.67 256.97,146.67 261.73,146.67 266.50,146.67 271.27,146.67 276.03,146.67 280.80,146.67 285.57,145.37 290.33,145.20 295.10,145.06 299.87,143.84 304.63,143.94 309.40,144.82 314.17,144.56 318.93,143.56 323.70,143.67 328.47,141.36 333.23,140.84 338.00,139.70 342.77,137.96 347.53,135.09 352.30,133.04 357.07,131.89 361.83,128.84 366.60,129.82 371.37,124.88 376.13,126.07 380.90,119.76 385.67,116.11 390.43,115.31 395.20,113.63 399.97,112.92 404.73,110.19 409.50,109.42 414.27,104.75 419.03,98.77 423.80,97.81 428.57,102.44 433.33,100.33 438.10,102.01 442.87,95.11 447.63,93.71 452.40,85.51 457.17,83.19 461.93,65.58 466.70,56.83 471.47,54.86 476.23,45.79 481.00,47.58 485.77,40.73 490.53,41.48 495.30,41.48 500.07,41.48 504.83,41.48 509.60,41.48 514.37,41.48 519.13,41.48 523.90,41.48 528.67,41.48 533.43,41.48 538.20,41.48 542.97,37.24 547.73,34.44 552.50,29.55 557.27,36.68 562.03,42.40 566.80,37.49 571.57,25.34 576.33,12.85 581.10,17.59 585.87,12.00 590.63,18.30 595.40,22.94 600.17,24.90 604.93,23.73 609.70,24.08 614.47,18.00 619.23,37.84 624.00,37.54" fill="none" stroke="#295741" stroke-width="2.6" /><polyline points="52.00,160.52 56.77,161.61 61.53,161.82 66.30,162.03 71.07,161.63 75.83,162.05 80.60,165.61 85.37,165.61 90.13,165.61 94.90,165.61 99.67,165.61 104.43,165.60 109.20,165.15 113.97,165.38 118.73,166.00 123.50,165.75 128.27,164.56 133.03,164.18 137.80,164.26 142.57,164.01 147.33,163.97 152.10,164.04 156.87,163.84 161.63,163.63 166.40,163.53 171.17,163.43 175.93,163.60 180.70,162.88 185.47,162.79 190.23,163.38 195.00,163.56 199.77,162.98 204.53,163.16 209.30,162.89 214.07,162.81 218.83,162.69 223.60,162.25 228.37,162.45 233.13,162.73 237.90,162.40 242.67,162.17 247.43,162.38 252.20,162.70 256.97,163.18 261.73,163.88 266.50,164.33 271.27,164.06 276.03,163.85 280.80,163.77 285.57,163.27 290.33,162.79 295.10,162.88 299.87,163.00 304.63,163.74 309.40,163.18 314.17,162.94 318.93,162.86 323.70,162.77 328.47,162.74 333.23,162.53 338.00,162.32 342.77,161.75 347.53,161.82 352.30,161.79 357.07,161.54 361.83,161.37 366.60,161.82 371.37,161.18 376.13,161.26 380.90,161.01 385.67,160.59 390.43,160.28 395.20,160.11 399.97,160.45 404.73,159.79 409.50,159.41 414.27,159.25 419.03,158.80 423.80,158.77 428.57,158.83 433.33,158.62 438.10,158.51 442.87,158.61 447.63,158.22 452.40,158.18 457.17,157.22 461.93,156.28 466.70,155.62 471.47,155.82 476.23,155.46 481.00,156.21 485.77,155.43 490.53,156.96 495.30,157.33 500.07,156.54 504.83,156.25 509.60,157.14 514.37,157.60 519.13,157.45 523.90,157.76 528.67,157.47 533.43,157.20 538.20,157.38 542.97,156.88 547.73,156.99 552.50,157.08 557.27,157.23 562.03,157.07 566.80,156.47 571.57,156.55 576.33,156.02 581.10,155.88 585.87,155.11 590.63,154.54 595.40,154.83 600.17,155.12 604.93,155.16 609.70,154.59 614.47,154.30 619.23,154.81 624.00,154.89" fill="none" stroke="#b06b1d" stroke-width="2" stroke-dasharray="5 4" /><text x="52.0" y="10.0" text-anchor="start" font-size="10" fill="#6c5842">Equity multiple</text><text x="338.00" y="194.0" text-anchor="middle" font-size="10" fill="#6c5842">Months</text></svg><div class="return-legend"><span><span class="legend-line"></span>Lead (locked)</span><span><span class="legend-line benchmark"></span>Primary benchmark</span></div></div></section>
+
+<section class="section"><h2>Rebuild Median vs Benchmark</h2><p class="muted">Rebuild median across 42 simulations over 120 months in the testing window. Primary benchmark shown for comparison.</p><p class="muted curve-stats">Median total multiple: 4.71x (CAGR 16.8%) · Benchmark total multiple: 1.51x (CAGR 4.2%)</p><div class="return-panel"><svg class="return-curve" viewBox="0 0 640 200" width="100%" height="200" preserveAspectRatio="none"><rect x="52.0" y="12.0" width="572.0" height="154.0" fill="none" stroke="rgba(22,33,30,0.18)" /><line x1="52.0" y1="166.00" x2="624.0" y2="166.00" stroke="rgba(22,33,30,0.08)" /><line x1="46.0" y1="166.00" x2="52.0" y2="166.00" stroke="rgba(22,33,30,0.35)" /><text x="42.0" y="169.00" text-anchor="end" font-size="10" fill="#6c5842">0.50</text><line x1="52.0" y1="114.67" x2="624.0" y2="114.67" stroke="rgba(22,33,30,0.08)" /><line x1="46.0" y1="114.67" x2="52.0" y2="114.67" stroke="rgba(22,33,30,0.35)" /><text x="42.0" y="117.67" text-anchor="end" font-size="10" fill="#6c5842">2.08</text><line x1="52.0" y1="63.33" x2="624.0" y2="63.33" stroke="rgba(22,33,30,0.08)" /><line x1="46.0" y1="63.33" x2="52.0" y2="63.33" stroke="rgba(22,33,30,0.35)" /><text x="42.0" y="66.33" text-anchor="end" font-size="10" fill="#6c5842">3.66</text><line x1="52.0" y1="12.00" x2="624.0" y2="12.00" stroke="rgba(22,33,30,0.08)" /><line x1="46.0" y1="12.00" x2="52.0" y2="12.00" stroke="rgba(22,33,30,0.35)" /><text x="42.0" y="15.00" text-anchor="end" font-size="10" fill="#6c5842">5.25</text><line x1="52.00" y1="166.0" x2="52.00" y2="172.0" stroke="rgba(22,33,30,0.35)" /><text x="52.00" y="186.0" text-anchor="middle" font-size="10" fill="#6c5842">0</text><line x1="338.00" y1="166.0" x2="338.00" y2="172.0" stroke="rgba(22,33,30,0.35)" /><text x="338.00" y="186.0" text-anchor="middle" font-size="10" fill="#6c5842">60</text><line x1="624.00" y1="166.0" x2="624.00" y2="172.0" stroke="rgba(22,33,30,0.35)" /><text x="624.00" y="186.0" text-anchor="middle" font-size="10" fill="#6c5842">120</text><polyline points="52.00,149.80 56.77,153.50 61.53,153.21 66.30,153.18 71.07,151.92 75.83,150.04 80.60,152.33 85.37,154.02 90.13,154.57 94.90,158.97 99.67,162.40 104.43,163.35 109.20,162.95 113.97,162.33 118.73,162.20 123.50,164.24 128.27,163.13 133.03,162.68 137.80,161.88 142.57,161.04 147.33,161.04 152.10,159.92 156.87,158.84 161.63,158.16 166.40,157.81 171.17,158.25 175.93,158.62 180.70,155.75 185.47,154.84 190.23,157.46 195.00,158.95 199.77,157.12 204.53,157.96 209.30,154.08 214.07,152.06 218.83,152.13 223.60,149.20 228.37,149.76 233.13,150.20 237.90,148.61 242.67,147.49 247.43,147.71 252.20,149.20 256.97,150.90 261.73,154.95 266.50,157.52 271.27,155.91 276.03,154.78 280.80,154.01 285.57,153.02 290.33,152.26 295.10,152.28 299.87,150.91 304.63,151.07 309.40,151.97 314.17,151.67 318.93,150.53 323.70,150.05 328.47,148.04 333.23,147.33 338.00,146.31 342.77,144.73 347.53,141.88 352.30,140.75 357.07,139.07 361.83,136.26 366.60,137.25 371.37,132.76 376.13,134.09 380.90,129.33 385.67,125.89 390.43,124.56 395.20,122.82 399.97,121.86 404.73,119.25 409.50,118.18 414.27,114.17 419.03,108.06 423.80,108.26 428.57,112.91 433.33,110.88 438.10,112.29 442.87,107.82 447.63,106.35 452.40,99.95 457.17,94.91 461.93,80.89 466.70,75.02 471.47,73.04 476.23,65.86 481.00,69.57 485.77,62.15 490.53,62.78 495.30,66.16 500.07,57.53 504.83,41.50 509.60,39.38 514.37,49.13 519.13,51.84 523.90,50.48 528.67,50.08 533.43,34.25 538.20,37.45 542.97,31.78 547.73,26.66 552.50,22.44 557.27,28.79 562.03,38.20 566.80,34.29 571.57,23.73 576.33,16.03 581.10,18.05 585.87,12.00 590.63,17.64 595.40,22.20 600.17,23.39 604.93,22.60 609.70,18.82 614.47,12.77 619.23,30.02 624.00,29.53" fill="none" stroke="#295741" stroke-width="2.6" /><polyline points="52.00,149.80 56.77,153.00 61.53,153.64 66.30,154.25 71.07,153.07 75.83,154.31 80.60,164.86 85.37,164.86 90.13,164.86 94.90,164.86 99.67,164.86 104.43,164.83 109.20,163.48 113.97,164.16 118.73,166.00 123.50,165.25 128.27,161.73 133.03,160.62 137.80,160.85 142.57,160.11 147.33,159.99 152.10,160.21 156.87,159.62 161.63,158.99 166.40,158.70 171.17,158.40 175.93,158.91 180.70,156.76 185.47,156.49 190.23,158.25 195.00,158.78 199.77,157.08 204.53,157.61 209.30,156.79 214.07,156.56 218.83,156.20 223.60,154.92 228.37,155.51 233.13,156.33 237.90,155.34 242.67,154.67 247.43,155.30 252.20,156.24 256.97,157.65 261.73,159.72 266.50,161.07 271.27,160.26 276.03,159.65 280.80,159.39 285.57,157.93 290.33,156.52 295.10,156.78 299.87,157.13 304.63,159.30 309.40,157.65 314.17,156.96 318.93,156.72 323.70,156.44 328.47,156.37 333.23,155.73 338.00,155.12 342.77,153.43 347.53,153.62 352.30,153.56 357.07,152.81 361.83,152.31 366.60,153.62 371.37,151.76 376.13,151.98 380.90,151.23 385.67,150.00 390.43,149.08 395.20,148.57 399.97,149.58 404.73,147.65 409.50,146.51 414.27,146.02 419.03,144.70 423.80,144.62 428.57,144.79 433.33,144.18 438.10,143.85 442.87,144.13 447.63,142.99 452.40,142.88 457.17,140.03 461.93,137.26 466.70,135.30 471.47,135.89 476.23,134.82 481.00,137.04 485.77,134.75 490.53,139.28 495.30,140.35 500.07,138.03 504.83,137.17 509.60,139.78 514.37,141.17 519.13,140.73 523.90,141.63 528.67,140.77 533.43,139.98 538.20,140.51 542.97,139.01 547.73,139.37 552.50,139.63 557.27,140.07 562.03,139.59 566.80,137.83 571.57,138.05 576.33,136.49 581.10,136.07 585.87,133.81 590.63,132.12 595.40,132.95 600.17,133.83 604.93,133.94 609.70,132.25 614.47,131.39 619.23,132.91 624.00,133.14" fill="none" stroke="#b06b1d" stroke-width="2" stroke-dasharray="5 4" /><text x="52.0" y="10.0" text-anchor="start" font-size="10" fill="#6c5842">Equity multiple</text><text x="338.00" y="194.0" text-anchor="middle" font-size="10" fill="#6c5842">Months</text></svg><div class="return-legend"><span><span class="legend-line"></span>Median simulation</span><span><span class="legend-line benchmark"></span>Primary benchmark</span></div></div></section>
+
+<section class="section"><h2>Metric Charts</h2><table class="metric-table"><thead><tr><th>Metric</th><th>Authoritative</th><th>Rebuild</th></tr></thead><tbody><tr><td>Median validation Sharpe (fold median)<div class="metric-note">higher is better</div></td><td><div class="bar-cell"><div class="bar-track"><div class="bar-fill auth" style="width:100.0%"></div></div><div class="bar-value">2.246</div></div></td><td><div class="bar-cell"><div class="bar-track"><div class="bar-fill rebuild" style="width:100.0%"></div></div><div class="bar-value">2.246</div></div></td></tr><tr><td>Resampled Sharpe (lower bound)<div class="metric-note">validation only</div></td><td><div class="bar-cell"><div class="bar-track"><div class="bar-fill auth" style="width:100.0%"></div></div><div class="bar-value">0.914</div></div></td><td><div class="bar-cell"><div class="bar-track"><div class="bar-fill rebuild" style="width:100.0%"></div></div><div class="bar-value">0.914</div></div></td></tr><tr><td>Deflated Sharpe score<div class="metric-note">luck-adjusted</div></td><td><div class="bar-cell"><div class="bar-track"><div class="bar-fill auth" style="width:100.0%"></div></div><div class="bar-value">0.277</div></div></td><td><div class="bar-cell"><div class="bar-track"><div class="bar-fill rebuild" style="width:100.0%"></div></div><div class="bar-value">0.277</div></div></td></tr><tr><td>PBO (lower is better)<div class="metric-note">diagnostic</div></td><td><div class="bar-cell"><div class="bar-track"><div class="bar-fill auth" style="width:100.0%"></div></div><div class="bar-value">13.1%</div></div></td><td><div class="bar-cell"><div class="bar-track"><div class="bar-fill rebuild" style="width:100.0%"></div></div><div class="bar-value">13.1%</div></div></td></tr><tr><td>Holdout Sharpe (base)<div class="metric-note">untouched OOS</div></td><td><div class="bar-cell"><div class="bar-track"><div class="bar-fill auth" style="width:0.0%"></div></div><div class="bar-value">n/a</div></div></td><td><div class="bar-cell"><div class="bar-track"><div class="bar-fill rebuild" style="width:100.0%"></div></div><div class="bar-value">1.516</div></div></td></tr></tbody></table><p class="muted" style="margin-top:10px;">Validation metrics are in-sample. Holdout uses the untouched out-of-sample window.</p></section>
+
+    <section class="section">
+      <h2>Exact Visual Paths</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>File</th>
+            <th>Why it matters</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><a href="dashboard.html">dashboard.html</a></td><td>Package landing page with the cleanest route through the main visuals.</td></tr>
+          <tr><td><a href="PROJECT_STATUS.html">PROJECT_STATUS.html</a></td><td>Fastest plain-English snapshot of the current repo truth.</td></tr>
+          <tr><td><a href="research_audit_dossier.html">research_audit_dossier.html</a></td><td>Employer-friendly written summary of what the repo currently proves.</td></tr>
+          <tr><td><a href="cadence_compare_summary/dashboard.html">cadence_compare_summary/dashboard.html</a></td><td>Selected candidate dashboard.</td></tr>
+          <tr><td><a href="cadence_compare_summary/cadence_comparison_report.html">cadence_compare_summary/cadence_comparison_report.html</a></td><td>Written summary of the selected package verdict.</td></tr>
+          <tr><td><a href="research_engine_rebuild/summary/dashboard.html">research_engine_rebuild/summary/dashboard.html</a></td><td>Experimental research-engine cadence summary (not authoritative).</td></tr>
+          <tr><td><a href="research_engine_rebuild/summary/cadence_comparison_report.html">research_engine_rebuild/summary/cadence_comparison_report.html</a></td><td>Experimental rebuild report rendered for readability.</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>

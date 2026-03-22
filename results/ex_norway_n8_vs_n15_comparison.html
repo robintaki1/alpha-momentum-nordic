@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ex-Norway Frozen Candidate Comparison</title>
+  <style>
+    body { margin:0; font-family:Georgia, serif; background:#f7f2e7; color:#17211a; }
+    main { max-width:1180px; margin:0 auto; padding:28px 20px 48px; }
+    section { background:rgba(255,250,241,.92); border:1px solid rgba(23,33,26,.12); border-radius:24px; padding:24px; box-shadow:0 18px 50px rgba(33,41,36,.08); margin-top:18px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin-top:16px; }
+    .card { background:#fffdf8; border:1px solid rgba(23,33,26,.12); border-radius:20px; padding:18px; }
+    .label { color:#6c5842; text-transform:uppercase; letter-spacing:.08em; font-size:.75rem; }
+    .value { font-size:1.3rem; margin-top:6px; overflow-wrap:anywhere; }
+    .muted { color:#5b6762; }
+    .eyebrow { text-transform:uppercase; letter-spacing:.12em; font-size:.72rem; color:#b06b1d; }
+    .callout { background:#fff7eb; border:1px solid rgba(176,107,29,.28); border-radius:16px; padding:12px 14px; margin-top:12px; }
+    .actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
+    a { color:#b06b1d; }
+    table { width:100%; border-collapse:collapse; margin-top:12px; }
+    th, td { border-bottom:1px solid rgba(23,33,26,.08); text-align:left; padding:8px; }
+    th { font-size:.75rem; text-transform:uppercase; color:#5d685f; letter-spacing:.05em; }
+    .candidate-picks { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:16px; }
+    .candidate-card h2 { margin-bottom:8px; overflow-wrap:anywhere; }
+    .stats { display:flex; flex-direction:column; gap:8px; margin-top:12px; }
+    .stat-row { display:flex; justify-content:space-between; gap:16px; border-bottom:1px solid rgba(23,33,26,.08); padding-bottom:6px; }
+    .stat-row span { color:#5b6762; }
+  </style>
+</head>
+<body>
+  <main>
+    <section>
+      <div class="eyebrow">Research Engine Comparison</div>
+      <h1>Ex-Norway Frozen Candidate Comparison</h1>
+      <p>Two frozen ex_norway candidates re-run under the same validation protocol, compared using validation-safe diagnostics.</p>
+      <div class="callout">
+        <strong>Integrity note.</strong>
+        <div class="muted">Both candidates were re-run as frozen hypotheses under the same ex_norway protocol. In these single-candidate reruns, PBO is intentionally n/a; the meaningful overfitting diagnostic is the original shared search PBO of 13.1% across 42 candidates and 252 CSCV combinations.</div>
+      </div>
+      <div class="callout">
+        <strong>Decision note.</strong>
+        <div class="muted">This page compares validation-safe diagnostics only. Final holdout artifacts remain linked for each frozen rerun, but they are not ranked side by side here because that would encourage post-hoc selection on the last untouched OOS window.</div>
+      </div>
+      <div class="grid">
+        <div class="card"><div class="label">Search Cadence</div><div class="value">Monthly</div><div class="muted">Original selection search context</div></div>
+        <div class="card"><div class="label">Shared Search PBO</div><div class="value">13.1%</div><div class="muted">42 candidates / 252 combos</div></div>
+        <div class="card"><div class="label">Incumbent</div><div class="value">rank #1</div><div class="muted">Originally selected: yes</div></div>
+        <div class="card"><div class="label">Challenger</div><div class="value">rank #6</div><div class="muted">Originally selected: no</div></div>
+      </div>
+    </section>
+    <section>
+      <h2>Quick Read</h2>
+      <p class="muted">Some protocol visuals are expected to match exactly, especially the walk-forward schedule and fold windows, because both frozen reruns use the same dates and validation structure. The useful differences are in the candidate-specific metrics and the strategy-specific curves inside each dashboard.</p>
+      <div class="callout">
+        <strong>Why they look so similar.</strong>
+        <div class="muted">These are both the same ex_norway thesis, with the same lookback, skip, and trend_filter family. The practical change is portfolio breadth: top_n 8 versus top_n 15. Their monthly validation return correlation is 0.929 and the median month-by-month validation return gap is 1.0%, so many validation charts naturally track each other closely.</div>
+      </div>
+      
+    <table>
+      <thead>
+        <tr>
+          <th>Metric</th>
+          <th>l12_s1_n8_strat=trend_filter</th>
+          <th>l12_s1_n15_strat=trend_filter</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Original search rank</td><td>#1</td><td>#6</td></tr><tr><td>Originally selected</td><td>yes</td><td>no</td></tr><tr><td>Frozen status</td><td>selected</td><td>selected</td></tr><tr><td>top_n</td><td>8</td><td>15</td></tr><tr><td>Fold passes</td><td>4/5</td><td>4/5</td></tr><tr><td>Bootstrap gate</td><td>yes</td><td>yes</td></tr><tr><td>Bootstrap CI low</td><td>0.660</td><td>0.668</td></tr><tr><td>Deflated Sharpe gate</td><td>yes</td><td>yes</td></tr><tr><td>Deflated Sharpe score</td><td>0.392</td><td>0.391</td></tr><tr><td>Fold-count gate</td><td>yes</td><td>yes</td></tr><tr><td>Neg-controls gate</td><td>yes</td><td>yes</td></tr><tr><td>Median validation Sharpe</td><td>1.854</td><td>2.052</td></tr><tr><td>Walk-forward Sharpe</td><td>1.358</td><td>1.355</td></tr><tr><td>MC Sharpe (median)</td><td>1.374</td><td>1.358</td></tr><tr><td>Frozen rerun PBO band</td><td>n/a</td><td>n/a</td></tr>
+      </tbody>
+    </table>
+    
+    </section>
+    <section>
+      <h2>Candidate Artifacts</h2>
+      <div class="candidate-picks">
+        
+    <div class="card candidate-card">
+      <div class="eyebrow">Incumbent</div>
+      <h2>l12_s1_n8_strat=trend_filter</h2>
+      <p class="muted">Frozen rerun under the same ex_norway validation protocol.</p>
+      <div class="stats">
+        <div class="stat-row"><span>Frozen status</span><strong>selected</strong></div><div class="stat-row"><span>Original search rank</span><strong>#1</strong></div><div class="stat-row"><span>Fold passes</span><strong>4/5</strong></div><div class="stat-row"><span>Bootstrap CI low</span><strong>0.660</strong></div><div class="stat-row"><span>Deflated Sharpe</span><strong>0.392</strong></div><div class="stat-row"><span>Walk-forward Sharpe</span><strong>1.358</strong></div><div class="stat-row"><span>Median validation Sharpe</span><strong>1.854</strong></div><div class="stat-row"><span>MC Sharpe (median)</span><strong>1.374</strong></div><div class="stat-row"><span>Neg-controls gate</span><strong>yes</strong></div>
+      </div>
+      <div class="actions">
+        <a href="pre_registered_candidate_l12_s1_n8_trend_filter/ex_norway/dashboard.html">Open standalone dashboard</a>
+        <a href="pre_registered_candidate_l12_s1_n8_trend_filter/ex_norway/selection_summary.json">selection_summary.json</a>
+        <a href="pre_registered_candidate_l12_s1_n8_trend_filter/ex_norway/holdout_results.json">holdout_results.json</a>
+      </div>
+      <p class="muted">Final holdout remains linked below as its own artifact and is intentionally not ranked side by side here.</p>
+    </div>
+    
+        
+    <div class="card candidate-card">
+      <div class="eyebrow">Challenger</div>
+      <h2>l12_s1_n15_strat=trend_filter</h2>
+      <p class="muted">Frozen rerun under the same ex_norway validation protocol.</p>
+      <div class="stats">
+        <div class="stat-row"><span>Frozen status</span><strong>selected</strong></div><div class="stat-row"><span>Original search rank</span><strong>#6</strong></div><div class="stat-row"><span>Fold passes</span><strong>4/5</strong></div><div class="stat-row"><span>Bootstrap CI low</span><strong>0.668</strong></div><div class="stat-row"><span>Deflated Sharpe</span><strong>0.391</strong></div><div class="stat-row"><span>Walk-forward Sharpe</span><strong>1.355</strong></div><div class="stat-row"><span>Median validation Sharpe</span><strong>2.052</strong></div><div class="stat-row"><span>MC Sharpe (median)</span><strong>1.358</strong></div><div class="stat-row"><span>Neg-controls gate</span><strong>yes</strong></div>
+      </div>
+      <div class="actions">
+        <a href="pre_registered_candidate_l12_s1_n15_trend_filter_ex_norway_only/ex_norway/dashboard.html">Open standalone dashboard</a>
+        <a href="pre_registered_candidate_l12_s1_n15_trend_filter_ex_norway_only/ex_norway/selection_summary.json">selection_summary.json</a>
+        <a href="pre_registered_candidate_l12_s1_n15_trend_filter_ex_norway_only/ex_norway/holdout_results.json">holdout_results.json</a>
+      </div>
+      <p class="muted">Final holdout remains linked below as its own artifact and is intentionally not ranked side by side here.</p>
+    </div>
+    
+      </div>
+    </section>
+    <section>
+      <h2>Standalone Dashboards</h2>
+      <p class="muted">Each frozen rerun still has its full native dashboard and its own holdout artifact. Open them individually from the cards above when you want the complete view without turning the final holdout into a side-by-side selector.</p>
+    </section>
+  </main>
+</body>
+</html>

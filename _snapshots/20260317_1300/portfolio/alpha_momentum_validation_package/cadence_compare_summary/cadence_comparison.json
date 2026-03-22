@@ -1,0 +1,32 @@
+{
+  "active_validated_strategy": true,
+  "authoritative_selection_mode": "certification_baseline",
+  "authoritative_selection_negative_controls": {
+    "block_shuffled_null": {
+      "pass_count": 179,
+      "run_count": 200
+    },
+    "cross_sectional_shuffle": {
+      "pass_count": 0,
+      "run_count": 500
+    }
+  },
+  "authoritative_selection_params": {
+    "l": 12,
+    "skip": 1,
+    "top_n": 5
+  },
+  "authoritative_selection_path": "C:\\Users\\robin\\Desktop\\alpha momentum\\results\\_timing_legacy_cert\\ex_norway\\1m\\selection_summary.json",
+  "authoritative_selection_pbo": 0.3412698412698413,
+  "authoritative_selection_status": "selected",
+  "authoritative_validation_model": "legacy_entry_exit_costs",
+  "cadence_summary_path": "results\\cadence_compare\\summary\\cadence_comparison.json",
+  "lead_monthly_pair_holdout_sharpe": 1.152884139153374,
+  "lead_monthly_pair_pbo": 0.3412698412698413,
+  "rebuild_lead_monthly_pair_pbo": 0.42857142857142855,
+  "rebuild_summary_available": true,
+  "rebuild_summary_path": "results\\cadence_compare_rebuild\\summary\\cadence_comparison.json",
+  "rebuild_verdict": "No cadence pair currently passes certification plus holdout in the rebuild run.",
+  "summary_scope": "selected_package_branch_only",
+  "verdict": "Selected package winner: Ex-Norway (Sweden and Denmark only) / Monthly with holdout Sharpe 1.153."
+}

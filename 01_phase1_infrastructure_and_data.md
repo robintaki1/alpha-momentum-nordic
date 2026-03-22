@@ -2,6 +2,12 @@
 
 This document is the first execution spec under the PRD. `AlphaMomentum_PRD_v4.md` is still the master document, but this file translates Phase 1 into a decision-complete implementation spec so the next agent or developer can build the pipeline without guessing.
 
+## Current Status Note
+
+As of `2026-03-15`, Phase 1 is good enough to support the research system and cadence comparison, but one meaningful infrastructure branch is still unfinished: the PTI market-cap pipeline needed for the liquid-subset diagnostic. If research continues, that is the highest-value unresolved Phase 1 extension.
+
+Also note that the corrected baseline universe now means `Stockholm + Copenhagen + Oslo` main markets.
+
 ## 1. Target State and Done Definition
 
 Phase 1 is complete only if all four scripts below work together and `validate.py` returns exit code `0`.
@@ -16,23 +22,22 @@ Scripts in scope:
 Phase 1 gives the green light to Phase 2 only if all of the following are true:
 
 - all required artifacts exist in `data/`
-- `security_status_pti_monthly.parquet` exists and `universe_pti.parquet` contains `Full Nordics`, `SE-only`, and liquid-subset eligibility plus the tradability inputs required by later-phase capacity screens
+- `security_status_pti_monthly.parquet` exists and `universe_pti.parquet` contains `Full Nordics`, `SE-only`, and the liquid-subset fields; `largest-third-by-market-cap` itself is required only after a real PTI market-cap source has been wired in
 - `prices_adjusted_daily.parquet` exists as a locally reconstructed point-in-time-safe adjusted series and validates against raw prices and corporate actions
 - delistings, corporate actions, and FX series are loaded and validated, including vendor active/delisted roster reconciliation with no unresolved in-scope price histories ending more than `30` calendar days before `end_date`
 - the Phase 1 artifacts are sufficient to rebuild the current-month eligible universe without manual `live_tickers.csv`
 - benchmark prices exist for both the Nordic and global benchmark
-- the C++ module and the Python logic return the same answers on a deterministic fixture
+- data and universe validation pass under the Python-only pipeline (C++ parity is optional in the paper-trading branch)
 - `validate.py` writes a clear final line: `PASS: Phase 1 green`
 
 ## 2. Run Order
 
-The run order is fixed and must not be changed in v1:
+The run order is fixed and must not be changed in the paper-trading branch:
 
-1. build the C++ module according to the PRD
-2. run `download_eodhd.py`
-3. run `download_riksbank_fx.py`
-4. run `build_universe.py`
-5. run `validate.py`
+1. run `download_eodhd.py`
+2. run `download_riksbank_fx.py`
+3. run `build_universe.py`
+4. run `validate.py`
 
 If a step fails, the next step must not be run as if everything were complete.
 
@@ -43,13 +48,14 @@ The following defaults apply throughout Phase 1 unless the CLI explicitly overri
 - `start_date = 1999-01-01`
 - `end_date = auto`, which means the most recently completed trading day in `Europe/Stockholm`
 - `base_currency = SEK`
-- `universe_mode = full_nordics_main_markets`
+- `universe_mode = full_nordics_main_markets`, interpreted in the corrected repo as `Stockholm + Copenhagen + Oslo` main markets
 - `run_se_only_diagnostic = true`
 - `min_listing_months = 18`
 - `min_price_sek = 20`
 - `sim_capital_sek = 250000`
 - `max_order_fraction_of_60d_median_daily_value = 0.01`
 - `include_delisted = true`
+- `run_liquid_subset_diagnostic = false` unless a real PTI market-cap input is present
 - `primary_passive_benchmark = XACT Norden`
 - `secondary_opportunity_cost_benchmark = Vanguard FTSE All-World UCITS ETF`
 
@@ -111,6 +117,7 @@ python python/download_eodhd.py \
   --end auto \
   --universe-mode full_nordics_main_markets \
   --include-delisted true \
+  --main-market-allowlist data/main_market_allowlist.csv \
   --out-dir data
 ```
 
@@ -119,6 +126,7 @@ Inputs:
 - `EODHD_API_KEY` via environment or `config.py`
 - normalized exchange and instrument configuration in the script
 - benchmark configuration in the script or `config.py`, including configured benchmark IDs and benchmark types
+- optional curated `data/main_market_allowlist.csv` override when EODHD's exchange rosters are too broad to isolate strict main-market listings
 
 Outputs:
 
@@ -130,12 +138,60 @@ Outputs:
 
 Decisions that must be hardcoded in v1:
 
-- the main universe is only `Nasdaq Stockholm`, `Nasdaq Helsinki`, `Nasdaq Copenhagen`, `Oslo Bors`
+- the main universe is only `Nasdaq Stockholm`, `Nasdaq Copenhagen`, `Oslo Bors`
 - only common shares with a primary Nordic listing may be included
 - `First North`, `NGM`, `Spotlight`, `Euronext Growth`, ETFs, certificates, preferred shares, subscription rights, ADR/GDR, SPAC-like vehicles, and other non-ordinary equity instruments must not be loaded into the main universe
 - `security_id` must be vendor-stable and in v1 must be set to `eodhd_symbol`
 - active and delisted names must not be mixed together; status must be explicit
 - vendor roster membership must be preserved per security as `active_only`, `delisted_only`, or `both`
+- if `data/main_market_allowlist.csv` exists, it is authoritative for main-market membership in v1 and must be applied to both active and delisted rosters before any price download starts
+
+Allowlist schema:
+
+- file path: `data/main_market_allowlist.csv`
+- CSV columns: `security_id`, `isin`, `company_name`, `exchange_group`, `notes`, `include`
+- at least one of `security_id` or `isin` must be populated per row
+- `include` is optional; blank means `true`
+- matching is allowed on `security_id` or `isin`
+- a starter schema/example lives at `data/main_market_allowlist.template.csv`
+
+Allowlist helper workflow:
+
+Preferred path: build the current main-market allowlist from official exchange sources first, then use manual review only as a fallback for unresolved rows.
+
+```bash
+python python/build_main_market_allowlist.py \
+  --mode official \
+  --out data/main_market_allowlist.csv \
+  --reconciliation-out data/main_market_allowlist_official_reconciliation.csv
+```
+
+- `--mode official` pulls the current `Main Market` roster from Nasdaq Nordic's official screener and the current `Oslo Børs` roster from Euronext's official Oslo equities download, then maps those rows onto exact EODHD `security_id` values
+- unmatched official rows are written to `data/main_market_allowlist_official_reconciliation.csv` for audit
+- the expected unmatched set is mostly preferred shares and `TR`/subscription-right style instruments that are intentionally excluded from the common-share universe
+- if the automatic official pass looks reasonable, use `data/main_market_allowlist.csv` directly and skip the manual review workflow below
+
+```bash
+python python/build_main_market_allowlist.py \
+  --mode review \
+  --include-delisted true \
+  --existing-allowlist data/main_market_allowlist.csv \
+  --out data/main_market_allowlist_review.csv
+```
+
+- open `data/main_market_allowlist_review.csv` in Excel or another CSV editor
+- mark `include=true` for the securities that really belong to the strict Nordic main-market universe
+- keep the seeded rows that are already known-good unless you find a problem
+
+```bash
+python python/build_main_market_allowlist.py \
+  --mode finalize \
+  --review-input data/main_market_allowlist_review.csv \
+  --out data/main_market_allowlist.csv
+```
+
+- rerunning `--mode review` is safe; it reseeds existing approved rows from `data/main_market_allowlist.csv`
+- `--mode finalize` keeps only rows marked with `include=true`
 
 Normalization rules:
 
@@ -153,6 +209,8 @@ Error handling and stop conditions:
 - if benchmark series cannot be loaded => exit code `1`
 - if a benchmark series cannot be mapped to the configured benchmark ID and `benchmark_type` => exit code `1`
 - if vendor active/delisted roster membership cannot be reconciled for an in-scope security => exit code `1`
+- if EODHD active rosters are broader than the strict main-market universe and no curated allowlist is present => exit code `1`
+- if a curated allowlist is present but contains rows that cannot be matched back to EODHD Nordic rosters => exit code `1`
 - if more than `1%` of symbol downloads fail => exit code `1`
 - if symbol failures are `<= 1%`, the script may still stop with `1`; v1 must be strict and not allow silent partial success
 - if output contains duplicates on `(security_id, date)` => exit code `1`
@@ -204,7 +262,8 @@ Purpose:
 - construct locally reconstructed point-in-time-safe adjusted prices
 - derive monthly point-in-time security status
 - create a point-in-time universe per month
-- create `Full Nordics`, `SE-only`, and a liquidity-near subset
+- create `Full Nordics`, `SE-only`, and, when PTI market-cap data exists, a liquidity-near subset
+- preserve enough exchange/country metadata to support later country-level diagnostics and `leave-one-country-out` robustness tests
 - mark exact variant-specific exclusion reasons per security and month
 
 CLI:
@@ -214,7 +273,7 @@ python python/build_universe.py \
   --input-dir data \
   --universe-mode full_nordics_main_markets \
   --emit-se-only true \
-  --emit-liquid-subset true \
+  --emit-liquid-subset false \
   --out data/universe_pti.parquet
 ```
 
@@ -225,6 +284,7 @@ Inputs:
 - `data/corporate_actions.parquet`
 - `data/delisted_metadata.parquet`
 - `data/riksbank_fx_daily.parquet`
+- optional: `data/market_cap_monthly.parquet`
 
 Output:
 
@@ -256,13 +316,14 @@ Universe variants:
 
 - `Full Nordics`: all eligible securities on Nordic main lists
 - `SE-only`: same rules but only if the point-in-time primary listing venue is `Nasdaq Stockholm` main market; issuer domicile must not be used for this filter
-- `largest-third-by-market-cap`: the top third of already eligible securities in each month, sorted by point-in-time `market_cap_sek_asof_anchor` from `security_status_pti_monthly.parquet`
+- `largest-third-by-market-cap`: the top third of already eligible securities in each month, sorted by point-in-time `market_cap_sek_asof_anchor` from `security_status_pti_monthly.parquet`; this variant stays suspended until a real PTI market-cap source is available
 
 Market-cap rule:
 
 - `build_universe.py` must use point-in-time monthly market cap from `security_status_pti_monthly.parquet`
-- if `market_cap` is missing for more than `5%` of otherwise eligible securities in a rebalance month, the script must exit with code `1`
-- v1 must not silently switch to daily value as a fallback for this subset; if market cap is missing, that is a data problem that must stop the run
+- v1 must not silently switch to daily value as a fallback for this subset
+- if `market_cap` is missing for more than `5%` of otherwise eligible securities in a rebalance month, `largest-third-by-market-cap` must remain disabled for that run and every otherwise eligible row must carry `exclusion_reason_liquid_subset = market_cap_data_unavailable`
+- while the subset is disabled by configuration rather than missing data, every otherwise eligible row must carry `exclusion_reason_liquid_subset = liquid_subset_disabled`
 
 Variant-specific exclusion reasons that must be explicit in the output:
 
@@ -278,6 +339,8 @@ Variant-specific exclusion reasons that must be explicit in the output:
 - `bad_corporate_action_data`
 - `bad_outlier_data`
 - `outside_liquid_subset_cut`
+- `market_cap_data_unavailable`
+- `liquid_subset_disabled`
 
 Error handling and stop conditions:
 
@@ -292,21 +355,20 @@ Error handling and stop conditions:
 Purpose:
 
 - validate that Phase 1 is logically and technically complete
-- check data artifacts, schemas, data quality, FX, universe, and C++/Python parity
+- check data artifacts, schemas, data quality, FX, and universe integrity
 
 CLI:
 
 ```bash
 python python/validate.py \
   --input-dir data \
-  --require-cpp true \
+  --require-cpp false \
   --require-benchmarks true
 ```
 
 Inputs:
 
 - all required artifacts in `data/`
-- built C++ module in the project root or a defined import path
 - reference logic in `engine.py`
 
 Output:
@@ -652,15 +714,15 @@ If `asof_trade_date < anchor_trade_date`, the row may remain in this file for di
 - benchmark series do not cover the full reporting and evaluation window without explicit justification
 - configured benchmark monthly sampling does not align with the strategy's monthly convention
 
-### 7.7 C++ parity
+### 7.7 C++ parity (Optional)
 
-`validate.py` must build or read a small deterministic fixture from real Phase 1 data and verify:
+If `--require-cpp true` is used, `validate.py` must build or read a small deterministic fixture from real Phase 1 data and verify:
 
 - the same signal values in Python and C++ within tolerance `1e-10`
 - the same sort order for top names in the fixture month
 - the same number of eligible securities after filtering
 
-If the C++ module is missing or cannot be imported in Phase 1, `validate.py` must fail.
+If the C++ module is missing or cannot be imported while `--require-cpp true`, `validate.py` must fail. When `--require-cpp false`, this section is skipped.
 
 ## 8. Green Light to Phase 2
 
@@ -670,7 +732,7 @@ Phase 2 may start only if everything below is true:
 - `download_riksbank_fx.py` succeeded without missing currencies
 - the latest FX observation on or before `end_date` for each required currency is not stale by more than `7` calendar days
 - `build_universe.py` created `security_status_pti_monthly.parquet`, `prices_adjusted_daily.parquet`, and `universe_pti.parquet`
-- `universe_pti.parquet` contains `Full Nordics`, `SE-only`, and liquid-subset eligibility plus the tradability inputs required by later-phase capacity screens
+- `universe_pti.parquet` contains `Full Nordics`, `SE-only`, and the liquid-subset fields plus the tradability inputs required by later-phase capacity screens; if PTI market-cap data is absent, the liquid-subset variant is explicitly suspended rather than approximated
 - the Phase 1 artifacts are sufficient to rebuild the current-month eligible universe without manual `live_tickers.csv`
 - delisting roster reconciliation is complete and there are no unresolved in-scope price histories ending more than `30` calendar days before `end_date`
 - `validate.py` returned exit code `0`
@@ -681,11 +743,8 @@ If any point fails, the status must be `Phase 1 not complete`.
 
 ## 9. Subsequent Docs
 
-When this spec is implemented and stable, the later markdown specs should be organized like this:
+In the trimmed paper-trading branch, the primary downstream operating spec is:
 
-1. `02_phase2_research_validation.md` — current combined Phase 2 and Phase 3 spec
-2. Optional future split docs for Phase 4 and Phase 5 operations if those procedures later need their own markdown specs
+1. `04_phase4_forward_monitoring_and_governance.md` — active paper-trading operations
 
-The later documents must not be written as if Phase 1 already works unless `validate.py` is actually green.
-
-The later documents must use the Phase 1 artifacts as the source of truth for rebuilding the live universe and must not reintroduce `live_tickers.csv` as a curated live-universe source.
+The Phase 1 artifacts remain the source of truth for rebuilding the live universe and must not reintroduce `live_tickers.csv` as a curated live-universe source.

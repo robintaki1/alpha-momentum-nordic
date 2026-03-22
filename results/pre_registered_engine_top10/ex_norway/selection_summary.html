@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Certification Baseline Summary</title>
+  <style>
+    body { margin:0; font-family:Georgia, serif; background:#f7f2e7; color:#17211a; }
+    main { max-width:980px; margin:0 auto; padding:28px 20px 48px; }
+    section { background:rgba(255,250,241,.92); border:1px solid rgba(23,33,26,.12); border-radius:24px; padding:24px; box-shadow:0 18px 50px rgba(33,41,36,.08); margin-top:18px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; }
+    .card { background:#fffdf8; border:1px solid rgba(23,33,26,.12); border-radius:18px; padding:14px; }
+    .label { text-transform:uppercase; letter-spacing:.1em; font-size:.72rem; color:#6c5842; }
+    .value { font-size:1.1rem; margin-top:4px; }
+    .muted { color:#5b6762; }
+    table { width:100%; border-collapse:collapse; margin-top:12px; }
+    th, td { border-bottom:1px solid rgba(23,33,26,.08); text-align:left; padding:8px; }
+    th { font-size:.75rem; text-transform:uppercase; color:#5d685f; letter-spacing:.05em; }
+    a { color:#b06b1d; }
+  </style>
+</head>
+<body>
+  <main>
+    <section>
+      <h1>Certification Baseline Summary</h1>
+      <p>certification_baseline diagnostics for this thesis.</p>
+      <a href="dashboard.html">Back to thesis dashboard</a>
+    </section>
+    <section>
+      <h2>Status Snapshot</h2>
+      <div class="grid">
+        <div class="card"><div class="label">Selection Status</div><div class="value">pbo_hard_cutoff</div></div>
+        <div class="card"><div class="label">PBO</div><div class="value">100.0%</div></div>
+        <div class="card"><div class="label">PBO Band</div><div class="value">hard_cutoff</div></div>
+        <div class="card"><div class="label">PBO Thresholds</div><div class="value">30.0% / 50.0%</div></div>
+        <div class="card"><div class="label">Candidates Tested</div><div class="value">1</div></div>
+        <div class="card"><div class="label">Negative Controls</div><div class="value">2/500 · 61/200</div></div>
+      </div>
+    </section>
+    <section>
+      <h2>Top Candidates</h2>
+      <table>
+        <thead>
+          <tr><th>Candidate</th><th>Params</th><th>Median Sharpe</th><th>Fold Passes</th><th>Bootstrap</th><th>Deflated</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>l12_s1_n10_strat=trend_filter_ma12</td><td>L=12 / skip=1 / top_n=10 / strat=trend_filter_ma12 / trend_ma=12</td><td>1.945</td><td>4</td><td>yes</td><td>yes</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section>
+      <h2>Walk-Forward & Monte Carlo</h2>
+      <div class="grid">
+        <div class="card">
+          <div class="label">Walk-Forward Status</div>
+          <div class="value">ok</div>
+          <div class="muted">Combined Sharpe: 1.365</div>
+          <div class="muted">Total Return: 638.2%</div>
+          <div class="muted">Max Drawdown: 20.0%</div>
+        </div>
+        <div class="card">
+          <div class="label">Monte Carlo (Sharpe)</div>
+          <div class="value">1.370 (0.817 - 1.955)</div>
+          <div class="muted">Candidate: l12_s1_n10_strat=trend_filter_ma12</div>
+        </div>
+        <div class="card">
+          <div class="label">Monte Carlo (Total Return)</div>
+          <div class="value">639.0% (194.2% - 1810.9%)</div>
+          <div class="muted">Blocks: 6 months · Samples: 2000</div>
+        </div>
+        <div class="card">
+          <div class="label">Monte Carlo (Max Drawdown)</div>
+          <div class="value">20.0% (7.8% - 26.6%)</div>
+          <div class="muted">Median (p05 - p95) from bootstrap paths.</div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>Parameter Sensitivity</h2>
+      <table>
+        <thead>
+          <tr><th>Parameter</th><th>Best</th><th>Worst</th><th>Median Spread</th><th>Correlation</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Lookback</td><td>12</td><td>12</td><td>0.000</td><td>n/a</td></tr>
+<tr><td>Skip</td><td>1</td><td>1</td><td>0.000</td><td>n/a</td></tr>
+<tr><td>Top N</td><td>10</td><td>10</td><td>0.000</td><td>n/a</td></tr>
+<tr><td>Strategy</td><td>trend_filter_ma12</td><td>trend_filter_ma12</td><td>0.000</td><td>n/a</td></tr>
+        </tbody>
+      </table>
+      <p class="muted" style="margin-top:8px;">Spread is based on median validation Sharpe by parameter value.</p>
+    </section>
+  </main>
+</body>
+</html>

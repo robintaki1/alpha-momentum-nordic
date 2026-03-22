@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Holdout Diagnostics</title>
+  <style>
+    body { margin:0; font-family:Georgia, serif; background:#f7f2e7; color:#17211a; }
+    main { max-width:980px; margin:0 auto; padding:28px 20px 48px; }
+    section { background:rgba(255,250,241,.92); border:1px solid rgba(23,33,26,.12); border-radius:24px; padding:24px; box-shadow:0 18px 50px rgba(33,41,36,.08); margin-top:18px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
+    .card { background:#fffdf8; border:1px solid rgba(23,33,26,.12); border-radius:18px; padding:14px; }
+    .label { text-transform:uppercase; letter-spacing:.1em; font-size:.72rem; color:#6c5842; }
+    .value { font-size:1.1rem; margin-top:4px; }
+    .muted { color:#5b6762; }
+    .badge-row { display:flex; align-items:center; gap:8px; margin:6px 0 6px; }
+    .badge { display:inline-block; padding:4px 8px; border-radius:999px; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; font-weight:700; }
+    .badge.good { background:#dcefe3; color:#2f5c46; border:1px solid #a9c7b4; }
+    .badge.caution { background:#f4ead7; color:#7a5a25; border:1px solid #d9c59a; }
+    .badge.weak { background:#f3d7d7; color:#7a2f2f; border:1px solid #d6a3a3; }
+    .badge.neutral { background:#ece7dd; color:#6c5842; border:1px solid #d7cdbc; }
+    .card.full { grid-column: 1 / -1; }
+    a { color:#b06b1d; }
+    table { width:100%; border-collapse:collapse; margin-top:12px; }
+    th, td { border-bottom:1px solid rgba(23,33,26,.08); text-align:left; padding:8px; }
+    th { font-size:.75rem; text-transform:uppercase; color:#5d685f; letter-spacing:.05em; }
+  </style>
+</head>
+<body>
+  <main>
+    <section>
+      <p class="label">Phase 3</p>
+      <h1>Holdout Diagnostics</h1>
+      <p>Phase 3: untouched holdout evaluation for the locked certification candidate (if any).</p>
+      <p class="muted"><strong>Timeframe:</strong> This page is the untouched Phase 3 holdout for 2018-01 to 2026-01. Any charts below use that window unless they explicitly say they are Phase 2 lineage charts.</p>
+      <a href="dashboard.html">Back to pair dashboard</a>
+    </section>
+    <section><h2>Phase Map</h2><div class="grid"><div class="card"><div class="label">Phase 1</div><div class="value">Infrastructure &amp; Data</div><div class="muted">Gate this cycle with <code>validate.py</code>. This stage checks the engine and core artifacts before any research result is trusted. <a href="phase1_summary.html">Open Phase 1 validation.</a></div></div><div class="card"><div class="label">Phase 2</div><div class="value">Research Certification</div><div class="muted">Selection boundary 2000-01 to 2017-12. Validation windows 2008-01 to 2017-12. <a href="selection_summary.html">Open Phase 2 certification.</a></div></div><div class="card"><div class="label">Phase 3</div><div class="value">Untouched Holdout</div><div class="muted">Official holdout window 2018-01 to 2026-01. <a href="walk_forward_results.html">Open Phase 3 holdout.</a></div></div><div class="card"><div class="label">Phase 4</div><div class="value">Paper Trading</div><div class="muted">Only unlock after the frozen Phase 3 result is accepted.</div></div></div></section>
+    
+    <section>
+      <h2>Phase 1-4 Validation Funnel</h2>
+      <p class="muted">This report uses a strict phase ladder before any paper trading. Phase 1 is the infrastructure/data gate, Phase 2 is research certification on 2000-01 to 2017-12, Phase 3 is the untouched final holdout on 2018-01 to 2026-01, and Phase 4 only starts after Phase 3 passes.</p>
+      <div class="grid">
+        <div class="card">
+          <div class="label">Phase 1. Data / Engine Gate</div>
+          <div class="value">2000-01 to 2017-12</div>
+          <div class="muted">This page assumes `validate.py` is already green. Parameters are chosen only after the Phase 1 data/engine gate is clear. Candidates tested: 42. <a href="selection_summary.html">Open certification summary</a>.</div>
+        </div>
+        <div class="card">
+          <div class="label">Phase 2A. Repeated OOS Folds</div>
+          <div class="value">n/a</div>
+          <div class="muted">Validation windows n/a. 0/n/a folds clear Sharpe &gt;= 0.40. Combined Sharpe n/a.</div>
+        </div>
+        <div class="card">
+          <div class="label">Phase 2B. Anti-Overfitting Checks</div>
+          <div class="value">PBO 13.1%</div>
+          <div class="muted">Selection status selected. Bootstrap CI low 0.914. Deflated Sharpe 0.277. Cross shuffle 25/500; block null 92/200.</div>
+        </div>
+        <div class="card">
+          <div class="label">Phase 3. Untouched Final Holdout</div>
+          <div class="value">2018-01 to 2026-01</div>
+          <div class="muted">Holdout passed. Net Sharpe 1.516. Phase 4 eligible: True. <a href="walk_forward_results.html">Open holdout diagnostics</a>.</div>
+        </div>
+        <div class="card">
+          <div class="label">Phase 4. Paper Trading</div>
+          <div class="value">Unlocked</div>
+          <div class="muted">Phase 4 may begin now because the untouched 2018-01 to 2026-01 holdout passed for this thesis. Operational paper-trading belongs in the forward-monitor dashboards, not this validation funnel.</div>
+        </div>
+      </div>
+    </section>
+    
+    <section>
+      <h2>Boundary Insight</h2>
+      <p class="muted"><strong>Timeframe:</strong> The boundary chart spans Phase 2 research 2000-01 to 2017-12, the untouched Phase 3 holdout 2018-01 to 2026-01, and the future Phase 4 period after 2026-02.</p>
+      <p class="muted"><strong>What this page is testing:</strong> the orange holdout block is the single post-selection evaluation window. It is not another rolling walk-forward stage on this shared holdout page.</p>
+      <div class="grid">
+        <div class="card" style="grid-column:1 / -1;"><div class="chart-block"><div class="chart-title">Test Period vs After-Test Period</div><svg viewBox="0 0 760 118" class="chart"><rect x="28.0" y="22.0" width="461.5" height="54" fill="#d9cab8" stroke="#8f7b5f" stroke-width="1"></rect><rect x="489.5" y="22.0" width="207.2" height="54" fill="#eadca7" stroke="#8f7b5f" stroke-width="2"></rect><rect x="696.7" y="22.0" width="51.3" height="54" fill="#efe6d7" stroke="#8f7b5f" stroke-width="1"></rect><line x1="489.5" y1="16" x2="489.5" y2="86" stroke="#17211a" stroke-width="3"></line><line x1="696.7" y1="16" x2="696.7" y2="86" stroke="#17211a" stroke-width="3"></line><line x1="28.0" y1="78" x2="28.0" y2="84" stroke="#d9cbb6" stroke-width="1"></line><line x1="171.1" y1="78" x2="171.1" y2="84" stroke="#d9cbb6" stroke-width="1"></line><line x1="314.3" y1="78" x2="314.3" y2="84" stroke="#d9cbb6" stroke-width="1"></line><line x1="459.6" y1="78" x2="459.6" y2="84" stroke="#d9cbb6" stroke-width="1"></line><line x1="602.7" y1="78" x2="602.7" y2="84" stroke="#d9cbb6" stroke-width="1"></line><line x1="745.9" y1="78" x2="745.9" y2="84" stroke="#d9cbb6" stroke-width="1"></line><text x="258.7" y="46.0" text-anchor="middle" font-size="11" font-weight="700">Selection history</text><text x="258.7" y="60.0" text-anchor="middle" font-size="9">Phase 2 research and locking</text><text x="593.1" y="46.0" text-anchor="middle" font-size="11" font-weight="700">One-shot holdout</text><text x="593.1" y="60.0" text-anchor="middle" font-size="9">this page&#x27;s test window</text><text x="28.0" y="110" text-anchor="middle">2000</text><text x="171.1" y="110" text-anchor="middle">2005</text><text x="314.3" y="110" text-anchor="middle">2011</text><text x="459.6" y="110" text-anchor="middle">2016</text><text x="602.7" y="110" text-anchor="middle">2022</text><text x="745.9" y="110" text-anchor="middle">2028</text></svg><div class="chart-note"><span style="display:inline-block;width:12px;height:12px;background:#d9cab8;margin-right:6px;border-radius:2px;"></span><strong>Selection history</strong>: 2000-01 to 2017-12 - Phase 2 research and locking</div><div class="chart-note"><span style="display:inline-block;width:12px;height:12px;background:#eadca7;margin-right:6px;border-radius:2px;"></span><strong>One-shot holdout</strong>: 2018-01 to 2026-01 - this page&#x27;s test window</div><div class="chart-note"><span style="display:inline-block;width:12px;height:12px;background:#efe6d7;margin-right:6px;border-radius:2px;"></span><strong>After holdout</strong>: 2026-02 to 2028-01 - paper/live or future appended data</div><div class="chart-note"><strong>Read:</strong> This page is meant to be a one-shot test: the candidate should already be frozen before the orange window begins.</div></div></div>
+        <div class="card" style="grid-column:1 / -1;"><div class="muted">Walk-forward ladder not available.</div></div>
+      </div>
+    </section>
+    <section>
+      <h2>Holdout Status</h2>
+      <div class="grid">
+        <div class="card"><div class="label">Status</div><div class="value">n/a</div></div>
+        <div class="card"><div class="label">Phase 4 Eligible</div><div class="value">True</div></div>
+        <div class="card"><div class="label">Base Holdout Sharpe</div><div class="value">1.516</div></div>
+        <div class="card"><div class="label">Sharpe Gate</div><div class="value">True</div></div>
+        <div class="card"><div class="label">Benchmark Gate</div><div class="value">True</div></div>
+      </div>
+    </section>
+    <section>
+      <h2>Holdout Window</h2>
+      <div class="grid">
+        <div class="card"><div class="label">Window</div><div class="value">2018-01 to 2026-01</div></div>
+        <div class="card"><div class="label">Period Label</div><div class="value">months</div></div>
+        <div class="card"><div class="label">Periods per Year</div><div class="value">12</div></div>
+      </div>
+    </section>
+    <section>
+      <h2>Primary Track (Holdout)</h2>
+      <p class="muted"><strong>Timeframe:</strong> Primary-track metrics and equity use the holdout window 2018-01 to 2026-01 only.</p>
+      <div class="grid">
+        <div class="card"><div class="label">Track</div><div class="value">Full Nordics / next_open / base / cost=tiered_v1</div></div>
+        <div class="card"><div class="label">Net Sharpe</div><div class="value">1.516</div></div>
+        <div class="card"><div class="label">Total Return</div><div class="value">1032.9%</div></div>
+        <div class="card"><div class="label">Max Drawdown</div><div class="value">24.6%</div></div>
+        <div class="card"><div class="label">Beats Benchmark</div><div class="value">True</div></div>
+        <div class="card"><div class="label">Benchmark Total Return</div><div class="value">149.3%</div></div>
+      </div>
+    </section>
+    <section>
+      <h2>Primary Track Equity</h2>
+      <p class="muted"><strong>Timeframe:</strong> Return curve uses the frozen holdout series from 2018-01 to 2026-01 on the primary track.</p>
+      <div class="muted">Return curve not available (rerun rebuild to populate return series).</div>
+      <p class="muted" style="margin-top:10px;">Gold line = strategy; dashed = XACT Norden if available.</p>
+    </section>
+    <section>
+      <h2>Track Comparison</h2>
+      <p class="muted"><strong>Timeframe:</strong> Every row below is evaluated on the same Phase 3 holdout window 2018-01 to 2026-01.</p>
+      <table><thead><tr><th>Track</th><th>Sharpe</th><th>CAGR</th><th>Total Return</th><th>Benchmark Return</th><th>Max Drawdown</th><th>Beats Benchmark</th></tr></thead><tbody><tr><td>Full Nordics / next_close / base</td><td>1.534</td><td>36.0%</td><td>1100.1%</td><td>149.3%</td><td>25.2%</td><td>True</td></tr><tr><td>Full Nordics / next_close / high</td><td>1.514</td><td>35.4%</td><td>1057.1%</td><td>149.3%</td><td>25.3%</td><td>True</td></tr><tr><td>Full Nordics / next_close / low</td><td>1.546</td><td>36.4%</td><td>1126.6%</td><td>149.3%</td><td>25.2%</td><td>True</td></tr><tr><td>Full Nordics / next_open / base</td><td>1.516</td><td>35.0%</td><td>1032.9%</td><td>149.3%</td><td>24.6%</td><td>True</td></tr><tr><td>Full Nordics / next_open / high</td><td>1.495</td><td>34.4%</td><td>992.3%</td><td>149.3%</td><td>24.6%</td><td>True</td></tr><tr><td>Full Nordics / next_open / low</td><td>1.528</td><td>35.4%</td><td>1057.9%</td><td>149.3%</td><td>24.6%</td><td>True</td></tr><tr><td>SE-only / next_close / base</td><td>1.393</td><td>29.9%</td><td>730.9%</td><td>149.3%</td><td>24.0%</td><td>True</td></tr><tr><td>SE-only / next_close / high</td><td>1.393</td><td>29.9%</td><td>730.9%</td><td>149.3%</td><td>24.0%</td><td>True</td></tr><tr><td>SE-only / next_close / low</td><td>1.393</td><td>29.9%</td><td>730.9%</td><td>149.3%</td><td>24.0%</td><td>True</td></tr><tr><td>SE-only / next_open / base</td><td>1.378</td><td>29.5%</td><td>710.0%</td><td>149.3%</td><td>24.6%</td><td>True</td></tr><tr><td>SE-only / next_open / high</td><td>1.378</td><td>29.5%</td><td>710.0%</td><td>149.3%</td><td>24.6%</td><td>True</td></tr><tr><td>SE-only / next_open / low</td><td>1.378</td><td>29.5%</td><td>710.0%</td><td>149.3%</td><td>24.6%</td><td>True</td></tr><tr><td>largest-third-by-market-cap / next_close / base</td><td>0.000</td><td>0.0%</td><td>0.0%</td><td>149.3%</td><td>0.0%</td><td>False</td></tr><tr><td>largest-third-by-market-cap / next_close / high</td><td>0.000</td><td>0.0%</td><td>0.0%</td><td>149.3%</td><td>0.0%</td><td>False</td></tr><tr><td>largest-third-by-market-cap / next_close / low</td><td>0.000</td><td>0.0%</td><td>0.0%</td><td>149.3%</td><td>0.0%</td><td>False</td></tr><tr><td>largest-third-by-market-cap / next_open / base</td><td>0.000</td><td>0.0%</td><td>0.0%</td><td>149.3%</td><td>0.0%</td><td>False</td></tr><tr><td>largest-third-by-market-cap / next_open / high</td><td>0.000</td><td>0.0%</td><td>0.0%</td><td>149.3%</td><td>0.0%</td><td>False</td></tr><tr><td>largest-third-by-market-cap / next_open / low</td><td>0.000</td><td>0.0%</td><td>0.0%</td><td>149.3%</td><td>0.0%</td><td>False</td></tr></tbody></table>
+    </section>
+    <section>
+      <h2>Monte Carlo Distribution</h2>
+      <p class="muted"><strong>Timeframe:</strong> Monte Carlo uses the realized Phase 3 holdout monthly return series from 2018-01 to 2026-01. It is diagnostic only and does not project beyond this window.</p>
+      <p class="muted">Samples: n/a Â· Block length: n/a months</p>
+      <p class="muted">Method: stationary block bootstrap of the primary-track monthly holdout returns.</p>
+      <div class="badge-row"><span class="label">Monte Carlo quality (diagnostic)</span><span class="badge neutral">n/a</span><span class="badge-detail">No Monte Carlo metrics.</span></div>
+      <p class="muted"><strong>Result (diagnostic):</strong> n/a. No Monte Carlo metrics.</p>
+      <p class="muted"><strong>Quick read:</strong> Monte Carlo summary not available.</p>
+      
+      <div class="grid">
+        <div class="card">
+          <div class="muted">Histogram not available.</div>
+        </div>
+        <div class="card">
+          <div class="muted">Histogram not available.</div>
+        </div>
+        <div class="card">
+          <div class="muted">Histogram not available.</div>
+        </div>
+        <div class="card full">
+          <div class="muted">Monte Carlo paths not available.</div>
+        </div>
+      </div>
+      
+    </section>
+  </main>
+</body>
+</html>

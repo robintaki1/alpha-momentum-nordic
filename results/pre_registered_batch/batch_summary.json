@@ -1,0 +1,121 @@
+{
+  "generated_at": "2026-03-19T13:21:13.169999+00:00",
+  "hypotheses": [
+    {
+      "id": "baseline_full",
+      "label": "Baseline (no trend filter), full rebalance",
+      "output_dir": "C:\\Users\\robin\\Desktop\\alpha momentum\\results\\pre_registered_batch\\baseline_full",
+      "results": [
+        {
+          "thesis": "baseline",
+          "selection_status": "pbo_hard_cutoff",
+          "pbo": 0.746031746031746,
+          "pbo_band": "hard_cutoff",
+          "locked_candidate": null,
+          "holdout_status": "blocked_by_pbo_hard_cutoff",
+          "holdout_sharpe": null,
+          "beats_primary_benchmark": null,
+          "phase4_eligible": null
+        },
+        {
+          "thesis": "ex_norway",
+          "selection_status": "no_candidate_passed_hard_gates",
+          "pbo": 0.40476190476190477,
+          "pbo_band": "caution",
+          "locked_candidate": null,
+          "holdout_status": "blocked_by_missing_selection",
+          "holdout_sharpe": null,
+          "beats_primary_benchmark": null,
+          "phase4_eligible": null
+        }
+      ]
+    },
+    {
+      "id": "trend_filter_ma12",
+      "label": "Trend filter MA12, full rebalance",
+      "output_dir": "C:\\Users\\robin\\Desktop\\alpha momentum\\results\\pre_registered_batch\\trend_filter_ma12",
+      "results": [
+        {
+          "thesis": "baseline",
+          "selection_status": "pbo_hard_cutoff",
+          "pbo": 0.7142857142857143,
+          "pbo_band": "hard_cutoff",
+          "locked_candidate": null,
+          "holdout_status": "blocked_by_pbo_hard_cutoff",
+          "holdout_sharpe": null,
+          "beats_primary_benchmark": null,
+          "phase4_eligible": null
+        },
+        {
+          "thesis": "ex_norway",
+          "selection_status": "pbo_hard_cutoff",
+          "pbo": 0.8333333333333334,
+          "pbo_band": "hard_cutoff",
+          "locked_candidate": null,
+          "holdout_status": "blocked_by_pbo_hard_cutoff",
+          "holdout_sharpe": null,
+          "beats_primary_benchmark": null,
+          "phase4_eligible": null
+        }
+      ]
+    },
+    {
+      "id": "banded2",
+      "label": "Banded rebalance (buffer 2), no trend filter",
+      "output_dir": "C:\\Users\\robin\\Desktop\\alpha momentum\\results\\pre_registered_batch\\banded2",
+      "results": [
+        {
+          "thesis": "baseline",
+          "selection_status": "pbo_hard_cutoff",
+          "pbo": 0.7301587301587301,
+          "pbo_band": "hard_cutoff",
+          "locked_candidate": null,
+          "holdout_status": "blocked_by_pbo_hard_cutoff",
+          "holdout_sharpe": null,
+          "beats_primary_benchmark": null,
+          "phase4_eligible": null
+        },
+        {
+          "thesis": "ex_norway",
+          "selection_status": "selected_with_caution",
+          "pbo": 0.3253968253968254,
+          "pbo_band": "caution",
+          "locked_candidate": "l12_s1_n8_strat=banded2",
+          "holdout_status": "ok",
+          "holdout_sharpe": 1.163120404604529,
+          "beats_primary_benchmark": true,
+          "phase4_eligible": true
+        }
+      ]
+    },
+    {
+      "id": "minhold3",
+      "label": "Min-hold 3 months, no trend filter",
+      "output_dir": "C:\\Users\\robin\\Desktop\\alpha momentum\\results\\pre_registered_batch\\minhold3",
+      "results": [
+        {
+          "thesis": "baseline",
+          "selection_status": "pbo_hard_cutoff",
+          "pbo": 0.9603174603174603,
+          "pbo_band": "hard_cutoff",
+          "locked_candidate": null,
+          "holdout_status": "blocked_by_pbo_hard_cutoff",
+          "holdout_sharpe": null,
+          "beats_primary_benchmark": null,
+          "phase4_eligible": null
+        },
+        {
+          "thesis": "ex_norway",
+          "selection_status": "selected",
+          "pbo": 0.25396825396825395,
+          "pbo_band": "good",
+          "locked_candidate": "l12_s1_n8_strat=minhold3",
+          "holdout_status": "ok",
+          "holdout_sharpe": 1.1251183465706884,
+          "beats_primary_benchmark": true,
+          "phase4_eligible": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Alpha Momentum Research Package</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --paper: #f6f0e3;
+      --paper-strong: rgba(255, 251, 244, 0.92);
+      --ink: #16211e;
+      --muted: #53615d;
+      --line: rgba(22, 33, 30, 0.12);
+      --accent: #b06b1d;
+      --warn: #7d3d2a;
+      --warn-soft: #f7ddd3;
+      --good: #295741;
+      --good-soft: #dcebdd;
+      --shadow: 0 20px 60px rgba(22, 33, 30, 0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(176, 107, 29, 0.16), transparent 32%),
+        linear-gradient(180deg, #fbf6eb 0%, var(--paper) 100%);
+    }
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 40px 24px 56px;
+    }
+    .hero, .section {
+      background: var(--paper-strong);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 32px;
+      box-shadow: var(--shadow);
+    }
+    .section {
+      margin-top: 28px;
+      padding: 24px;
+      border-radius: 24px;
+    }
+    .eyebrow {
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 12px;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      line-height: 1.05;
+      margin-bottom: 16px;
+    }
+    .hero p {
+      max-width: 820px;
+      font-size: 1.05rem;
+      color: var(--muted);
+    }
+    .status-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+      border: 1px solid transparent;
+    }
+    .pill.warn {
+      background: var(--warn-soft);
+      color: var(--warn);
+      border-color: rgba(125, 61, 42, 0.18);
+    }
+    .pill.good {
+      background: var(--good-soft);
+      color: var(--good);
+      border-color: rgba(41, 87, 65, 0.18);
+    }
+    .grid, .notes {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .card, .note {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      background: #fffdf8;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 20px;
+    }
+    .label {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+    .card {
+      min-height: 220px;
+      transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 36px rgba(22, 33, 30, 0.1);
+      border-color: rgba(176, 107, 29, 0.35);
+    }
+    .card.primary {
+      background: linear-gradient(180deg, #fff7eb 0%, #fffdf8 100%);
+      border-color: rgba(176, 107, 29, 0.28);
+    }
+    .card h2 {
+      font-size: 1.45rem;
+      margin-bottom: 12px;
+    }
+    .card h3, .note h3, .value, .path {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .card p, .note p {
+      color: var(--muted);
+    }
+    .path {
+      display: inline-block;
+      margin-top: 10px;
+      font-size: 0.92rem;
+      color: var(--accent);
+      word-break: break-word;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+      background: #fffdf8;
+      border-radius: 18px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    th {
+      background: rgba(176, 107, 29, 0.08);
+      font-size: 0.92rem;
+    }
+    tr:last-child td { border-bottom: 0; }
+    a { color: var(--accent); }
+    @media (max-width: 720px) {
+      main { padding: 20px 14px 40px; }
+      .hero, .section { padding: 18px; border-radius: 18px; }
+      th, td { padding: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <span class="eyebrow">Portfolio Folder</span>
+      <h1>Alpha Momentum Research Package</h1>
+      <p>This package is the clean front door to the project: what the validation stack does, where the current decision stands, and what branch makes sense next.</p>
+      <div class="status-row">
+        <span class="pill good">Current state: validated candidate</span>
+        <span class="pill warn">Package model: entry_exit_costs</span>
+      </div>
+      <p style="margin-top: 18px;"><strong>Current finding:</strong> A candidate clears the selected execution model and remains the package build-on strategy.</p>
+      <p><strong>Repo verdict:</strong> Selected package winner: Ex-Norway (Sweden and Denmark only) / Monthly with holdout Sharpe 1.153.</p>
+    </section>
+
+    <section class="section">
+      <h2>Open These First</h2>
+      <div class="grid">
+
+      <a class="card primary" href="cadence_compare_summary/dashboard.html">
+        <span class="eyebrow">Start Here</span>
+        <h2>Validated Candidate Summary</h2>
+        <p>The simplest visual summary of the selected model and the current validated-candidate decision.</p>
+        <span class="path">cadence_compare_summary/dashboard.html</span>
+      </a>
+
+      <a class="card" href="research_engine_rebuild/summary/dashboard.html">
+        <span class="eyebrow">Experimental</span>
+        <h2>Research Engine Rebuild</h2>
+        <p>Rebuilt cadence comparison outputs for diagnostics only (not authoritative).</p>
+        <span class="path">research_engine_rebuild/summary/dashboard.html</span>
+      </a>
+        <a class="card" href="PROJECT_STATUS.html">
+          <span class="eyebrow">One Page</span>
+          <h2>Current Project Status</h2>
+          <p>Plain-English snapshot of what is active, what is blocked, and what the next sensible implementation branch is.</p>
+          <span class="path">PROJECT_STATUS.html</span>
+        </a>
+
+      <a class="card" href="cadence_compare_summary/cadence_comparison_report.html">
+        <span class="eyebrow">Written Verdict</span>
+        <h2>Cadence Summary Report</h2>
+        <p>Compact written version of the selected package verdict.</p>
+        <span class="path">cadence_compare_summary/cadence_comparison_report.html</span>
+      </a>
+        <a class="card" href="research_audit_dossier.html">
+          <span class="eyebrow">Written Summary</span>
+          <h2>Research Dossier</h2>
+          <p>Short employer-facing narrative of what the validation stack does and what the current verdict means.</p>
+          <span class="path">research_audit_dossier.html</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>How To Read The Package</h2>
+      <div class="notes">
+        <div class="note">
+          <h3>Current Verdict</h3>
+          <p>The package follows the selected entry/exit execution model rather than the discarded over-trading branch.</p>
+        </div>
+        <div class="note">
+          <h3>Written Narrative</h3>
+          <p>Use <a href="research_audit_dossier.html">research_audit_dossier.html</a> when you want the plain-English explanation instead of the raw run tree.</p>
+        </div>
+        <div class="note">
+          <h3>Next Branch</h3>
+          <p>The package currently points toward scoped implementation work such as PTI market-cap/liquid-subset support rather than strategy promotion.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Validation Context (Plain-English)</h2>
+      <p>This section makes the key numbers and sources explicit so an external reader understands what is authoritative versus experimental.</p>
+      <div class="notes">
+        <div class="note">
+          <div class="label">Authoritative Locked Params</div>
+          <h3>L=12 / skip=1 / top_n=5</h3>
+          <p>Locked tuple from the authoritative selection summary for the package branch.</p>
+        </div>
+        <div class="note">
+          <div class="label">Rigorous PBO (Authoritative)</div>
+          <h3>34.1%</h3>
+          <p>CSCV PBO from the authoritative selection summary. Threshold is 30% for a healthy warning level.</p>
+        </div>
+        <div class="note">
+          <div class="label">Cadence Summary (Lead Monthly)</div>
+          <h3>PBO 34.1% / Holdout 1.153</h3>
+          <p>Monthly lead-pair diagnostics from the cadence comparison summary.</p>
+        </div>
+        <div class="note">
+          <div class="label">Authoritative Selection Path</div>
+          <h3>C:\Users\robin\Desktop\alpha momentum\results\_timing_legacy_cert\ex_norway\1m\selection_summary.json</h3>
+          <p>Source-of-truth selection summary for this package branch.</p>
+        </div>
+        <div class="note">
+          <div class="label">Cadence Summary Path</div>
+          <h3>results\cadence_compare\summary\cadence_comparison.json</h3>
+          <p>Authoritative cadence comparison dashboard path.</p>
+        </div>
+        <div class="note">
+          <div class="label">Experimental Rebuild</div>
+          <h3>No cadence pair currently passes certification plus holdout in the rebuild run.</h3>
+          <p>Rebuild path: results\cadence_compare_rebuild\summary\cadence_comparison.json. Lead monthly PBO: 42.9%.</p>
+        </div>
+      </div>
+      <p style="margin-top:16px;">If you see different numbers in experimental runs, they do not override the package unless explicitly promoted.</p>
+    </section>
+
+    <section class="section">
+      <h2>Exact Visual Paths</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>File</th>
+            <th>Why it matters</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><a href="dashboard.html">dashboard.html</a></td><td>Package landing page with the cleanest route through the main visuals.</td></tr>
+          <tr><td><a href="PROJECT_STATUS.html">PROJECT_STATUS.html</a></td><td>Fastest plain-English snapshot of the current repo truth.</td></tr>
+          <tr><td><a href="research_audit_dossier.html">research_audit_dossier.html</a></td><td>Employer-friendly written summary of what the repo currently proves.</td></tr>
+          <tr><td><a href="cadence_compare_summary/dashboard.html">cadence_compare_summary/dashboard.html</a></td><td>Selected candidate dashboard.</td></tr>
+          <tr><td><a href="cadence_compare_summary/cadence_comparison_report.html">cadence_compare_summary/cadence_comparison_report.html</a></td><td>Written summary of the selected package verdict.</td></tr>
+          <tr><td><a href="research_engine_rebuild/summary/dashboard.html">research_engine_rebuild/summary/dashboard.html</a></td><td>Experimental research-engine cadence summary (not authoritative).</td></tr>
+          <tr><td><a href="research_engine_rebuild/summary/cadence_comparison_report.html">research_engine_rebuild/summary/cadence_comparison_report.html</a></td><td>Experimental rebuild report rendered for readability.</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>

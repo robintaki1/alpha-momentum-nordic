@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Portfolio Folder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --paper: #f6f0e3;
+      --paper-strong: rgba(255, 251, 244, 0.92);
+      --ink: #16211e;
+      --muted: #53615d;
+      --line: rgba(22, 33, 30, 0.12);
+      --accent: #b06b1d;
+      --shadow: 0 20px 60px rgba(22, 33, 30, 0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(176, 107, 29, 0.16), transparent 32%),
+        linear-gradient(180deg, #fbf6eb 0%, var(--paper) 100%);
+    }
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 40px 24px 56px;
+    }
+    .hero, .section {
+      background: var(--paper-strong);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 32px;
+      box-shadow: var(--shadow);
+    }
+    .section { margin-top: 24px; }
+    .eyebrow {
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 12px;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    h1 { margin-top: 0; font-size: clamp(2rem, 4vw, 3rem); }
+    h2, h3 { margin-top: 24px; }
+    p { color: var(--muted); line-height: 1.6; }
+    ul { margin: 12px 0 18px 18px; color: var(--muted); }
+    li { margin-bottom: 6px; }
+    a { color: var(--accent); }
+    .back {
+      display: inline-block;
+      margin-top: 12px;
+      text-decoration: none;
+      color: var(--accent);
+    }
+    @media (max-width: 720px) {
+      main { padding: 20px 14px 40px; }
+      .hero, .section { padding: 18px; border-radius: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <span class="eyebrow">Package Dashboard</span>
+      <h1>Portfolio Folder</h1>
+      <p>Entry point for the validation package visuals.</p>
+      <a class="back" href="alpha_momentum_validation_package/dashboard.html">Open package dashboard</a>
+    </section>
+    <section class="section">
+      <h1>Portfolio Folder</h1>
+<p>Open `dashboard.html` first.</p>
+<p>This folder is the shareable entry point for the project package. The main assets live in:</p>
+<ul>
+<li>`alpha_momentum_validation_package/dashboard.html`: visual landing page for the whole package</li>
+<li>`alpha_momentum_validation_package/cadence_compare_summary/dashboard.html`: selected candidate dashboard</li>
+<li>`alpha_momentum_validation_package/research_audit_dossier.html`: written summary of the current repo truth</li>
+<li>`alpha_momentum_validation_package/cadence_compare_summary/cadence_comparison_report.html`: written package verdict</li>
+<li>`alpha_momentum_validation_package/PROJECT_STATUS.html`: one-page narrative status summary</li>
+</ul>
+<p>If you want the simplest route through the visuals, start with `alpha_momentum_validation_package/dashboard.html`.</p>
+    </section>
+  </main>
+</body>
+</html>
