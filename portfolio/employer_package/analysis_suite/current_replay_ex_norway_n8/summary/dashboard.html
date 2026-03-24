@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Systematic Nordic Equity Research & Validation - Cadence Compare</title>
+  <title>Research Engine Summary</title>
   <style>
     body { margin:0; font-family:Georgia, serif; background:#f7f2e7; color:#17211a; }
     main { max-width:1200px; margin:0 auto; padding:28px 20px 48px; }
@@ -18,16 +18,31 @@
     th { font: .78rem Consolas, monospace; text-transform:uppercase; letter-spacing:.05em; color:#5d685f; }
     a { color:#b06b1d; }
   </style>
+  <link rel="stylesheet" href="../../../../assets/portfolio.css" />
+  <link rel="stylesheet" href="../../../../assets/portfolio-theme.css" />
 </head>
-  <body>
+<body class="am-theme">
   <main>
+    <header class="topbar reveal">
+      <div class="brand">
+        <div class="brand-mark">AM</div>
+        <div class="brand-copy">
+          <strong>Systematic Nordic Equity Research &amp; Validation</strong>
+          <span>Hiring-ready portfolio view</span>
+        </div>
+      </div>
+                  <nav class="nav-links" aria-label="Primary">
+        <a href="../../../index.html">Employer Package</a>
+        <a href="../../index.html" aria-current="page">Evidence</a>
+        <a href="../../../forward_trial/index.html">Forward Trial</a>
+      </nav>
+    </header>
     <section>
       <p class="label">Phase 1-3 Overview</p>
-      <h1>Rebalance Cadence Comparison</h1>
-      <p>This dashboard re-runs the cadence sweep with the entry/exit-only cost logic for comparison.</p>
-      <p><strong>Rebalance logic:</strong> Legacy Entry/Exit Only</p>
-      <p><strong>Profile set:</strong> default (L=12 / skip=1 / top_n=5, 8, 10, 12, 15, 20 / strat=baseline, banded2, minhold3, vol_weighted, cap_weighted, trend_filter, trend_filter_banded2, trend_filter_minhold3, trend_filter_vol_weighted, trend_filter_banded2_ma12, trend_filter_minhold3_ma12, trend_filter_vol_weighted_ma12, trend_filter_banded2_ma15, trend_filter_minhold3_ma15, trend_filter_vol_weighted_ma15, trend_filter_ma12, trend_filter_ma15, trend_filter_ma6, trend_filter_ma7, trend_filter_ma8, trend_filter_ma9, trend_filter_ma11, trend_filter_ma13, trend_filter_ma14, trend_filter_ma16, trend_filter_ma17, trend_filter_ma18, liquidity_filter)</p>
-      <p><strong>Current research winner: Ex-Norway (Sweden and Denmark only) / Monthly with holdout Sharpe 1.5158505122117925.</strong></p>
+      <h1>Research Engine Summary</h1>
+      <p>This is the runnable research-engine output (separate from the live package).</p>
+      <p><strong>Profile set:</strong> Ex-Norway Momentum profile (Top 8, trend filter) (Ex-Norway Momentum (Top 8, trend filter))</p>
+      <p><strong>Profiles:</strong> quick, mega, certification_baseline</p>
       <div style="margin:10px 0 12px; padding:10px 12px; border-radius:14px; border:1px solid rgba(176,107,29,.28); background:#fff7eb; color:#5b6762;"><strong style="color:#4b4031;">Timeframe:</strong> Phase 2 research boundary 2000-01 to 2017-12; Phase 2 validation windows 2008-01 to 2017-12; Phase 3 untouched holdout 2018-01 to 2026-01.</div>
     </section>
     <section><h2>Phase Map</h2><div class="grid"><div class="card"><div class="label">Phase 1</div><div class="value">Infrastructure &amp; Data</div><div class="muted">Gate this cycle with <code>validate.py</code>. This stage checks the engine and core artifacts before any research result is trusted. <a href="phase1_summary.html">Open Phase 1 validation.</a></div></div><div class="card"><div class="label">Phase 2</div><div class="value">Research Certification</div><div class="muted">Selection boundary 2000-01 to 2017-12. Validation windows 2008-01 to 2017-12.</div></div><div class="card"><div class="label">Phase 3</div><div class="value">Untouched Holdout</div><div class="muted">Official holdout window 2018-01 to 2026-01.</div></div><div class="card"><div class="label">Phase 4</div><div class="value">Paper Trading</div><div class="muted">Only unlock after the frozen Phase 3 result is accepted.</div></div></div></section>
@@ -35,23 +50,27 @@
       <h2>Cycle Overview</h2>
       <div class="grid">
         <div class="card"><div class="label">Phase 1 Status</div><div class="value">green</div></div>
-        <div class="card"><div class="label">Pairs</div><div class="value">2</div></div>
-        <div class="card"><div class="label">Phase 2 Selected</div><div class="value">2</div></div>
-        <div class="card"><div class="label">Phase 4 Eligible</div><div class="value">2</div></div>
+        <div class="card"><div class="label">Theses</div><div class="value">1</div></div>
+        <div class="card"><div class="label">Phase 2 Selected</div><div class="value">1</div></div>
+        <div class="card"><div class="label">Phase 4 Eligible</div><div class="value">1</div></div>
       </div>
-      <p class="muted" style="margin-top:12px;">Use the artifact links below to jump from this cycle summary into the detailed pair overview or the dedicated Phase 1, Phase 2, and Phase 3 pages for each thesis/cadence pair.</p>
+      <p class="muted" style="margin-top:12px;">Use the artifact links below to jump directly into the summary overview or the dedicated Phase 1, Phase 2, and Phase 3 pages for each thesis.</p>
     </section>
     <section>
-      <h2>Comparison Table</h2>
+      <h2>Thesis Results</h2>
       <table>
         <thead>
-          <tr><th>Thesis</th><th>Cadence</th><th>Certification</th><th>PBO</th><th>Holdout Sharpe</th><th>Phase 4 Eligible</th><th>Artifacts</th></tr>
+          <tr><th>Thesis</th><th>Certification</th><th>PBO</th><th>PBO Band</th><th>Holdout Sharpe</th><th>Artifacts</th></tr>
         </thead>
         <tbody>
-          <tr><td>Baseline (Sweden, Denmark, Norway)</td><td>Monthly</td><td>selected</td><td>12.3%</td><td>1.3079954862365297</td><td>True</td><td><a href="../baseline/1m/dashboard.html">overview</a> &middot; <a href="../baseline/1m/phase1_summary.html">phase 1</a> &middot; <a href="../baseline/1m/selection_summary.html">phase 2</a> &middot; <a href="../baseline/1m/walk_forward_results.html">phase 3</a></td></tr><tr><td>Ex-Norway (Sweden and Denmark only)</td><td>Monthly</td><td>selected</td><td>13.1%</td><td>1.5158505122117925</td><td>True</td><td><a href="../ex_norway/1m/dashboard.html">overview</a> &middot; <a href="../ex_norway/1m/phase1_summary.html">phase 1</a> &middot; <a href="../ex_norway/1m/selection_summary.html">phase 2</a> &middot; <a href="../ex_norway/1m/walk_forward_results.html">phase 3</a></td></tr>
+      <tr><td>Ex-Norway (Sweden and Denmark only)</td><td>selected</td><td>n/a (single candidate)</td><td>n/a</td><td>0.820</td><td><a href="../ex_norway/dashboard.html">overview</a> &middot; <a href="../ex_norway/phase1_summary.html">phase 1</a> &middot; <a href="../ex_norway/selection_summary.html">phase 2</a> &middot; <a href="../phase3_dashboard.html">phase 3</a></td></tr>
         </tbody>
       </table>
     </section>
   </main>
 </body>
 </html>
+
+
+
+

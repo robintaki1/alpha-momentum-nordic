@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Research Basis | Systematic Nordic Equity Research &amp; Validation</title>
+  <link rel="stylesheet" href="../../assets/portfolio.css" />
+  <link rel="stylesheet" href="../../assets/portfolio-theme.css" />
+</head>
+<body class="am-theme">
+  <main class="page-shell">
+    <header class="topbar reveal">
+      <div class="brand">
+        <div class="brand-mark">AM</div>
+        <div class="brand-copy">
+          <strong>Systematic Nordic Equity Research &amp; Validation</strong>
+          <span>Hiring-ready portfolio view</span>
+        </div>
+      </div>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="../index.html">Employer Package</a>
+        <a href="index.html" aria-current="page">Evidence</a>
+        <a href="../forward_trial/index.html">Forward Trial</a>
+      </nav>
+    </header>
+
+    <section class="hero reveal delay-1">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow">Research basis</span>
+          <h1 class="hero-title">What informed the design</h1>
+          <p class="hero-subtitle">A short research map for the strategy choices behind the evidence pages.</p>
+          <p class="lede">
+            This section summarizes the research inputs that informed the design choices, what was carried into the build, and where the implementation deliberately remained conservative.
+          </p>
+          <div class="note" style="margin-top:18px; max-width:72ch;">
+            <strong>Working stance:</strong> treat the literature as a design input, not as a substitute for validation. The project uses the Nordic momentum research to narrow the search space, then lets certification, holdout testing, and forward observation do the real filtering.
+          </div>
+          <div class="cta-row">
+            <a class="button primary" href="phase3_dashboard.html">Open Phase 3 Holdout</a>
+            <a class="button secondary" href="current_replay_ex_norway_n8/ex_norway/selection_summary.html">Open Certification</a>
+            <a class="button ghost" href="index.html">Back to Evidence</a>
+          </div>
+        </div>
+
+        <aside class="status-panel">
+          <p class="section-kicker">Short version</p>
+          <h2>What the literature changed</h2>
+          <ul class="status-list">
+            <li>
+              <span>Main track</span>
+              <strong>Pure price momentum in Nordic equities had the clearest support, so it stayed at the center of the implementation.</strong>
+            </li>
+            <li>
+              <span>Research track</span>
+              <strong>Alpha or residual momentum stayed in the sandbox because its support was thinner and more fragile.</strong>
+            </li>
+            <li>
+              <span>Implementation</span>
+              <strong>Capacity, crash risk, and cost realism mattered enough that practical constraints were treated as part of the strategy, not as housekeeping.</strong>
+            </li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section reveal delay-2">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Key references</p>
+          <h2>The studies that mattered most</h2>
+        </div>
+        <p class="section-intro">Each one below answers the same question: what did it contribute to the actual design choices in this project?</p>
+      </div>
+
+      <div class="detail-grid">
+        <article class="card">
+          <p class="label">Peer-reviewed article</p>
+          <h3>Grobys, Fatmy &amp; Rajalin (2024)</h3>
+          <p><strong>What it supports:</strong> Nordic momentum still appears to exist, and more elaborate combinations do not clearly beat pure momentum after broader risk adjustment.</p>
+          <p><strong>What we took from it:</strong> Keep the main track centred on price momentum instead of adding complexity just to sound more advanced.</p>
+          <p><strong>What we did not assume:</strong> That one paper settles live deployability, costs, or portfolio-construction details for this exact build.</p>
+        </article>
+
+        <article class="card">
+          <p class="label">Master's thesis</p>
+          <h3>Nilsson &amp; Picone (2021)</h3>
+          <p><strong>What it supports:</strong> Alpha or idiosyncratic momentum may have attractive risk-adjusted properties in Nordic samples.</p>
+          <p><strong>What we took from it:</strong> Alpha deserved its own research lane.</p>
+          <p><strong>What we did not assume:</strong> That it should replace plain price momentum as the default strategy before stronger out-of-sample proof and cost-aware testing.</p>
+        </article>
+
+        <article class="card">
+          <p class="label">Master's thesis</p>
+          <h3>Jacobsen &amp; Nyhegn (2021)</h3>
+          <p><strong>What it supports:</strong> Momentum in the Nordics appears stronger in smaller companies, which is helpful and risky at the same time.</p>
+          <p><strong>What we took from it:</strong> Capacity and liquidity cannot be an afterthought; they need to shape filters, sizing, and how we talk about the result.</p>
+          <p><strong>What we did not assume:</strong> That a small-cap-heavy academic result should be read as free licence to ignore implementation friction.</p>
+        </article>
+
+        <article class="card">
+          <p class="label">Master's thesis</p>
+          <h3>Bergsten (2019)</h3>
+          <p><strong>What it supports:</strong> A straightforward price-momentum signal can work, but crash behaviour is real and needs to be measured.</p>
+          <p><strong>What we took from it:</strong> Keep a simple momentum baseline in view and make crash risk a first-class reporting item rather than a footnote.</p>
+          <p><strong>What we did not assume:</strong> That ignoring costs or execution details is acceptable once the backtest looks good.</p>
+        </article>
+
+        <article class="card">
+          <p class="label">Master's thesis</p>
+          <h3>Savolainen (2024)</h3>
+          <p><strong>What it supports:</strong> Value-plus-momentum combinations can improve the risk profile, but standalone momentum is not uniformly strong in every variant.</p>
+          <p><strong>What we took from it:</strong> Benchmark comparisons and extension tracks matter, but they belong after the baseline has earned trust.</p>
+          <p><strong>What we did not assume:</strong> That the right answer is to add more factors immediately instead of proving the base implementation first.</p>
+        </article>
+
+        <article class="card">
+          <p class="label">Process reference</p>
+          <h3>Alpha Architect QMOM case</h3>
+          <p><strong>What it supports:</strong> Practical process ideas around screening, rebalancing, and liquidity awareness.</p>
+          <p><strong>What we took from it:</strong> Useful design inspiration for workflow and implementation detail.</p>
+          <p><strong>What we did not assume:</strong> That marketing material counts as independent evidence or Nordic validation.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section reveal delay-3">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Interpretation</p>
+          <h2>What we carried into the build</h2>
+        </div>
+        <p class="section-intro">This is the practical through-line from the literature to the implementation choices.</p>
+      </div>
+
+      <div class="artifact-grid">
+        <article class="link-card">
+          <span class="step">Decision 1</span>
+          <h3>Keep the main track on Nordic price momentum</h3>
+          <p>The literature bundle gave stronger support to plain price momentum than to alpha or residual variants, so the main candidate stayed there.</p>
+        </article>
+        <article class="link-card">
+          <span class="step">Decision 2</span>
+          <h3>Treat alpha as a research branch, not the headline strategy</h3>
+          <p>That kept the employer-facing story aligned with the strongest evidence instead of the most exotic idea in the backlog.</p>
+        </article>
+        <article class="link-card">
+          <span class="step">Decision 3</span>
+          <h3>Build around realistic constraints</h3>
+          <p>Liquidity, capacity, crash behaviour, and costs shaped the validation stack, not just the discussion section.</p>
+        </article>
+        <article class="link-card">
+          <span class="step">Decision 4</span>
+          <h3>Let the validation stack make the final call</h3>
+          <p>The literature narrowed the design space; the certification gates, untouched holdout, and forward-trial plan decided whether the candidate survived.</p>
+        </article>
+      </div>
+
+      <div class="note footer-note">
+        <strong>Bottom line:</strong> the project takes the Nordic momentum literature seriously, but translates it into a practical, execution-aware implementation with stricter validation and cost discipline than most academic studies use.
+      </div>
+
+      <div class="cta-row">
+        <a class="button primary" href="phase3_dashboard.html">Open Phase 3 Holdout</a>
+        <a class="button secondary" href="current_replay_ex_norway_n8/ex_norway/selection_summary.html">Open Certification</a>
+        <a class="button ghost" href="../forward_trial/index.html">Open Forward Trial</a>
+      </div>
+
+      <a class="back-link" href="index.html">Back to Evidence</a>
+    </section>
+  </main>
+</body>
+</html>

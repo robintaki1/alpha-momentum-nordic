@@ -6,17 +6,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root {
-      --hero: rgba(255, 253, 249, 0.98);
-      --panel: rgba(251, 248, 241, 0.96);
-      --ink: #1b2420;
-      --muted: #5f685f;
-      --muted-strong: #37443d;
-      --line: rgba(27, 36, 32, 0.12);
-      --accent: #1f6159;
-      --accent-strong: #154943;
-      --shadow: 0 22px 54px rgba(34, 41, 37, 0.08);
-      --blur: 14px;
-      --saturate: 120%;
+      --hero: rgba(255, 255, 255, 0.05);
+      --panel: rgba(255, 255, 255, 0.032);
+      --ink: #09162f;
+      --muted: #31486d;
+      --muted-strong: #122748;
+      --line: rgba(255, 255, 255, 0.74);
+      --accent: #4476d9;
+      --accent-strong: #2456b3;
+      --shadow: 0 24px 70px rgba(17, 29, 90, 0.06);
+      --blur: 64px;
+      --saturate: 320%;
     }
     * { box-sizing: border-box; }
     body {
@@ -25,10 +25,13 @@
       font-family: "Palatino Linotype", Georgia, serif;
       color: var(--ink);
       background:
-        radial-gradient(circle at top left, rgba(31, 97, 89, 0.12), transparent 32%),
-        radial-gradient(circle at top right, rgba(166, 109, 69, 0.11), transparent 26%),
-        radial-gradient(circle at 18% 78%, rgba(120, 144, 125, 0.08), transparent 24%),
-        linear-gradient(180deg, #fbf8f2 0%, #f5f1e8 48%, #e3dbcd 100%);
+        radial-gradient(circle at 10% 12%, rgba(255, 255, 255, 0.98), transparent 0 20%),
+        radial-gradient(circle at 18% 84%, rgba(70, 226, 255, 0.32), transparent 0 24%),
+        radial-gradient(circle at 82% 10%, rgba(124, 134, 255, 0.54), transparent 0 28%),
+        radial-gradient(circle at 88% 76%, rgba(255, 166, 205, 0.20), transparent 0 22%),
+        radial-gradient(circle at 66% 58%, rgba(60, 132, 255, 0.20), transparent 0 28%),
+        linear-gradient(140deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 26%),
+        linear-gradient(140deg, #f8fbff 0%, #dbe8ff 14%, #92aaf6 34%, #4d57dd 54%, #1737b1 72%, #08155c 88%, #040922 100%);
     }
     body::before {
       content: "";
@@ -36,9 +39,11 @@
       inset: 0;
       pointer-events: none;
       background:
-        linear-gradient(135deg, rgba(255, 255, 255, 0.06) 25%, transparent 25%) 0 0 / 38px 38px,
-        linear-gradient(315deg, rgba(255, 255, 255, 0.04) 25%, transparent 25%) 0 0 / 38px 38px;
-      opacity: 0.24;
+        radial-gradient(circle at 18% 24%, rgba(255, 255, 255, 0.72), transparent 0 15%),
+        radial-gradient(circle at 72% 32%, rgba(255, 255, 255, 0.44), transparent 0 18%),
+        linear-gradient(118deg, rgba(255, 255, 255, 0.54), rgba(255, 255, 255, 0.08) 34%, transparent 60%);
+      filter: blur(32px);
+      opacity: 0.94;
     }
     main {
       position: relative;
@@ -56,12 +61,14 @@
       padding: 12px 14px;
       border-radius: 24px;
       border: 1px solid var(--line);
-      background: rgba(250, 247, 240, 0.82);
-      backdrop-filter: blur(var(--blur)) saturate(var(--saturate));
-      -webkit-backdrop-filter: blur(var(--blur)) saturate(var(--saturate));
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.005)),
+        rgba(255, 255, 255, 0.012);
+      backdrop-filter: blur(var(--blur)) saturate(var(--saturate)) brightness(1.08);
+      -webkit-backdrop-filter: blur(var(--blur)) saturate(var(--saturate)) brightness(1.08);
       box-shadow:
         var(--shadow),
-        inset 0 1px 0 rgba(255, 255, 255, 0.72);
+        inset 0 1px 0 rgba(255, 255, 255, 0.86);
     }
     .brand {
       display: flex;
@@ -72,17 +79,19 @@
       width: 42px;
       height: 42px;
       border-radius: 14px;
-      background: linear-gradient(160deg, #1f6159, #154943);
-      color: #f7f2e8;
+      background:
+        radial-gradient(circle at 28% 22%, rgba(255, 255, 255, 0.56), transparent 0 36%),
+        linear-gradient(160deg, rgba(116, 164, 255, 0.26), rgba(51, 83, 186, 0.04));
+      color: #f8fbff;
       display: grid;
       place-items: center;
       font: 700 0.84rem Consolas, "Courier New", monospace;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      border: 1px solid rgba(21, 73, 67, 0.24);
+      border: 1px solid rgba(255, 255, 255, 0.50);
       box-shadow:
-        0 10px 22px rgba(21, 73, 67, 0.14),
-        inset 0 1px 0 rgba(255, 255, 255, 0.18);
+        0 18px 36px rgba(38, 65, 112, 0.04),
+        inset 0 1px 0 rgba(255, 255, 255, 0.50);
     }
     .brand-copy strong,
     .brand-copy span {
@@ -91,37 +100,56 @@
     .brand-copy strong {
       font-size: 1rem;
       color: var(--ink);
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.34);
     }
     .brand-copy span {
       margin-top: 3px;
       color: var(--muted-strong);
       font-size: 0.88rem;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.28);
     }
     .topbar a,
     .button {
+      position: relative;
+      overflow: hidden;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       padding: 11px 16px;
       border-radius: 999px;
-      border: 1px solid rgba(27, 36, 32, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.54);
       color: var(--ink);
-      background: rgba(255, 253, 249, 0.92);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.006)),
+        rgba(255, 255, 255, 0.014);
       text-decoration: none;
-      backdrop-filter: blur(calc(var(--blur) * 0.7));
-      -webkit-backdrop-filter: blur(calc(var(--blur) * 0.7));
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.28);
+      backdrop-filter: blur(calc(var(--blur) * 0.82)) saturate(var(--saturate)) brightness(1.08);
+      -webkit-backdrop-filter: blur(calc(var(--blur) * 0.82)) saturate(var(--saturate)) brightness(1.08);
       box-shadow:
-        0 10px 22px rgba(34, 41, 37, 0.06),
-        inset 0 1px 0 rgba(255, 255, 255, 0.68);
+        0 18px 30px rgba(36, 59, 95, 0.02),
+        inset 0 1px 0 rgba(255, 255, 255, 0.78);
       transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+    .topbar a::before,
+    .button::before {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      border-radius: inherit;
+      pointer-events: none;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.52), rgba(255, 255, 255, 0.08) 26%, rgba(255, 255, 255, 0.01) 62%),
+        linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.12) 46%, transparent 62%);
+      opacity: 0.92;
     }
     .topbar a:hover,
     .button:hover {
       transform: translateY(-1px);
-      border-color: rgba(31, 97, 89, 0.2);
+      border-color: rgba(255, 255, 255, 0.74);
       box-shadow:
-        0 12px 24px rgba(34, 41, 37, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.72);
+        0 18px 30px rgba(36, 59, 95, 0.03),
+        inset 0 1px 0 rgba(255, 255, 255, 0.88);
     }
     .hero,
     .section {
@@ -130,10 +158,21 @@
       padding: 34px 36px;
       box-shadow:
         var(--shadow),
-        inset 0 1px 0 rgba(255, 255, 255, 0.62);
+        inset 0 1px 0 rgba(255, 255, 255, 0.90);
+      backdrop-filter: blur(var(--blur)) saturate(var(--saturate)) brightness(1.08);
+      -webkit-backdrop-filter: blur(var(--blur)) saturate(var(--saturate)) brightness(1.08);
     }
-    .hero { background: var(--hero); }
-    .section { margin-top: 24px; background: var(--panel); }
+    .hero {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.003)),
+        var(--hero);
+    }
+    .section {
+      margin-top: 24px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.003)),
+        var(--panel);
+    }
     .eyebrow {
       display: inline-flex;
       align-items: center;
@@ -144,8 +183,11 @@
       letter-spacing: 0.10em;
       font: 0.78rem Consolas, "Courier New", monospace;
       color: var(--accent-strong);
-      background: rgba(31, 97, 89, 0.08);
-      border: 1px solid rgba(31, 97, 89, 0.15);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.008)),
+        rgba(68, 118, 217, 0.10);
+      border: 1px solid rgba(255, 255, 255, 0.46);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.68);
       margin-bottom: 14px;
     }
     h1 {
@@ -154,6 +196,7 @@
       line-height: 0.96;
       letter-spacing: -0.04em;
       color: var(--ink);
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.34);
     }
     h2,
     h3 {
@@ -173,6 +216,7 @@
       color: var(--muted-strong);
       line-height: 1.72;
       font-size: 1.02rem;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.22);
     }
     .hero p {
       max-width: 72ch;
@@ -206,23 +250,26 @@
     }
     a {
       color: var(--accent-strong);
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.22);
     }
     code {
       font-family: Consolas, "Courier New", monospace;
       font-size: 0.95em;
       color: var(--ink);
-      background: rgba(27, 36, 32, 0.05);
+      background: rgba(255, 255, 255, 0.10);
       padding: 0.15em 0.4em;
       border-radius: 8px;
-      border: 1px solid rgba(27, 36, 32, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.44);
     }
     pre {
       margin: 18px 0;
       padding: 14px 16px;
       border-radius: 18px;
       overflow: auto;
-      border: 1px solid rgba(27, 36, 32, 0.1);
-      background: rgba(248, 244, 236, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.32);
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(calc(var(--blur) * 0.72)) saturate(var(--saturate));
+      -webkit-backdrop-filter: blur(calc(var(--blur) * 0.72)) saturate(var(--saturate));
     }
     pre code {
       padding: 0;
@@ -232,7 +279,7 @@
     blockquote {
       margin: 18px 0;
       padding-left: 16px;
-      border-left: 3px solid rgba(31, 97, 89, 0.22);
+      border-left: 3px solid rgba(68, 118, 217, 0.44);
     }
     hr {
       border: 0;
@@ -248,7 +295,7 @@
     td {
       text-align: left;
       padding: 10px 8px;
-      border-bottom: 1px solid rgba(27, 36, 32, 0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.22);
       vertical-align: top;
     }
     th {
@@ -263,35 +310,41 @@
       .section { padding: 24px 20px; border-radius: 24px; }
     }
   </style>
+  <link rel="stylesheet" href="../../assets/portfolio.css" />
+  <link rel="stylesheet" href="../../assets/portfolio-theme.css" />
 </head>
 <body class="am-theme">
   <main>
-    <header class="topbar">
+        <header class="topbar reveal">
       <div class="brand">
-        <div class="brand-mark">FT</div>
+        <div class="brand-mark">AM</div>
         <div class="brand-copy">
-          <strong>Research Dossier</strong>
-          <span>Package Dashboard</span>
+          <strong>Systematic Nordic Equity Research &amp; Validation</strong>
+          <span>Hiring-ready portfolio view</span>
         </div>
       </div>
-      <a href="dashboard.html">Back to package dashboard</a>
+                  <nav class="nav-links" aria-label="Primary">
+        <a href="../index.html">Employer Package</a>
+        <a href="../analysis_suite/index.html">Evidence</a>
+        <a href="index.html" aria-current="page">Forward Trial</a>
+      </nav>
     </header>
     <section class="hero">
       <span class="eyebrow">Package Dashboard</span>
       <h1>Research Dossier</h1>
-      <p>A short write-up of the validation process and what the current result actually means.</p>
+      <p>A short write-up of what the validation work does and what the current verdict really means.</p>
       <div class="hero-actions">
         <a class="button" href="dashboard.html">Back to package dashboard</a>
       </div>
     </section>
     <section class="section markdown-body">
       <h1>Systematic Nordic Equity Research &amp; Validation Dossier</h1>
-<p>Generated: `2026-03-24T18:40:25.986310+00:00`</p>
+<p>Generated: `2026-03-24T11:28:54.655398+00:00`</p>
 <h2>Executive Summary</h2>
 <ul>
 <li>Active validated strategy under selected package model: `no`</li>
 <li>Package model: `entry_exit_costs`</li>
-<li>Current verdict: `No cadence pair currently passes certification plus holdout under `legacy_entry_exit_costs`.`</li>
+<li>Current verdict: No cadence pair currently passes certification plus holdout under the legacy cost model.</li>
 <li>Cadence comparison summary available: `yes`</li>
 <li>Current package focus: `validated candidate branch`</li>
 </ul>

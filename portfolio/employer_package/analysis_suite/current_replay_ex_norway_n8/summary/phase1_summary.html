@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Phase 1 Validation</title>
+  <style>
+    body { margin:0; font-family:Georgia, serif; background:#f7f2e7; color:#17211a; }
+    main { max-width:1080px; margin:0 auto; padding:28px 20px 48px; }
+    section { background:rgba(255,250,241,.92); border:1px solid rgba(23,33,26,.12); border-radius:24px; padding:24px; box-shadow:0 18px 50px rgba(33,41,36,.08); margin-top:18px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin-top:16px; }
+    .card { background:#fffdf8; border:1px solid rgba(23,33,26,.12); border-radius:20px; padding:18px; }
+    .label { color:#6c5842; text-transform:uppercase; letter-spacing:.08em; font-size:.75rem; }
+    .value { font-size:1.2rem; margin-top:6px; overflow-wrap:anywhere; }
+    .muted { color:#5b6762; }
+    .badge { display:inline-block; padding:4px 8px; border-radius:999px; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; font-weight:700; }
+    .badge.good { background:#dcefe3; color:#2f5c46; border:1px solid #a9c7b4; }
+    .badge.caution { background:#f4ead7; color:#7a5a25; border:1px solid #d9c59a; }
+    .badge.weak { background:#f3d7d7; color:#7a2f2f; border:1px solid #d6a3a3; }
+    .callout { background:#fff7eb; border:1px solid rgba(176,107,29,.28); border-radius:16px; padding:12px 14px; margin-top:12px; }
+    table { width:100%; border-collapse:collapse; margin-top:12px; }
+    th, td { border-bottom:1px solid rgba(23,33,26,.08); text-align:left; padding:10px 8px; vertical-align:top; }
+    th { font-size:.75rem; text-transform:uppercase; color:#5d685f; letter-spacing:.05em; }
+    ul { margin:0; padding-left:18px; }
+    a { color:#b06b1d; }
+  </style>
+  <link rel="stylesheet" href="../../../../assets/portfolio.css" />
+  <link rel="stylesheet" href="../../../../assets/portfolio-theme.css" />
+</head>
+<body class="am-theme">
+  <main>
+    <header class="topbar reveal">
+      <div class="brand">
+        <div class="brand-mark">AM</div>
+        <div class="brand-copy">
+          <strong>Systematic Nordic Equity Research &amp; Validation</strong>
+          <span>Hiring-ready portfolio view</span>
+        </div>
+      </div>
+                  <nav class="nav-links" aria-label="Primary">
+        <a href="../../../index.html">Employer Package</a>
+        <a href="../../index.html" aria-current="page">Evidence</a>
+        <a href="../../../forward_trial/index.html">Forward Trial</a>
+      </nav>
+    </header>
+    <section>
+      <p class="label">Phase 1</p>
+      <h1>Phase 1 Validation</h1>
+      <p>Infrastructure, benchmark, FX, and point-in-time artifact checks for this research cycle.</p>
+      <div style="margin:10px 0 12px; padding:10px 12px; border-radius:14px; border:1px solid rgba(176,107,29,.28); background:#fff7eb; color:#5b6762;"><strong style="color:#4b4031;">Timeframe:</strong> Phase 1 validates the local artifacts needed for Phase 2 research 2000-01 to 2017-12 and the untouched Phase 3 holdout 2018-01 to 2026-01.</div>
+      <a href="dashboard.html">Back to research summary</a>
+    </section>
+    <section><h2>Phase Map</h2><div class="grid"><div class="card"><div class="label">Phase 1</div><div class="value">Infrastructure &amp; Data</div><div class="muted">Gate this cycle with <code>validate.py</code>. This stage checks the engine and core artifacts before any research result is trusted. <a href="phase1_summary.html">Open Phase 1 validation.</a></div></div><div class="card"><div class="label">Phase 2</div><div class="value">Research Certification</div><div class="muted">Selection boundary 2000-01 to 2017-12. Validation windows 2008-01 to 2017-12.</div></div><div class="card"><div class="label">Phase 3</div><div class="value">Untouched Holdout</div><div class="muted">Official holdout window 2018-01 to 2026-01.</div></div><div class="card"><div class="label">Phase 4</div><div class="value">Paper Trading</div><div class="muted">Only unlock after the frozen Phase 3 result is accepted.</div></div></div></section>
+    <section>
+      <h2>Validation Overview</h2>
+      <div class="grid">
+        <div class="card"><div class="label">Overall Status</div><div class="value"><span class="badge good">green</span></div></div>
+        <div class="card"><div class="label">Data Root</div><div class="value">data</div></div>
+        <div class="card"><div class="label">Active Exchanges</div><div class="value">ST, CO, OL</div></div>
+        <div class="card"><div class="label">Benchmarks Required</div><div class="value">XACT Norden, Vanguard FTSE All-World UCITS ETF, SPDR S&amp;P 500 ETF Trust</div></div>
+      </div>
+      <div class="callout">
+        <strong>What Phase 1 means here.</strong>
+        <div class="muted">This page is not a performance backtest. It checks whether the engine, benchmark data, FX history, and point-in-time research artifacts are in a trustworthy state before any Phase 2 or Phase 3 result is treated as meaningful.</div>
+      </div>
+    </section>
+    <section>
+      <h2>Coverage Boundary</h2>
+      <div style="margin:10px 0 12px; padding:10px 12px; border-radius:14px; border:1px solid rgba(176,107,29,.28); background:#fff7eb; color:#5b6762;"><strong style="color:#4b4031;">Timeframe:</strong> Minimum research start implied by the rolling folds is 2000-01; the validation stack then reserves 2018-01 to 2026-01 for the untouched holdout.</div>
+      <div class="grid">
+        <div class="card"><div class="label">Phase 2 Research Start</div><div class="value">2000-01</div></div>
+        <div class="card"><div class="label">Phase 2 Ends</div><div class="value">2017-12</div></div>
+        <div class="card"><div class="label">Phase 3 Holdout</div><div class="value">2018-01 to 2026-01</div></div>
+        <div class="card"><div class="label">Primary Benchmark</div><div class="value">XACT Norden</div></div>
+      </div>
+    </section>
+    <section>
+      <h2>Phase 1 Checks</h2>
+      <table>
+        <thead>
+          <tr><th>Section</th><th>Status</th><th>Details</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Artifacts</td><td><span class="badge good">PASS</span></td><td><ul><li>Loaded security_master.parquet</li><li>Loaded security_status_pti_monthly.parquet</li><li>Loaded prices_raw_daily.parquet</li><li>Loaded prices_adjusted_daily.parquet</li><li>Loaded corporate_actions.parquet</li><li>Loaded delisted_metadata.parquet</li><li>Loaded benchmark_prices.parquet</li><li>Loaded riksbank_fx_daily.parquet</li><li>Loaded universe_pti.parquet</li></ul></td></tr><tr><td>Security Master</td><td><span class="badge good">PASS</span></td><td><ul><li>442 in-scope securities loaded.</li></ul></td></tr><tr><td>Prices And Actions</td><td><span class="badge good">PASS</span></td><td><ul><li>1920066 raw rows and 1920066 adjusted rows validated.</li></ul></td></tr><tr><td>FX</td><td><span class="badge good">PASS</span></td><td><ul><li>FX positivity, freshness, and as-of conversion checks passed.</li></ul></td></tr><tr><td>Delistings</td><td><span class="badge good">PASS</span></td><td><ul><li>41 delisted rows reconciled against price histories.</li></ul></td></tr><tr><td>Benchmarks</td><td><span class="badge good">PASS</span></td><td><ul><li>3 benchmark series validated.</li></ul></td></tr><tr><td>Universe</td><td><span class="badge good">PASS</span></td><td><ul><li>144092 universe rows validated across all variants.</li></ul></td></tr><tr><td>C++ Parity</td><td><span class="badge caution">SKIP</span></td><td><ul><li>Skipped because --require-cpp was false.</li></ul></td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>
+
+
+

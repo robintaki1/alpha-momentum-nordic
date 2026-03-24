@@ -2,105 +2,161 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Current Project Status</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    :root {
-      --paper: #f6f0e3;
-      --paper-strong: rgba(255, 251, 244, 0.92);
-      --ink: #16211e;
-      --muted: #53615d;
-      --line: rgba(22, 33, 30, 0.12);
-      --accent: #b06b1d;
-      --shadow: 0 20px 60px rgba(22, 33, 30, 0.08);
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      color: var(--ink);
-      background:
-        radial-gradient(circle at top left, rgba(176, 107, 29, 0.16), transparent 32%),
-        linear-gradient(180deg, #fbf6eb 0%, var(--paper) 100%);
-    }
-    main {
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 40px 24px 56px;
-    }
-    .hero, .section {
-      background: var(--paper-strong);
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      padding: 32px;
-      box-shadow: var(--shadow);
-    }
-    .section { margin-top: 24px; }
-    .eyebrow {
-      display: inline-block;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      font-size: 12px;
-      color: var(--accent);
-      margin-bottom: 12px;
-    }
-    h1 { margin-top: 0; font-size: clamp(2rem, 4vw, 3rem); }
-    h2, h3 { margin-top: 24px; }
-    p { color: var(--muted); line-height: 1.6; }
-    ul { margin: 12px 0 18px 18px; color: var(--muted); }
-    li { margin-bottom: 6px; }
-    a { color: var(--accent); }
-    .back {
-      display: inline-block;
-      margin-top: 12px;
-      text-decoration: none;
-      color: var(--accent);
-    }
-    @media (max-width: 720px) {
-      main { padding: 20px 14px 40px; }
-      .hero, .section { padding: 18px; border-radius: 18px; }
-    }
-  </style>
+  <title>Current Project Status</title>
+  <link rel="stylesheet" href="../assets/portfolio.css" />
+  <link rel="stylesheet" href="../assets/portfolio-theme.css" />
 </head>
-<body>
-  <main>
-    <section class="hero">
-      <span class="eyebrow">Package Dashboard</span>
-      <h1>Current Project Status</h1>
-      <p>Plain-English snapshot of what is active, what is blocked, and what the next sensible implementation branch is.</p>
-      <a class="back" href="dashboard.html">Back to package dashboard</a>
+<body class="am-theme">
+  <main class="page-shell">
+    <header class="topbar reveal">
+      <div class="brand">
+        <div class="brand-mark">PS</div>
+        <div class="brand-copy">
+          <strong>Current Project Status</strong>
+          <span>Executive decision memo</span>
+        </div>
+      </div>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="../index.html">Home</a>
+        <a href="../employer_package/index.html">Employer Package</a>
+        <a href="../employer_package/analysis_suite/phase3_dashboard.html">Phase 3 Holdout</a>
+        <a href="../employer_package/forward_trial/index.html">Forward Trial</a>
+      </nav>
+    </header>
+
+    <section class="hero reveal delay-1">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow">Project status</span>
+          <h1 class="hero-title">Current package status</h1>
+          <p class="hero-subtitle">One-page summary of the current candidate, its boundaries, and the remaining implementation work.</p>
+          <p class="lede">Decision memo for the employer route: current read, review clock, and remaining implementation work.</p>
+
+          <div class="snapshot-grid">
+            <article class="snapshot-card">
+              <span class="snapshot-label">Selected strategy</span>
+              <strong class="snapshot-value">Ex-Norway Top 8</strong>
+              <p class="snapshot-note">12-1 price momentum with trend filter (MA10).</p>
+            </article>
+            <article class="snapshot-card">
+              <span class="snapshot-label">Shadow check</span>
+              <strong class="snapshot-value">Baseline Top 8</strong>
+              <p class="snapshot-note">Sweden, Denmark, and Norway under the same broad setup.</p>
+            </article>
+            <article class="snapshot-card">
+              <span class="snapshot-label">Package role</span>
+              <strong class="snapshot-value">Validated candidate branch</strong>
+              <p class="snapshot-note">Focused package for the current lead, not the full archive.</p>
+            </article>
+            <article class="snapshot-card">
+              <span class="snapshot-label">Decision clock</span>
+              <strong class="snapshot-value">Aug 2026 / Feb 2027</strong>
+              <p class="snapshot-note">Earliest and preferred review windows.</p>
+            </article>
+          </div>
+
+          <div class="cta-row">
+            <a class="button primary" href="../employer_package/analysis_suite/phase3_dashboard.html">Open Phase 3 Holdout</a>
+            <a class="button secondary" href="../employer_package/analysis_suite/current_replay_ex_norway_n8/ex_norway/selection_summary.html">Open Certification</a>
+            <a class="button ghost" href="../employer_package/forward_trial/index.html">Open Forward Trial</a>
+          </div>
+        </div>
+
+        <aside class="status-panel">
+          <p class="section-kicker">Current read</p>
+          <h2>What this package says now</h2>
+          <ul class="status-list">
+            <li>
+              <span>Branch read</span>
+              <strong>The current candidate is strong enough to warrant forward observation.</strong>
+            </li>
+            <li>
+              <span>Cadence verdict</span>
+              <strong>No cadence pair currently passes certification plus holdout under the legacy cost model.</strong>
+            </li>
+            <li>
+              <span>Interpretation</span>
+              <strong>This package presents the current validated candidate branch; cadence extension work remains ongoing.</strong>
+            </li>
+            <li>
+              <span>Open work</span>
+              <strong>PTI liquid-subset coverage and banded rebalance realism remain outstanding implementation items.</strong>
+            </li>
+          </ul>
+        </aside>
+      </div>
     </section>
-    <section class="section">
-      <h1>Current Project Status</h1>
-<ul>
-<li>Generated: `2026-03-18T14:30:51.060652+00:00`</li>
-<li>Package model: `entry_exit_costs`</li>
-<li>Package verdict: `No cadence pair currently passes certification plus holdout under `legacy_entry_exit_costs`.`</li>
-<li>Active validated strategy exists: `no`</li>
-<li>Shareable package focus: `validated candidate branch`</li>
-</ul>
-<ul>
-<li>Lead selection source: `C:\Users\robin\Desktop\alpha momentum\results\cadence_compare_rebuild\ex_norway\1m\selection_summary.json`</li>
-<li>Shadow selection source: `C:\Users\robin\Desktop\alpha momentum\results\cadence_compare_rebuild\baseline\1m\selection_summary.json`</li>
-</ul>
-<h2>What This Means</h2>
-<ul>
-<li>The package currently points to a validated candidate under the selected entry/exit execution model.</li>
-<li>The discarded cadence transaction-cost model is not the source of truth for this package.</li>
-<li>The repo is still strongest as a research and validation system rather than a finished production strategy stack.</li>
-</ul>
-<h2>Best Next Steps</h2>
-<ul>
-<li>Keep the evaluation rules fixed before running another branch.</li>
-<li>Prioritize a scoped implementation branch such as PTI market-cap/liquid-subset support or a realistic rebalance-band model.</li>
-<li>Use the cadence summary as the source of truth for whether a new branch improved the situation.</li>
-</ul>
-<h2>Main Remaining Gaps</h2>
-<ul>
-<li>Liquid-subset diagnostics are still suspended because PTI market-cap history is missing.</li>
-<li>A more realistic banded rebalance model is still unimplemented.</li>
-<li>The package is for research communication, not live deployment.</li>
-</ul>
+
+    <section class="section reveal delay-2">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Decision memo</p>
+          <h2>What this package is and is not</h2>
+        </div>
+        <p class="section-intro">Short enough to scan first and frame the evidence pages that follow.</p>
+      </div>
+
+      <div class="score-grid">
+        <article class="score-card">
+          <div class="score-head">
+            <div>
+              <h3 class="score-title">What it is</h3>
+              <p class="score-meta">Snapshot of the lead candidate under the selected entry and exit model.</p>
+            </div>
+            <span class="badge good">Current lead</span>
+          </div>
+        </article>
+        <article class="score-card">
+          <div class="score-head">
+            <div>
+              <h3 class="score-title">What it is not</h3>
+              <p class="score-meta">Not proof that the full cadence design space is solved or live-ready.</p>
+            </div>
+            <span class="badge neutral">Boundary</span>
+          </div>
+        </article>
+        <article class="score-card">
+          <div class="score-head">
+            <div>
+              <h3 class="score-title">Why it exists</h3>
+              <p class="score-meta">Keeps the strongest branch reviewable without the full archive.</p>
+            </div>
+            <span class="badge neutral">Route</span>
+          </div>
+        </article>
+        <article class="score-card">
+          <div class="score-head">
+            <div>
+              <h3 class="score-title">What still decides it</h3>
+              <p class="score-meta">Frozen rules, untouched holdout evidence, and paper-trial monitoring.</p>
+            </div>
+            <span class="badge warn">Watch</span>
+          </div>
+        </article>
+      </div>
+
+      <div class="phase-ladder">
+        <article class="phase-step active">
+          <span class="phase-label">Now</span>
+          <strong class="phase-value">Keep rules fixed</strong>
+          <p class="phase-note">Do not reopen the search because the branch looks promising.</p>
+        </article>
+        <article class="phase-step active">
+          <span class="phase-label">Next</span>
+          <strong class="phase-value">Collect paper months</strong>
+          <p class="phase-note">Use the forward-trial pages to judge the frozen books on new data.</p>
+        </article>
+        <article class="phase-step future">
+          <span class="phase-label">Open items</span>
+          <strong class="phase-value">Close implementation gaps</strong>
+          <p class="phase-note">PTI liquid-subset coverage and banded rebalance realism still need work.</p>
+        </article>
+      </div>
+
+      <div class="section-callout">
+        <strong>Best next click:</strong> open Phase 3 Holdout, then Certification, then Forward Trial.
+      </div>
     </section>
   </main>
 </body>

@@ -12,3 +12,4 @@ venv/
 .cache/
 build_ninja*/
 vcpkg_installed/
+portfolio/*.zip

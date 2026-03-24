@@ -6,71 +6,285 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root {
-      --paper: #f6f0e3;
-      --paper-strong: rgba(255, 251, 244, 0.92);
-      --ink: #16211e;
-      --muted: #53615d;
-      --line: rgba(22, 33, 30, 0.12);
-      --accent: #b06b1d;
-      --shadow: 0 20px 60px rgba(22, 33, 30, 0.08);
+      --hero: rgba(255, 253, 249, 0.98);
+      --panel: rgba(251, 248, 241, 0.96);
+      --ink: #1b2420;
+      --muted: #5f685f;
+      --muted-strong: #37443d;
+      --line: rgba(27, 36, 32, 0.12);
+      --accent: #1f6159;
+      --accent-strong: #154943;
+      --shadow: 0 22px 54px rgba(34, 41, 37, 0.08);
+      --blur: 14px;
+      --saturate: 120%;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
+      min-height: 100vh;
+      font-family: "Palatino Linotype", Georgia, serif;
       color: var(--ink);
       background:
-        radial-gradient(circle at top left, rgba(176, 107, 29, 0.16), transparent 32%),
-        linear-gradient(180deg, #fbf6eb 0%, var(--paper) 100%);
+        radial-gradient(circle at top left, rgba(31, 97, 89, 0.12), transparent 32%),
+        radial-gradient(circle at top right, rgba(166, 109, 69, 0.11), transparent 26%),
+        radial-gradient(circle at 18% 78%, rgba(120, 144, 125, 0.08), transparent 24%),
+        linear-gradient(180deg, #fbf8f2 0%, #f5f1e8 48%, #e3dbcd 100%);
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.06) 25%, transparent 25%) 0 0 / 38px 38px,
+        linear-gradient(315deg, rgba(255, 255, 255, 0.04) 25%, transparent 25%) 0 0 / 38px 38px;
+      opacity: 0.24;
     }
     main {
-      max-width: 980px;
+      position: relative;
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 40px 24px 56px;
+      padding: 28px 20px 48px;
     }
-    .hero, .section {
-      background: var(--paper-strong);
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      border-radius: 24px;
       border: 1px solid var(--line);
-      border-radius: 28px;
-      padding: 32px;
-      box-shadow: var(--shadow);
+      background: rgba(250, 247, 240, 0.82);
+      backdrop-filter: blur(var(--blur)) saturate(var(--saturate));
+      -webkit-backdrop-filter: blur(var(--blur)) saturate(var(--saturate));
+      box-shadow:
+        var(--shadow),
+        inset 0 1px 0 rgba(255, 255, 255, 0.72);
     }
-    .section { margin-top: 24px; }
-    .eyebrow {
-      display: inline-block;
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: linear-gradient(160deg, #1f6159, #154943);
+      color: #f7f2e8;
+      display: grid;
+      place-items: center;
+      font: 700 0.84rem Consolas, "Courier New", monospace;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      letter-spacing: 0.12em;
-      font-size: 12px;
-      color: var(--accent);
-      margin-bottom: 12px;
+      border: 1px solid rgba(21, 73, 67, 0.24);
+      box-shadow:
+        0 10px 22px rgba(21, 73, 67, 0.14),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18);
     }
-    h1 { margin-top: 0; font-size: clamp(2rem, 4vw, 3rem); }
-    h2, h3 { margin-top: 24px; }
-    p { color: var(--muted); line-height: 1.6; }
-    ul { margin: 12px 0 18px 18px; color: var(--muted); }
-    li { margin-bottom: 6px; }
-    a { color: var(--accent); }
-    .back {
-      display: inline-block;
-      margin-top: 12px;
+    .brand-copy strong,
+    .brand-copy span {
+      display: block;
+    }
+    .brand-copy strong {
+      font-size: 1rem;
+      color: var(--ink);
+    }
+    .brand-copy span {
+      margin-top: 3px;
+      color: var(--muted-strong);
+      font-size: 0.88rem;
+    }
+    .topbar a,
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 11px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(27, 36, 32, 0.12);
+      color: var(--ink);
+      background: rgba(255, 253, 249, 0.92);
       text-decoration: none;
-      color: var(--accent);
+      backdrop-filter: blur(calc(var(--blur) * 0.7));
+      -webkit-backdrop-filter: blur(calc(var(--blur) * 0.7));
+      box-shadow:
+        0 10px 22px rgba(34, 41, 37, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.68);
+      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
     }
-    @media (max-width: 720px) {
-      main { padding: 20px 14px 40px; }
-      .hero, .section { padding: 18px; border-radius: 18px; }
+    .topbar a:hover,
+    .button:hover {
+      transform: translateY(-1px);
+      border-color: rgba(31, 97, 89, 0.2);
+      box-shadow:
+        0 12px 24px rgba(34, 41, 37, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.72);
+    }
+    .hero,
+    .section {
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      padding: 34px 36px;
+      box-shadow:
+        var(--shadow),
+        inset 0 1px 0 rgba(255, 255, 255, 0.62);
+    }
+    .hero { background: var(--hero); }
+    .section { margin-top: 24px; background: var(--panel); }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.10em;
+      font: 0.78rem Consolas, "Courier New", monospace;
+      color: var(--accent-strong);
+      background: rgba(31, 97, 89, 0.08);
+      border: 1px solid rgba(31, 97, 89, 0.15);
+      margin-bottom: 14px;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(2.6rem, 5vw, 4.2rem);
+      line-height: 0.96;
+      letter-spacing: -0.04em;
+      color: var(--ink);
+    }
+    h2,
+    h3 {
+      margin-top: 28px;
+      color: var(--ink);
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.24);
+    }
+    h2 {
+      font-size: clamp(1.7rem, 3vw, 2.45rem);
+      letter-spacing: -0.02em;
+    }
+    h3 {
+      font-size: 1.2rem;
+    }
+    p,
+    li {
+      color: var(--muted-strong);
+      line-height: 1.72;
+      font-size: 1.02rem;
+    }
+    .hero p {
+      max-width: 72ch;
+      margin-top: 18px;
+      color: var(--muted-strong);
+    }
+    .hero-actions {
+      margin-top: 20px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .markdown-body > :first-child {
+      margin-top: 0;
+    }
+    .markdown-body h1 {
+      font-size: clamp(2.2rem, 4vw, 3.4rem);
+      margin-bottom: 8px;
+    }
+    .markdown-body h2,
+    .markdown-body h3 {
+      margin-bottom: 10px;
+    }
+    ul,
+    ol {
+      margin: 14px 0 18px 1.35rem;
+      padding: 0;
+    }
+    li {
+      margin-bottom: 8px;
+    }
+    a {
+      color: var(--accent-strong);
+    }
+    code {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.95em;
+      color: var(--ink);
+      background: rgba(27, 36, 32, 0.05);
+      padding: 0.15em 0.4em;
+      border-radius: 8px;
+      border: 1px solid rgba(27, 36, 32, 0.1);
+    }
+    pre {
+      margin: 18px 0;
+      padding: 14px 16px;
+      border-radius: 18px;
+      overflow: auto;
+      border: 1px solid rgba(27, 36, 32, 0.1);
+      background: rgba(248, 244, 236, 0.92);
+    }
+    pre code {
+      padding: 0;
+      background: transparent;
+      border: 0;
+    }
+    blockquote {
+      margin: 18px 0;
+      padding-left: 16px;
+      border-left: 3px solid rgba(31, 97, 89, 0.22);
+    }
+    hr {
+      border: 0;
+      border-top: 1px solid var(--line);
+      margin: 28px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 18px;
+    }
+    th,
+    td {
+      text-align: left;
+      padding: 10px 8px;
+      border-bottom: 1px solid rgba(27, 36, 32, 0.1);
+      vertical-align: top;
+    }
+    th {
+      color: var(--accent-strong);
+      font: 0.78rem Consolas, "Courier New", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.10em;
+    }
+    @media (max-width: 760px) {
+      main { padding: 20px 14px 36px; }
+      .hero,
+      .section { padding: 24px 20px; border-radius: 24px; }
     }
   </style>
 </head>
-<body>
+<body class="am-theme">
   <main>
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">FT</div>
+        <div class="brand-copy">
+          <strong>Portfolio Folder</strong>
+          <span>Package Dashboard</span>
+        </div>
+      </div>
+      <a href="alpha_momentum_validation_package/dashboard.html">Open package dashboard</a>
+    </header>
     <section class="hero">
       <span class="eyebrow">Package Dashboard</span>
       <h1>Portfolio Folder</h1>
-      <p>Entry point for the validation package visuals.</p>
-      <a class="back" href="alpha_momentum_validation_package/dashboard.html">Open package dashboard</a>
+      <p>Starting point for the validation package visuals.</p>
+      <div class="hero-actions">
+        <a class="button" href="alpha_momentum_validation_package/dashboard.html">Open package dashboard</a>
+      </div>
     </section>
-    <section class="section">
+    <section class="section markdown-body">
       <h1>Portfolio Folder</h1>
 <p>Open `dashboard.html` first.</p>
 <p>This folder is the shareable entry point for the project package. The main assets live in:</p>
