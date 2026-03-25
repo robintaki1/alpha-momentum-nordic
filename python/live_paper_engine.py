@@ -13,6 +13,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--capital-sek", type=float, default=50_000.0, help="Capital per role.")
     parser.add_argument("--data-dir", type=Path, default=Path("data"))
     parser.add_argument("--results-root", type=Path, default=Path("results"))
+    parser.add_argument("--monitor-dir", type=Path, default=Path("results/forward_monitor"))
     parser.add_argument("--papertrading-dir", type=Path, default=Path("papertrading"))
     parser.add_argument("--roles", nargs="+", default=["lead", "shadow"])
     parser.add_argument("--trade-date", type=str, default=None)
@@ -40,6 +41,8 @@ def run_role(*, role: str, args: argparse.Namespace) -> None:
         str(args.data_dir),
         "--results-root",
         str(args.results_root),
+        "--monitor-dir",
+        str(args.monitor_dir),
         "--state-path",
         str(state_path),
         "--history-path",

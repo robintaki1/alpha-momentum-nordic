@@ -2,7 +2,7 @@
   "authoritative_active_validated_strategy": false,
   "authoritative_validation_model": "legacy_entry_exit_costs",
   "authoritative_verdict": "No cadence pair currently passes certification plus holdout under `legacy_entry_exit_costs`.",
-  "generated_at_utc": "2026-03-18T14:30:51.060652+00:00",
+  "generated_at_utc": "2026-03-24T18:40:25.986310+00:00",
   "governance": {
     "legacy_reference_only": true,
     "notes": [
@@ -13,6 +13,8 @@
     "search_reopened": false
   },
   "lead_strategy": {
+    "candidate_id": "l12_s1_n8_strat=trend_filter",
+    "candidate_label": "n8 / trend_filter / ma10",
     "current_pick_month": "2026-03",
     "current_pick_security_ids": [
       "SAAB-B.ST",
@@ -41,7 +43,10 @@
     "thesis_label": "Ex-Norway (Sweden and Denmark only)",
     "thesis_name": "ex_norway"
   },
+  "monitor_mode": "authoritative_reference_monitor",
   "shadow_control": {
+    "candidate_id": "l12_s1_n8_strat=trend_filter",
+    "candidate_label": "n8 / trend_filter / ma10",
     "current_pick_month": "2026-03",
     "current_pick_security_ids": [
       "SAAB-B.ST",

@@ -1,0 +1,99 @@
+{
+  "capital_sek": 50000.0,
+  "cash_sek": 0.3155044960228679,
+  "holdings": {
+    "BEIA-B.ST": {
+      "cost_bps": 59.0,
+      "entry_date": "2026-02-02",
+      "entry_price_sek": 3022.98157793093,
+      "shares": 1.2264136187142385
+    },
+    "BOL.ST": {
+      "cost_bps": 27.75,
+      "entry_date": "2026-02-02",
+      "entry_price_sek": 1301.8579219860521,
+      "shares": 2.1951834045909338
+    },
+    "DANSKE.CO": {
+      "cost_bps": 52.75000000000001,
+      "entry_date": "2026-02-02",
+      "entry_price_sek": 10606.51126364485,
+      "shares": 0.32130598084670603
+    },
+    "FLS.CO": {
+      "cost_bps": 52.75000000000001,
+      "entry_date": "2026-03-02",
+      "entry_price_sek": 1225.4239218445987,
+      "shares": 2.834890680150256
+    },
+    "ISS.CO": {
+      "cost_bps": 52.75000000000001,
+      "entry_date": "2026-02-02",
+      "entry_price_sek": 425.8434830991019,
+      "shares": 8.717190342258617
+    },
+    "JYSK.CO": {
+      "cost_bps": 52.75000000000001,
+      "entry_date": "2026-02-02",
+      "entry_price_sek": 3343.9498311849243,
+      "shares": 1.0076783631952684
+    },
+    "LUG.ST": {
+      "cost_bps": 27.75,
+      "entry_date": "2026-02-02",
+      "entry_price_sek": 746.558017207084,
+      "shares": 3.3952093341047176
+    },
+    "LUMI.ST": {
+      "cost_bps": 27.75,
+      "entry_date": "2026-02-02",
+      "entry_price_sek": 819.7469844319315,
+      "shares": 3.1418345015352616
+    },
+    "MAERSK-B.CO": {
+      "cost_bps": 52.75000000000001,
+      "entry_date": "2026-03-02",
+      "entry_price_sek": 871336.7746614909,
+      "shares": 0.003986911784619711
+    },
+    "NKT.CO": {
+      "cost_bps": 52.75000000000001,
+      "entry_date": "2026-03-02",
+      "entry_price_sek": 1911.7516616853916,
+      "shares": 1.8171517383213966
+    },
+    "PAAL-B.CO": {
+      "cost_bps": 65.25,
+      "entry_date": "2026-02-02",
+      "entry_price_sek": 16390.918881682082,
+      "shares": 0.24092674926045402
+    },
+    "SAAB-B.ST": {
+      "cost_bps": 27.75,
+      "entry_date": "2026-02-02",
+      "entry_price_sek": 3281.4366523494696,
+      "shares": 1.0641062306126265
+    },
+    "SAND.ST": {
+      "cost_bps": 27.75,
+      "entry_date": "2026-02-02",
+      "entry_price_sek": 3083.918562542282,
+      "shares": 0.9891728281171545
+    },
+    "SWED-A.ST": {
+      "cost_bps": 27.75,
+      "entry_date": "2026-02-02",
+      "entry_price_sek": 1552.9610037936154,
+      "shares": 2.2731134014630263
+    },
+    "VWS.CO": {
+      "cost_bps": 52.75000000000001,
+      "entry_date": "2026-02-02",
+      "entry_price_sek": 15320.600680470256,
+      "shares": 0.2659278737453161
+    }
+  },
+  "last_holding_month": "2026-03",
+  "last_portfolio_value_sek": 52109.45833355243,
+  "last_trade_date": "2026-03-02"
+}

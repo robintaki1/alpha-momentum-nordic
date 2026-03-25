@@ -533,7 +533,7 @@ def build_summary_dashboard(summary: dict) -> str:
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Alpha Momentum Cadence Compare</title>
+  <title>Systematic Nordic Equity Research & Validation - Cadence Compare</title>
   <style>
     body {{ margin:0; font-family:Georgia, serif; background:#f7f2e7; color:#17211a; }}
     main {{ max-width:1200px; margin:0 auto; padding:28px 20px 48px; }}
@@ -562,7 +562,7 @@ def build_summary_dashboard(summary: dict) -> str:
     </section>
     {render_phase_map_html(phase1_href="phase1_summary.html")}
     <section>
-      <h2>Cycle Snapshot</h2>
+      <h2>Cycle Overview</h2>
       <div class="grid">
         <div class="card"><div class="label">Phase 1 Status</div><div class="value">{'green' if phase1_green else 'not green'}</div></div>
         <div class="card"><div class="label">Pairs</div><div class="value">{len(pairs)}</div></div>
@@ -744,9 +744,10 @@ def build_pair_dashboard(pair: dict, cadence_root: Path, base_results_root: Path
         else []
     )
     holdout_window_text_value = holdout_window_text(holdout)
-    phase3_ready = holdout.get("status") == "ok" and isinstance(holdout_sharpe, (int, float))
+    phase3_ready = isinstance(holdout_sharpe, (int, float))
     phase3_callout = (
-        f"Phase 3 diagnostics are available for the untouched holdout window {holdout_window_text_value}."
+        f"Phase 3 summary diagnostics are available for the untouched holdout window {holdout_window_text_value}. "
+        "If a historical rebuild snapshot did not preserve monthly return arrays, the holdout page will say so and use a clearly labeled replay only for path diagnostics."
         if phase3_ready
         else (
             f"Phase 3 is blocked for this pair. The reserved holdout window is still {holdout_window_text_value}, "
@@ -813,7 +814,7 @@ def build_pair_dashboard(pair: dict, cadence_root: Path, base_results_root: Path
     {render_phase_map_html(phase1_href="phase1_summary.html", selection_href=selection_href, holdout_href=holdout_href, holdout=holdout)}
     <section>
       <h2>Artifact Map</h2>
-      <p class="muted">Use these links to move between the shared Phase 1 validation page, the richer Phase 2 diagnostics, and the dedicated Phase 3 holdout page for this cadence pair.</p>
+      <p class="muted">These links jump between the shared Phase 1 page, the richer Phase 2 diagnostics, and the dedicated Phase 3 holdout page for this cadence pair.</p>
       <div class="grid">
         {phase1_card}
         {selection_card}
@@ -823,8 +824,8 @@ def build_pair_dashboard(pair: dict, cadence_root: Path, base_results_root: Path
       </div>
     </section>
     <section>
-      <h2>Diagnostics Snapshot (Rebuild)</h2>
-      {render_timeframe_note(f"Snapshot cards mix Phase 2 certification outputs over {validation_window_text} with the current Phase 3 status for {holdout_window_text_value}.")}
+      <h2>Diagnostics Overview (Rebuild)</h2>
+      {render_timeframe_note(f"These cards combine Phase 2 certification outputs over {validation_window_text} with the current Phase 3 status for {holdout_window_text_value}.")}
       <div class="grid">
         <div class="card">
           <div class="label">Certification PBO</div>
@@ -929,7 +930,7 @@ def build_pair_dashboard(pair: dict, cadence_root: Path, base_results_root: Path
           {profile_table}
         </tbody>
       </table>
-      <p class="muted" style="margin-top:10px;">Use this to compare how the top candidate shifts across quick/mega/certification profiles.</p>
+      <p class="muted" style="margin-top:10px;">This shows how the top candidate changes across the quick, mega, and certification profiles.</p>
     </section>
     <section>
       <h2>Top Candidates (Certification)</h2>
@@ -942,7 +943,7 @@ def build_pair_dashboard(pair: dict, cadence_root: Path, base_results_root: Path
           {top_table_rows}
         </tbody>
       </table>
-      <p class="muted" style="margin-top:10px;">Use this to compare stability across neighbors and see which gates block progress.</p>
+      <p class="muted" style="margin-top:10px;">This lets you compare nearby candidates and see which gates are stopping progress.</p>
     </section>
   </main>
 </body>

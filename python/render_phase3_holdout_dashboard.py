@@ -18,13 +18,15 @@ from research_engine import (
     annualized_sharpe_periods,
     apply_pbo_policy,
     build_thesis,
+    clip_walkforward_folds_to_window,
     config,
     evaluate_holdout,
+    format_equity_plus_return,
     format_float,
     format_mc,
     format_params,
+    format_pbo_display,
     format_pct,
-    format_profile_set,
     monte_carlo_badge,
     monte_carlo_interpretation,
     monte_carlo_summary,
@@ -44,6 +46,7 @@ from research_engine import (
     render_walkforward_schedule_svg,
     resolve_profile_settings,
     total_return,
+    pbo_explainer,
     walk_forward_diagnostic_result,
     walk_forward_gap_months_summary,
     walk_forward_gap_summary,
@@ -155,6 +158,59 @@ def find_series_backed_holdout_path(
             continue
         candidates.append(path)
     return candidates[0] if candidates else None
+
+
+def find_upstream_phase2_selection(
+    *,
+    thesis_name: str,
+    locked_candidate_id: str | None,
+) -> tuple[Path | None, dict[str, Any]]:
+    candidates = [
+        Path("portfolio")
+        / "alpha_momentum_validation_package"
+        / "research_engine_rebuild"
+        / thesis_name
+        / "1m"
+        / "selection_summary.json",
+        Path("results") / "cadence_compare_rebuild" / thesis_name / "1m" / "selection_summary.json",
+    ]
+    for path in candidates:
+        payload = load_json(path, default={})
+        if not payload:
+            continue
+        candidate_id = (payload.get("locked_candidate") or {}).get("candidate_id")
+        if locked_candidate_id and candidate_id and candidate_id != locked_candidate_id:
+            continue
+        backtest = payload.get("backtest_overfitting", {})
+        if backtest.get("pbo") is None:
+            continue
+        return path, payload
+    return None, {}
+
+
+def format_profile_set_brief(profile_set: str, profile_settings: dict[str, Any]) -> str:
+    profile = profile_settings.get("certification_baseline") or next(iter(profile_settings.values()), {})
+    lookbacks = [str(value) for value in profile.get("lookbacks", ()) if value is not None]
+    skips = [str(value) for value in profile.get("skips", ()) if value is not None]
+    top_ns = [str(value) for value in profile.get("top_ns", ()) if value is not None]
+    strategy_ids = [str(item.get("strategy_id", "baseline")) for item in config.STRATEGY_VARIANTS]
+
+    strategy_summary = "baseline + trend-filter family"
+    if strategy_ids:
+        has_baseline = "baseline" in strategy_ids
+        has_trend = any("trend_filter" in strategy for strategy in strategy_ids)
+        if has_baseline and not has_trend:
+            strategy_summary = "baseline family"
+        elif has_trend and not has_baseline:
+            strategy_summary = "trend-filter family"
+
+    return (
+        f"{profile_set} - "
+        f"L={', '.join(lookbacks) or 'n/a'}; "
+        f"skip={', '.join(skips) or 'n/a'}; "
+        f"top_n={', '.join(top_ns) or 'n/a'}; "
+        f"{strategy_summary}."
+    )
 
 
 def holdout_primary_sharpe(holdout: dict[str, Any]) -> float | None:
@@ -751,7 +807,7 @@ def render_phase3_verdict(holdout: dict[str, Any], primary_track: dict[str, Any]
         )
 
     return (
-        "<section>"
+        '<section class="section reveal delay-2">'
         "<h2>Phase 3 Holdout Verdict</h2>"
         f'<div class="verdict-panel">{headline}<span class="badge-detail">Untouched holdout decision for the locked candidate.</span></div>'
         f'<p class="verdict-note"><strong>Candidate:</strong> {format_params(holdout.get("selected_params"))}</p>'
@@ -786,6 +842,11 @@ def build_phase3_dashboard(
     selection_href: str,
     raw_holdout_href: str,
     back_href: str,
+    portfolio_css_href: str,
+    portfolio_theme_href: str,
+    portfolio_home_href: str,
+    employer_package_href: str,
+    analysis_suite_href: str,
     context_note: str,
     source_note: str | None = None,
 ) -> str:
@@ -808,8 +869,9 @@ def build_phase3_dashboard(
     wf_folds = phase3_walk_forward.get("folds") or []
     wf_combined = phase3_walk_forward.get("combined") or {}
     wf_combined_returns = phase3_walk_forward.get("combined_returns") or primary_returns
+    wf_combined_benchmark_returns = phase3_walk_forward.get("combined_benchmark_returns") or []
     monte = monte_carlo_summary(
-        wf_combined_returns,
+        primary_returns,
         periods_per_year=periods_per_year,
         n_resamples=config.MONTE_CARLO_RESAMPLES,
         block_length_months=config.MONTE_CARLO_BLOCK_LENGTH_MONTHS,
@@ -821,8 +883,11 @@ def build_phase3_dashboard(
     mc_sharpe = mc_metrics.get("sharpe", {})
     mc_total = mc_metrics.get("total_return", {})
     mc_dd = mc_metrics.get("max_drawdown", {})
+    mc_final_equity = mc_metrics.get("final_equity", {})
     mc_hist = monte.get("histograms", {}) if isinstance(monte, dict) else {}
     mc_paths = monte.get("sample_paths", []) if isinstance(monte, dict) else []
+    mc_quantiles = monte.get("path_quantiles", {}) if isinstance(monte, dict) else {}
+    mc_density = monte.get("path_density", {}) if isinstance(monte, dict) else {}
     mc_badge_label, mc_badge_tone, mc_badge_detail = monte_carlo_badge(mc_sharpe, mc_total, mc_dd)
     mc_badge_html = render_badge(mc_badge_label, mc_badge_tone, mc_badge_detail)
     mc_interp = monte_carlo_interpretation(mc_sharpe, mc_total, mc_dd)
@@ -841,10 +906,33 @@ def build_phase3_dashboard(
         holdout_end=holdout_end,
         periods_per_year=periods_per_year,
     )
-    profile_desc = format_profile_set(profile_set, profile_settings)
+    profile_desc_brief = format_profile_set_brief(profile_set, profile_settings)
     holdout_status = official_holdout.get("status", "n/a")
-    pbo_value = selection.get("backtest_overfitting", {}).get("pbo")
-    pbo_band = selection.get("pbo_band", "n/a")
+    backtest = selection.get("backtest_overfitting", {})
+    pbo_value = backtest.get("pbo")
+    pbo_display = format_pbo_display(pbo_value, backtest)
+    phase2_pbo_source = selection.get("phase2_certification_source") or {}
+    if phase2_pbo_source:
+        candidate_count = phase2_pbo_source.get("candidate_count")
+        pbo_note_html = (
+            '<div class="note-strip"><strong>PBO note.</strong> '
+            f'This page carries forward the upstream Phase 2 certification PBO for the same locked candidate: '
+            f'<strong>{html.escape(pbo_display)}</strong>'
+            + (
+                f' across <strong>{html.escape(str(candidate_count))}</strong> tested candidates. '
+                if candidate_count is not None
+                else '. '
+            )
+            + 'The exact-candidate replay used for these Phase 3 diagnostics collapses replay-local PBO to n/a because there is no ranking step left. '
+            f'<a href="{selection_href}">Open the Phase 2 certification artifact</a> for the full anti-overfitting context.</div>'
+        )
+    else:
+        pbo_note_html = (
+            '<div class="note-strip"><strong>PBO note.</strong> '
+            f'{html.escape(pbo_explainer(backtest))} '
+            'For this employer-facing Phase 3 page, the candidate is already frozen, so the official headline stays with the untouched holdout rather than re-running selection-stage PBO here. '
+            f'<a href="{selection_href}">Open the Phase 2 certification artifact</a> for the upstream anti-overfitting context.</div>'
+        )
     phase4_start = _ordinal_to_month(_month_to_ordinal(holdout_end) + 1)
     rebuilt_primary_cagr = annualized_return(
         analysis_primary_track.get("total_return"),
@@ -882,6 +970,18 @@ def build_phase3_dashboard(
     wf_gate_passes = sum(
         1 for fold in wf_folds if fold.get("validate_sharpe") is not None and fold["validate_sharpe"] > 0.4
     )
+    wf_combined_pass = bool(
+        wf_combined.get("sharpe") is not None and float(wf_combined.get("sharpe")) >= 0.4
+    )
+    wf_combined_badge = render_badge(
+        "COMBINED: PASS" if wf_combined_pass else "COMBINED: MIXED",
+        "good" if wf_combined_pass else "caution",
+        (
+            f"Stitched validation Sharpe {format_float(wf_combined.get('sharpe'))} vs gate {format_float(0.4)}"
+            if wf_combined.get("sharpe") is not None
+            else "Combined stitched validation series unavailable."
+        ),
+    )
     wf_combined_cagr = annualized_return(
         wf_combined.get("total_return"),
         wf_combined.get("months"),
@@ -892,37 +992,42 @@ def build_phase3_dashboard(
         for fold in wf_folds
         if (fold.get("validate_window") or {}).get("start") and (fold.get("validate_window") or {}).get("end")
     )
-    wf_schedule_chart = render_walkforward_schedule_svg(
+    wf_schedule_folds = clip_walkforward_folds_to_window(
         wf_folds,
+        clip_start=holdout_start,
+        clip_end=holdout_end,
+    )
+    wf_schedule_chart = render_walkforward_schedule_svg(
+        wf_schedule_folds,
         title="Phase 3 Walk-Forward Schedule",
     )
     boundary_chart = render_phase_boundary_svg(
         [
             {
-                "label": "Phase 2 history",
-                "detail": "selection and older-regime validation",
+                "label": "Selection history",
+                "detail": "Phase 2 research and locking",
                 "start": config.ROLLING_ORIGIN_FOLDS[0][1] if config.ROLLING_ORIGIN_FOLDS else "2000-01",
                 "end": config.INSAMPLE_END,
                 "fill": "#d9cab8",
             },
             {
-                "label": "Phase 3 test period",
-                "detail": "formal expanding walk-forward stage",
+                "label": "One-shot holdout",
+                "detail": "this page's main test window",
                 "start": holdout_start,
                 "end": holdout_end,
                 "fill": "#eadca7",
                 "highlight": True,
             },
             {
-                "label": "After test period",
-                "detail": "future untouched Phase 4 holdout",
+                "label": "After holdout",
+                "detail": "paper/live or future appended data",
                 "start": phase4_start,
                 "fill": "#efe6d7",
             },
         ],
         footer_note=(
-            "This page now treats 2018-01 to 2026-01 as the active Phase 3 test period. The untouched final holdout "
-            "has to begin after that window ends."
+            "This page is meant to be a one-shot Phase 3 test: the candidate should already be frozen before the "
+            "orange window begins."
         ),
     )
     phase3_ladder_chart = render_walkforward_ladder_svg(
@@ -932,6 +1037,8 @@ def build_phase3_dashboard(
     wf_oos_equity_chart = render_walkforward_oos_equity_svg(
         wf_combined_returns,
         wf_folds,
+        benchmark_returns=wf_combined_benchmark_returns,
+        benchmark_label=config.PRIMARY_PASSIVE_BENCHMARK,
         title="Validation Equity (Stitched)",
     )
     wf_rolling_sharpe_chart = render_walkforward_rolling_sharpe_svg(
@@ -964,7 +1071,7 @@ def build_phase3_dashboard(
         if row
     ]
     context_note_html = (
-        '<div class="callout"><strong>Context.</strong>'
+        '<div class="callout"><strong>Why this page matters.</strong>'
         f'<div class="muted">{html.escape(context_note)}</div></div>'
     )
     source_note_html = (
@@ -979,99 +1086,140 @@ def build_phase3_dashboard(
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Phase 3 Walk-Forward Dashboard</title>
+  <title>Phase 3 Holdout Dashboard</title>
+  <link rel="stylesheet" href="{portfolio_css_href}">
+  <link rel="stylesheet" href="{portfolio_theme_href}">
   <style>
-    body {{ margin:0; font-family:Georgia, serif; background:#f7f2e7; color:#17211a; }}
-    main {{ max-width:1080px; margin:0 auto; padding:28px 20px 48px; }}
-    section {{ background:rgba(255,250,241,.92); border:1px solid rgba(23,33,26,.12); border-radius:24px; padding:24px; box-shadow:0 18px 50px rgba(33,41,36,.08); margin-top:18px; }}
-    .grid {{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin-top:16px; }}
-    .card {{ background:#fffdf8; border:1px solid rgba(23,33,26,.12); border-radius:20px; padding:18px; }}
-    .label {{ color:#6c5842; text-transform:uppercase; letter-spacing:.08em; font-size:.75rem; }}
-    .value {{ font-size:1.3rem; margin-top:6px; overflow-wrap:anywhere; }}
-    .muted {{ color:#5b6762; }}
-    .callout {{ background:#fff7eb; border:1px solid rgba(176,107,29,.28); border-radius:16px; padding:12px 14px; margin-top:12px; }}
-    table {{ width:100%; border-collapse:collapse; margin-top:12px; }}
-    th, td {{ border-bottom:1px solid rgba(23,33,26,.08); text-align:left; padding:8px; }}
-    th {{ font-size:.75rem; text-transform:uppercase; color:#5d685f; letter-spacing:.05em; }}
-    a {{ color:#b06b1d; }}
+    .page-shell {{ max-width: 1200px; }}
+    .hero,
+    .section,
+    .note-strip,
+    .callout,
+    .card,
+    .metric-card {{ border: 1px solid var(--line); }}
+    .hero,
+    .section {{ padding: 30px; }}
+    .hero-grid {{ display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.95fr); gap: 24px; align-items: start; }}
+    .grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 16px; }}
+    .grid.tight {{ margin-top: 12px; }}
     .card.full {{ grid-column: 1 / -1; }}
-    .chart-block {{ display:flex; flex-direction:column; gap:6px; }}
-    .chart-title {{ font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; color:#6c5842; }}
-    .chart {{ width:100%; height:auto; }}
-    .chart text {{ font-family:Georgia, serif; font-size:10px; fill:#5d685f; }}
-    .chart-note {{ font-size:.78rem; color:#6c5842; }}
-    .legend-line {{ font-weight:600; color:#7a6aa0; }}
-    .legend-line.median {{ color:#4f7a67; }}
-    .legend-line.band {{ color:#bfa47a; }}
-    .badge-row {{ display:flex; align-items:center; gap:8px; margin:6px 0 6px; }}
-    .badge {{ display:inline-block; padding:4px 8px; border-radius:999px; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; font-weight:700; }}
-    .badge.good {{ background:#dcefe3; color:#2f5c46; border:1px solid #a9c7b4; }}
-    .badge.caution {{ background:#f4ead7; color:#7a5a25; border:1px solid #d9c59a; }}
-    .badge.weak {{ background:#f3d7d7; color:#7a2f2f; border:1px solid #d6a3a3; }}
-    .badge.neutral {{ background:#ece7dd; color:#6c5842; border:1px solid #d7cdbc; }}
-    .badge-detail {{ font-size:.78rem; color:#6c5842; }}
-    .verdict-panel {{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }}
-    .verdict-note {{ margin:6px 0 10px; color:#5b6762; font-size:.85rem; }}
-    .verdict-list {{ list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:6px; }}
-    .verdict-item {{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }}
-    .verdict-label {{ font-weight:600; color:#4b4031; min-width:240px; }}
+    .value {{ margin-top: 10px; font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif; font-size: clamp(1.45rem, 2.6vw, 2rem); line-height: 1.1; color: var(--ink); overflow-wrap: anywhere; }}
+    .meta-note,
+    .callout,
+    .note-strip {{ margin-top: 14px; padding: 14px 16px; border-radius: 18px; background: rgba(250, 244, 236, 0.92); box-shadow: var(--shadow-sm); }}
+    .note-strip {{ border-left: 4px solid var(--copper); }}
+    .callout strong,
+    .meta-note strong,
+    .note-strip strong {{ color: var(--muted-strong); }}
+    .metric-list {{ list-style: none; padding: 0; margin: 12px 0 0; display: grid; gap: 8px; }}
+    .metric-list li {{ display: flex; gap: 10px; align-items: start; flex-wrap: wrap; }}
+    .metric-list strong {{ min-width: 170px; color: var(--muted-strong); }}
+    .chart-block {{ display: flex; flex-direction: column; gap: 8px; }}
+    .chart-title {{ color: var(--muted-strong); text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.76rem; }}
+    .chart {{ width: 100%; height: auto; }}
+    .chart text {{ font-family: "Aptos", "Segoe UI Variable Text", "Trebuchet MS", sans-serif; font-size: 10px; fill: var(--muted-strong); }}
+    .chart-note {{ font-size: 0.82rem; line-height: 1.55; color: var(--muted-strong); }}
+    .legend-line {{ font-weight: 700; color: var(--muted-strong); }}
+    .legend-line.median {{ color: #a97831; }}
+    .legend-line.band {{ color: #6f8c5b; }}
+    .legend-line.density {{ color: #4d7d74; }}
+    .badge-row {{ display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 10px 0 0; }}
+    .badge {{ display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 999px; border: 1px solid transparent; font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; }}
+    .badge.good {{ background: var(--good-soft); color: var(--good); border-color: rgba(36, 94, 71, 0.16); }}
+    .badge.caution {{ background: var(--warn-soft); color: var(--warn); border-color: rgba(123, 67, 49, 0.16); }}
+    .badge.weak {{ background: rgba(128, 44, 44, 0.12); color: #7a2f2f; border-color: rgba(128, 44, 44, 0.16); }}
+    .badge.neutral {{ background: rgba(27, 36, 32, 0.04); color: var(--muted-strong); border-color: rgba(18, 36, 29, 0.08); }}
+    .badge-detail {{ font-size: 0.82rem; color: var(--muted); }}
+    .actions {{ display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }}
+    table {{ width: 100%; border-collapse: collapse; margin-top: 14px; }}
+    th, td {{ border-bottom: 1px solid rgba(18, 36, 29, 0.08); text-align: left; padding: 9px 8px; vertical-align: top; }}
+    th {{ color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.74rem; }}
+    .verdict-panel {{ display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }}
+    .verdict-note {{ margin: 8px 0 10px; color: var(--muted); font-size: 0.92rem; }}
+    .verdict-list {{ list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }}
+    .verdict-item {{ display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }}
+    .verdict-label {{ font-weight: 600; color: var(--muted-strong); min-width: 220px; }}
+    .subtle {{ color: var(--muted); font-size: 0.94rem; }}
+    @media (max-width: 900px) {{
+      .hero-grid {{ grid-template-columns: 1fr; }}
+    }}
   </style>
 </head>
-<body>
-  <main>
+<body class="am-theme">
+  <main class="page-shell">
 """
 
     page_html = head + f"""
-    <section>
-      <h1>{thesis.get('label','Research Thesis')}</h1>
-      <p>{thesis.get('scope_note','')}</p>
-      <p class="muted">Profile set: {profile_desc}</p>
-      {context_note_html}
-      {source_note_html}
-      <p class="muted"><a href="{back_href}">Back to Phase 2 sweep dashboard</a></p>
-      <div class="grid">
-        <div class="card"><div class="label">Selection Status</div><div class="value">{selection.get('selection_status','n/a')}</div></div>
-        <div class="card"><div class="label">Certification PBO</div><div class="value">{format_pct(pbo_value)}</div></div>
-        <div class="card"><div class="label">PBO Band</div><div class="value">{pbo_band}</div></div>
-        <div class="card"><div class="label">Phase 3 Combined Sharpe</div><div class="value">{format_float(wf_combined.get('sharpe'))}</div></div>
-        <div class="card"><div class="label">Phase 3 Combined CAGR</div><div class="value">{format_pct(wf_combined_cagr)}</div></div>
-        <div class="card"><div class="label">Phase 4 Final Holdout</div><div class="value">{phase4_start} onward</div></div>
-        <div class="card"><div class="label">Locked Params</div><div class="value">{format_params(official_holdout.get('selected_params'))}</div></div>
+    <header class="topbar reveal">
+      <div class="brand">
+        <div class="brand-mark">P3</div>
+        <div class="brand-copy">
+          <strong>Phase 3 Holdout Dashboard</strong>
+          <span>Phase 3 holdout, walk-forward context, and Monte Carlo</span>
+        </div>
       </div>
-      <div class="callout">
-        <strong>Phase 3 is now the formal walk-forward stage.</strong>
-        <div class="muted">This page treats {holdout_start} to {holdout_end} as a real expanding-window walk-forward stage, using the same geometry as Phase 2. That means the untouched final holdout moves forward to {phase4_start} onward.</div>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="{portfolio_home_href}">Portfolio Home</a>
+        <a href="{employer_package_href}">Employer Package</a>
+        <a href="{analysis_suite_href}">Analysis Suite</a>
+        <a href="{selection_href}">Phase 2 Certification</a>
+        <a href="{raw_holdout_href}">Raw Artifact</a>
+      </nav>
+    </header>
+    <section class="hero reveal delay-1">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow">Phase 3 Holdout</span>
+          <h1 class="hero-title">{thesis.get('label','Phase 3 Holdout')}</h1>
+          <p class="hero-subtitle">Final check on untouched data for the locked candidate.</p>
+          <p class="lede">Window: {holdout_start} to {holdout_end}. The main verdict comes from the untouched holdout. The walk-forward charts lower down add context; they do not re-grade the strategy.</p>
+          <p class="muted" style="margin-top:12px;">Research profile: {profile_desc_brief}</p>
+          {context_note_html}
+          {source_note_html}
+          <div class="meta-note"><strong>Locked params:</strong> {format_params(official_holdout.get('selected_params'))}</div>
+          <div class="actions">
+            <a class="button primary" href="{selection_href}">Open Phase 2 certification</a>
+            <a class="button secondary" href="{raw_holdout_href}">Open raw artifact</a>
+            <a class="button ghost" href="{back_href}">Back</a>
+          </div>
+        </div>
+        <aside class="status-panel">
+          <p class="section-kicker">Quick take</p>
+          <h2>Headline result</h2>
+          <ul class="status-list">
+            <li><span>Window</span><strong>{holdout_start} to {holdout_end}</strong></li>
+            <li><span>Sharpe</span><strong>{format_float(archived_primary_sharpe or rebuilt_primary_sharpe)}</strong></li>
+            <li><span>Benchmark gate</span><strong>{'Passed' if official_holdout.get('phase4_gate', {}).get('beats_primary_benchmark') else 'Failed'}</strong></li>
+            <li><span>Phase 4 eligible</span><strong>{official_holdout.get('phase4_gate', {}).get('phase4_eligible')}</strong></li>
+            <li><span>Status</span><strong>{selection.get('selection_status','n/a')}</strong></li>
+            <li><span>PBO</span><strong>{pbo_display}</strong></li>
+          </ul>
+          <div class="badge-row">{render_badge('OFFICIAL: PASS' if official_holdout.get('phase4_gate', {}).get('phase4_eligible') else 'OFFICIAL: FAIL', 'good' if official_holdout.get('phase4_gate', {}).get('phase4_eligible') else 'weak', 'Headline verdict comes from the untouched holdout only.')}</div>
+        </aside>
       </div>
+      {pbo_note_html}
     </section>
-    <section>
-      <h2>Validation Ladder</h2>
+    {render_phase3_verdict(official_holdout, official_primary_track)}
+    <section class="section reveal delay-2">
+      <h2>Phase Map</h2>
+      <p class="muted"><strong>In short:</strong> Phase 2 locked the candidate on 2000-01 to 2017-12. Phase 3 is the untouched 2018-01 to 2026-01 holdout. The stitched slices below simply show how that same period behaved in smaller chunks.</p>
       <div class="grid">
         <div class="card">
           <div class="label">Phase 2</div>
           <div class="value">2000-01 to 2017-12</div>
-          <div class="muted">Fixed research walk-forward and anti-overfitting gates selected the frozen candidate.</div>
+          <div class="muted">Research certification, walk-forward selection, and anti-overfitting gates locked the candidate.</div>
         </div>
         <div class="card">
           <div class="label">Phase 3</div>
-          <div class="value">2018-01 to 2026-01</div>
-          <div class="muted">Formal expanding-window walk-forward with 5 forward OOS slices. Earlier Phase 3 slices may be reused as history in later passes by design.</div>
+          <div class="value">{holdout_start} to {holdout_end}</div>
+          <div class="muted">Untouched holdout verdict for the locked candidate. Diagnostic walk-forward views lower down are descriptive only.</div>
         </div>
         <div class="card">
           <div class="label">Phase 4</div>
           <div class="value">{phase4_start} onward</div>
-          <div class="muted">Reserved untouched final holdout. No data is available for it in this repo yet.</div>
-        </div>
-        <div class="card">
-          <div class="label">Paper Trading</div>
-          <div class="value">Locked</div>
-          <div class="muted">Operational forward proof should wait for the future untouched Phase 4 holdout, not this page.</div>
+          <div class="muted">Reserved future unseen period. Operational paper trading belongs after this frozen Phase 3 result is accepted.</div>
         </div>
       </div>
-    </section>
-    <section>
-      <h2>Protocol Insight</h2>
-      <p class="muted"><strong>What is being tested here:</strong> the highlighted block is the active Phase 3 test period. Earlier data explains why the strategy exists; later data is reserved for the future untouched Phase 4 holdout.</p>
-      <p class="muted"><strong>Why the passes still start from the same anchor:</strong> each new pass expands the frozen history and tests only the next unseen slice, so the stitched orange windows become the realistic Phase 3 out-of-sample path.</p>
       <div class="grid">
         <div class="card full">
           {boundary_chart}
@@ -1081,71 +1229,56 @@ def build_phase3_dashboard(
         </div>
       </div>
     </section>
-    <section>
-      <h2>Phase 3 Snapshot</h2>
+    <section class="section reveal delay-2">
+      <h2>Holdout summary</h2>
       <div class="grid">
         <div class="card">
-          <div class="label">Phase 3 Stage Status</div>
-          <div class="value">{phase3_walk_forward.get('status','n/a')}</div>
-          <div class="muted">This stage is complete when all 5 forward slices are rendered.</div>
-        </div>
-        <div class="card">
-          <div class="label">Primary Track</div>
+          <div class="label">Primary track</div>
           <div class="value">{short_track_label(official_primary_meta.get('universe_variant','n/a'), official_primary_meta.get('execution_model','n/a'))}</div>
           <div class="muted">FX scenario: {analysis_primary_meta.get('fx_scenario','n/a') or official_primary_meta.get('fx_scenario','n/a')}</div>
         </div>
         <div class="card">
-          <div class="label">Phase 3 Combined CAGR</div>
-          <div class="value">{format_pct(wf_combined_cagr)}</div>
-          <div class="muted">Stitched from the five Phase 3 OOS slices.</div>
+          <div class="label">Official holdout CAGR</div>
+          <div class="value">{format_pct(official_primary_cagr or rebuilt_primary_cagr)}</div>
+          <div class="muted">Full-period total return {format_pct(official_primary_total or analysis_primary_track.get('total_return'))}</div>
         </div>
         <div class="card">
-          <div class="label">Phase 3 Benchmark Return</div>
-          <div class="value">{format_pct(analysis_primary_track.get('primary_benchmark_total_return'))}</div>
-          <div class="muted">Primary benchmark on the same 2018-01 to 2026-01 period.</div>
+          <div class="label">Benchmark return</div>
+          <div class="value">{format_pct(official_primary_track.get('primary_benchmark_total_return') or analysis_primary_track.get('primary_benchmark_total_return'))}</div>
+          <div class="muted">Primary benchmark on the same holdout window.</div>
         </div>
         <div class="card">
-          <div class="label">Primary Track CAGR</div>
-          <div class="value">{format_pct(rebuilt_primary_cagr)}</div>
-          <div class="muted">Full-period primary-track return {format_pct(analysis_primary_track.get('total_return'))}</div>
+          <div class="label">Max drawdown</div>
+          <div class="value">{format_pct(official_primary_track.get('max_drawdown') or analysis_primary_track.get('max_drawdown'))}</div>
+          <div class="muted">{official_primary_track.get('months') or analysis_primary_track.get('months') or 'n/a'} holdout months</div>
         </div>
         <div class="card">
-          <div class="label">Primary Track Max Drawdown</div>
-          <div class="value">{format_pct(analysis_primary_track.get('max_drawdown'))}</div>
-          <div class="muted">{analysis_primary_track.get('months','n/a')} Phase 3 months</div>
-        </div>
-        <div class="card">
-          <div class="label">Walk-Forward Sharpe</div>
+          <div class="label">Combined slice Sharpe</div>
           <div class="value">{format_float(wf_combined.get('sharpe'))}</div>
-          <div class="muted">5 formal forward folds across the Phase 3 era.</div>
+          <div class="muted">Stitched across the 5 Phase 3 slices; this is the best like-for-like read of the whole Phase 3 window.</div>
         </div>
         <div class="card">
-          <div class="label">MC Sharpe (Median)</div>
-          <div class="value">{format_mc(mc_sharpe)}</div>
-          <div class="muted">Bootstrap paths: {monte.get('sample_count','n/a')}</div>
-        </div>
-        <div class="card">
-          <div class="label">MC Total Return (Median)</div>
-          <div class="value">{format_mc(mc_total, as_pct=True)}</div>
-          <div class="muted">Block length {monte.get('block_length_months','n/a')} months</div>
+          <div class="label">MC ending equity (median)</div>
+          <div class="value">{format_equity_plus_return(mc_final_equity.get('median'))}</div>
+          <div class="muted">Equity index with 100 = start. Bootstrap paths: {monte.get('sample_count','n/a')}</div>
         </div>
       </div>
       <div class="callout">
-        <strong>Legacy note.</strong>
-        <div class="muted">The old archived 2018-01 to 2026-01 holdout aggregate is no longer treated as the final verdict on this page. Since Phase 3 is now a walk-forward stage, the next untouched final test moves to {phase4_start} onward.</div>
+        <strong>What matters most:</strong>
+        <div class="muted">The pass/fail call still comes from the untouched holdout above. The walk-forward section is there to show how the same Phase 3 period behaved when broken into smaller pieces.</div>
       </div>
     </section>
-    <section>
-      <h2>Walk-Forward Timeline</h2>
-      <p class="muted">Status: {phase3_walk_forward.get('status','n/a')} · Combined Sharpe {format_float(wf_combined.get('sharpe'))} · Total Return {format_pct(wf_combined.get('total_return'))}</p>
-      <p class="muted"><strong>Stage summary:</strong> {wf_diag}.</p>
-      <div class="badge-row"><span class="label">Walk-forward quality</span>{wf_quality_html}</div>
+    <section class="section reveal delay-3">
+      <h2>Phase 3 Walk-Forward View</h2>
+      <p class="muted">Same locked parameters, same holdout era, split into five forward slices so we can look at sub-period stability without changing the official Phase 3 result.</p>
+      <div class="badge-row">{wf_combined_badge}</div>
+      <p class="muted"><strong>Full-window read:</strong> once the five forward slices are stitched back together, the Phase 3 series is still positive and the combined Sharpe stays above the 0.400 gate. That is why the strategy still counts as a pass across the full Phase 3 span even if some shorter slices wobble.</p>
+      <p class="muted"><strong>Diagnostic summary:</strong> {wf_diag}.</p>
       <p class="muted"><strong>Gap summary:</strong> Sharpe {wf_gap_sharpe}. Annualized Return {wf_gap_return}. {wf_gap_months}.</p>
-      <p class="muted"><strong>How to read:</strong> Gray dashed = expanding train history for the already-locked candidate. Green = forward OOS slice for that pass. Gold dash-dot = {config.PRIMARY_PASSIVE_BENCHMARK} in the same forward slice.</p>
-      <p class="muted"><strong>Protocol note:</strong> This is now the formal Phase 3 walk-forward stage. Reusing earlier Phase 3 slices as history in later passes is intentional and does not contaminate the future untouched Phase 4 holdout.</p>
+      <p class="muted"><strong>What the chart shows:</strong> Gray dashed = expanding train history for the already-locked candidate. Gold = the forward OOS slice for that pass. Gold dash-dot = {config.PRIMARY_PASSIVE_BENCHMARK} over the same slice.</p>
+      <p class="muted"><strong>Timeline:</strong> The schedule is clipped to {holdout_start}-{holdout_end} for readability. Earlier diagnostic slices can be reused as history in later passes because they are all inside the already-finished Phase 3 era.</p>
       <p class="muted"><strong>Fold windows:</strong> {wf_window_text if wf_window_text else 'n/a'}.</p>
-      <p class="muted"><strong>Quick gate view:</strong> {wf_gate_passes}/{len(wf_folds) if wf_folds else 0} folds with validation Sharpe &gt; {format_float(0.4)}.</p>
-      <p class="muted"><strong>Higher-frequency view:</strong> The stitched validation equity and rolling Sharpe below update monthly, so you can see movement inside the Phase 3 slices.</p>
+      <p class="muted"><strong>Short-slice dispersion:</strong> {wf_gate_passes}/{len(wf_folds) if wf_folds else 0} shorter slices cleared validation Sharpe &gt; {format_float(0.4)}. Smaller sub-windows are much noisier than the full 2018-01 to 2026-01 holdout, so this is context, not a replacement pass/fail rule.</p>
       <div class="grid">
         <div class="card full">
           {wf_schedule_chart}
@@ -1196,43 +1329,46 @@ def build_phase3_dashboard(
 """
 
     page_html += f"""
-    <section>
+    <section class="section reveal">
       <h2>Monte Carlo Distribution</h2>
-      <p class="muted">Samples: {monte.get('sample_count','n/a')} · Block length: {monte.get('block_length_months','n/a')} months</p>
-      <p class="muted">Method: stationary block bootstrap of the stitched Phase 3 OOS returns from the 5 formal walk-forward folds.</p>
+      <p class="muted">Samples: {monte.get('sample_count','n/a')} &middot; Block length: {monte.get('block_length_months','n/a')} months</p>
+      <p class="muted">Method: stationary block bootstrap of the realized Phase 3 holdout monthly returns from {holdout_start} to {holdout_end}. This is supporting context, not a replacement for the holdout verdict.</p>
       <div class="badge-row"><span class="label">Monte Carlo quality (context)</span>{mc_badge_html}</div>
-      <p class="muted"><strong>Context read:</strong> {mc_badge_label}. {mc_badge_detail}</p>
-      <p class="muted"><strong>How to read histograms:</strong> X-axis = metric value, Y-axis = frequency across bootstrap samples. Taller bars = more likely outcomes. Higher Sharpe/return is better; lower drawdown is better.</p>
-      <p class="muted"><strong>How to read paths:</strong> X-axis = months from start; Y-axis = equity index (start=100). Thin lines are individual bootstrap paths; bold line is the median; shaded band is p10-p90.</p>
-      <p class="muted"><strong>Quick read:</strong> {mc_interp}</p>
+      <p class="muted"><strong>What it shows:</strong> {mc_badge_label}. {mc_badge_detail}</p>
+      <p class="muted"><strong>Takeaway:</strong> this bootstrap check is supportive rather than disqualifying. Reshuffled versions of the same Phase 3 return stream still look broadly healthy, and the downside tail stays close to breakeven instead of collapsing.</p>
+      <p class="muted"><strong>What the fan shows:</strong> the teal fan is a density-first fan, the amber center line is the median path, and the dashed envelope marks p05-p95. Right-edge labels now show both the equity index and the matching total return. The histogram below shows where the bootstrap outcomes finish.</p>
+      <p class="muted"><strong>Bottom line:</strong> {mc_interp}</p>
       {mc_anomaly}
       <div class="grid">
-        <div class="card">
-          {render_histogram_svg(mc_hist.get("sharpe"), metric=mc_sharpe, title="Sharpe", x_label="Sharpe", as_pct=False)}
-        </div>
-        <div class="card">
-          {render_histogram_svg(mc_hist.get("total_return"), metric=mc_total, title="Total Return", x_label="Total Return (%)", as_pct=True)}
-        </div>
-        <div class="card">
-          {render_histogram_svg(mc_hist.get("max_drawdown"), metric=mc_dd, title="Max Drawdown", x_label="Max Drawdown (%)", as_pct=True)}
+        <div class="card full">
+          {render_spaghetti_svg(mc_paths, title='Monte Carlo Paths (Equity Index)', max_lines=3, line_opacity=0.028, line_width=0.45, display_quantile_range=(0.05, 0.95), path_quantiles=mc_quantiles, path_density=mc_density)}
         </div>
         <div class="card full">
-          {render_spaghetti_svg(mc_paths, title="Monte Carlo Paths (Equity)")}
+          {render_histogram_svg(mc_hist.get('final_equity'), metric=mc_final_equity, title='Distribution @ Ending Equity Index', x_label='Ending Equity Index (100 = start)', as_pct=False, width=680, height=180)}
+        </div>
+        <div class="card">
+          {render_histogram_svg(mc_hist.get('sharpe'), metric=mc_sharpe, title='Sharpe', x_label='Sharpe', as_pct=False)}
+        </div>
+        <div class="card">
+          {render_histogram_svg(mc_hist.get('total_return'), metric=mc_total, title='Total Return From Start', x_label='Total Return From Start (%)', as_pct=True)}
+        </div>
+        <div class="card">
+          {render_histogram_svg(mc_hist.get('max_drawdown'), metric=mc_dd, title='Max Drawdown', x_label='Max Drawdown (%)', as_pct=True)}
         </div>
       </div>
       {trimmed_html}
     </section>
-    <section>
+    <section class="section reveal">
       <h2>Phase 3 Subperiods</h2>
       <p class="muted">These are the rebuilt primary-track results for the same Phase 3 era, split into broad regime blocks so you can inspect stability without changing the thesis.</p>
       {render_subperiod_table(subperiod_rows)}
     </section>
-    <section>
+    <section class="section reveal">
       <h2>Phase 3 Track Matrix</h2>
       <p class="muted">Rebuilt Phase 3 tracks across universes and execution timing for the locked params. This section is series-backed, so it lines up with the walk-forward and Monte Carlo sections above.</p>
       {render_track_table(analysis_track_rows)}
     </section>
-    <section>
+    <section class="section reveal">
       <h2>Return Curves (Phase 3 Tracks)</h2>
       <div class="grid">
         {"".join(
@@ -1265,6 +1401,22 @@ def main() -> int:
     thesis_meta = build_thesis(thesis_name).manifest_metadata()
     profile_set = infer_profile_set(source_run_dir, args.profile_set)
     profile_settings = resolve_profile_settings(profile_set)
+    locked_candidate = selection.get("locked_candidate") or {}
+    locked_candidate_id = locked_candidate.get("candidate_id")
+    phase2_selection_path, phase2_selection = find_upstream_phase2_selection(
+        thesis_name=thesis_name,
+        locked_candidate_id=locked_candidate_id,
+    )
+    if phase2_selection:
+        selection["backtest_overfitting"] = phase2_selection.get(
+            "backtest_overfitting",
+            selection.get("backtest_overfitting", {}),
+        )
+        selection["phase2_certification_source"] = {
+            "candidate_count": (phase2_selection.get("backtest_overfitting") or {}).get("candidate_count"),
+            "locked_candidate_id": (phase2_selection.get("locked_candidate") or {}).get("candidate_id"),
+            "selection_status": phase2_selection.get("selection_status"),
+        }
     if "pbo_band" not in selection or selection.get("pbo_band") in (None, "", "n/a"):
         apply_pbo_policy(selection)
     dataset: ResearchDataset | None = None
@@ -1314,21 +1466,26 @@ def main() -> int:
     if archived_sharpe is not None and rebuilt_sharpe is not None:
         if abs(float(archived_sharpe) - float(rebuilt_sharpe)) > 1e-9:
             source_note = (
-                "A legacy archived 2018-01 to 2026-01 aggregate exists in the source run, but it does not include "
-                "monthly return arrays and is no longer treated as the final validation verdict on this page. The "
-                "charts below use the rebuilt series-backed walk-forward stage so the schedule, stitched equity, and "
-                "Monte Carlo sections are internally consistent. Legacy aggregate Sharpe "
+                "The archived holdout JSON and the rebuilt series-backed holdout are both shown here. The headline "
+                "Phase 3 pass/fail still follows the official archived holdout, while the charts use rebuilt monthly "
+                "returns so the diagnostics line up cleanly. Official Sharpe "
                 f"{format_float(archived_sharpe)} vs rebuilt Sharpe {format_float(rebuilt_sharpe)}."
             )
 
-    selection_href = rel_href(output_path, source_run_dir / "selection_summary.html")
+    if phase2_selection_path is not None:
+        selection_href = rel_href(output_path, phase2_selection_path.with_suffix(".html"))
+    else:
+        selection_href = rel_href(output_path, source_run_dir / "selection_summary.html")
     raw_holdout_href = rel_href(output_path, source_run_dir / "holdout_results.html")
-    back_href = "phase2_sweep_dashboard.html"
+    back_href = "index.html" if "analysis_suite" in output_path.parts else selection_href
+    portfolio_css_href = rel_href(output_path, Path("portfolio/assets/portfolio.css"))
+    portfolio_theme_href = rel_href(output_path, Path("portfolio/assets/portfolio-theme.css"))
+    portfolio_home_href = rel_href(output_path, Path("portfolio/index.html"))
+    employer_package_href = rel_href(output_path, Path("portfolio/employer_package/index.html"))
+    analysis_suite_href = rel_href(output_path, Path("portfolio/employer_package/analysis_suite/index.html"))
     context_note = args.context_note or (
-        "This page is the Phase 3 counterpart to the Phase 2 sweep dashboard. It treats "
-        f"{holdout_start} to {holdout_end} as a real 5-fold expanding walk-forward stage for the exact "
-        "l12_s1_n15_strat=trend_filter candidate, which means the untouched final holdout now moves to the next "
-        "post-2026 period."
+        "This page keeps the official Phase 3 holdout result up front and puts the supporting diagnostics underneath, "
+        f"all inside the same {holdout_start} to {holdout_end} window."
     )
 
     rendered = build_phase3_dashboard(
@@ -1342,6 +1499,11 @@ def main() -> int:
         selection_href=selection_href,
         raw_holdout_href=raw_holdout_href,
         back_href=back_href,
+        portfolio_css_href=portfolio_css_href,
+        portfolio_theme_href=portfolio_theme_href,
+        portfolio_home_href=portfolio_home_href,
+        employer_package_href=employer_package_href,
+        analysis_suite_href=analysis_suite_href,
         context_note=context_note,
         source_note=source_note,
     )

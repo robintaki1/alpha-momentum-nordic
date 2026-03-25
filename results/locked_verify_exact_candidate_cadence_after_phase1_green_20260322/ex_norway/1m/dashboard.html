@@ -27,7 +27,7 @@
       <h1>Ex-Norway (Sweden and Denmark only) - Monthly</h1>
       <p>Thesis: <strong>ex_norway</strong> / Cadence: <strong>1m</strong></p>
       <p class="muted">Profile set: locked_exact_n8_phase1_green (L=12 / skip=1 / top_n=5, 8, 10, 12, 15, 20 / strat=trend_filter)</p>
-      <p class="muted"><strong>Timeframe:</strong> Phase 2 research boundary 2000-01 to 2017-12; Phase 2 validation windows 2008-01 to 2017-12; Phase 3 holdout 2018-01 to 2026-01.</p>
+      <div style="margin:10px 0 12px; padding:10px 12px; border-radius:14px; border:1px solid rgba(176,107,29,.28); background:#fff7eb; color:#5b6762;"><strong style="color:#4b4031;">Timeframe:</strong> Phase 2 research boundary 2000-01 to 2017-12; Phase 2 validation windows 2008-01 to 2017-12; Phase 3 holdout 2018-01 to 2026-01.</div>
       <div class="grid">
         <div class="card">
           <div class="label">Selection Status</div>
@@ -35,7 +35,7 @@
         </div>
         <div class="card">
           <div class="label">PBO</div>
-          <div class="value">n/a</div>
+          <div class="value">n/a (single candidate)</div>
         </div>
         <div class="card">
           <div class="label">Holdout Sharpe</div>
@@ -46,8 +46,12 @@
       <div class="callout">
         <strong>PBO is one signal, not the verdict.</strong>
         <div class="muted">
-          PBO passes: True. Validation status is <strong>no_candidate_passed_hard_gates</strong> because hard-gate blockers remain: fold_count, bootstrap.
+          PBO passes: True. Validation status is <strong>no_candidate_passed_hard_gates</strong> because hard-gate blockers remain: fold_count, bootstrap. PBO is not applicable here because this replay freezes one exact candidate rather than ranking a multi-candidate grid.
         </div>
+      </div>
+      <div class="callout">
+        <strong>Phase 3 status.</strong>
+        <div class="muted">Phase 3 is blocked for this pair. The reserved holdout window is still 2018-01 to 2026-01, but Phase 2 did not lock a candidate, so the holdout page is a boundary/status page rather than a full equity and Monte Carlo report.</div>
       </div>
     </section>
     <section><h2>Phase Map</h2><div class="grid"><div class="card"><div class="label">Phase 1</div><div class="value">Infrastructure &amp; Data</div><div class="muted">Gate this cycle with <code>validate.py</code>. This stage checks the engine and core artifacts before any research result is trusted. <a href="phase1_summary.html">Open Phase 1 validation.</a></div></div><div class="card"><div class="label">Phase 2</div><div class="value">Research Certification</div><div class="muted">Selection boundary 2000-01 to 2017-12. Validation windows 2008-01 to 2017-12. <a href="selection_summary.html">Open Phase 2 certification.</a></div></div><div class="card"><div class="label">Phase 3</div><div class="value">Untouched Holdout</div><div class="muted">Official holdout window 2018-01 to 2026-01. <a href="walk_forward_results.html">Open Phase 3 holdout.</a></div></div><div class="card"><div class="label">Phase 4</div><div class="value">Paper Trading</div><div class="muted">Only unlock after the frozen Phase 3 result is accepted.</div></div></div></section>
@@ -64,18 +68,18 @@
     </section>
     <section>
       <h2>Diagnostics Snapshot (Rebuild)</h2>
-      <p class="muted"><strong>Timeframe:</strong> Snapshot cards mix Phase 2 certification outputs over 2008-01 to 2017-12 with the current Phase 3 status for 2018-01 to 2026-01.</p>
+      <div style="margin:10px 0 12px; padding:10px 12px; border-radius:14px; border:1px solid rgba(176,107,29,.28); background:#fff7eb; color:#5b6762;"><strong style="color:#4b4031;">Timeframe:</strong> Snapshot cards mix Phase 2 certification outputs over 2008-01 to 2017-12 with the current Phase 3 status for 2018-01 to 2026-01.</div>
       <div class="grid">
         <div class="card">
           <div class="label">Certification PBO</div>
-          <div class="value">n/a</div>
+          <div class="value">n/a (single candidate)</div>
           <div class="muted">Threshold 30.0% · Passes: True</div>
           <div class="muted">Slices None · Slice length n/a months · Combos 0</div>
           <div class="muted">OOS rank mean n/a · median n/a</div>
         </div>
         <div class="card">
           <div class="label">Quick / Mega PBO</div>
-          <div class="value">n/a / n/a</div>
+          <div class="value">n/a (single candidate) / n/a (single candidate)</div>
           <div class="muted">Exploratory signals only.</div>
         </div>
         <div class="card">
@@ -123,13 +127,13 @@
     </section>
     <section>
       <h2>Return Curve (Top Candidate)</h2>
-      <p class="muted"><strong>Timeframe:</strong> This curve shows the stitched Phase 2 validation record over 2008-01 to 2017-12; it is not the dedicated Phase 3 holdout curve.</p>
+      <div style="margin:10px 0 12px; padding:10px 12px; border-radius:14px; border:1px solid rgba(176,107,29,.28); background:#fff7eb; color:#5b6762;"><strong style="color:#4b4031;">Timeframe:</strong> This curve shows the stitched Phase 2 validation record over 2008-01 to 2017-12; it is not the dedicated Phase 3 holdout curve.</div>
       <svg viewBox="0 0 560 160" width="100%" height="160" preserveAspectRatio="none"><polyline points="0.0,139.6 4.7,143.6 9.3,144.4 14.0,145.2 18.7,143.7 23.3,143.0 28.0,146.0 32.7,146.0 37.3,146.0 42.0,146.0 46.7,146.0 51.3,158.5 56.0,156.8 60.7,158.0 65.3,160.0 70.0,159.1 74.7,154.7 79.3,154.0 84.0,153.5 88.7,152.6 93.3,152.4 98.0,152.7 102.7,152.0 107.3,151.2 112.0,150.8 116.7,150.4 121.3,151.1 126.0,148.3 130.7,148.0 135.3,150.2 140.0,150.9 144.7,148.8 149.3,149.4 154.0,148.4 158.7,148.1 163.3,147.6 168.0,146.0 172.7,146.8 177.3,147.2 182.0,146.6 186.7,145.7 191.3,146.5 196.0,147.7 200.7,149.5 205.3,152.1 210.0,153.8 214.7,152.8 219.3,152.0 224.0,151.7 228.7,149.8 233.3,148.0 238.0,148.4 242.7,148.4 247.3,151.6 252.0,149.5 256.7,148.6 261.3,148.3 266.0,147.9 270.7,147.9 275.3,147.1 280.0,146.3 284.7,144.1 289.3,144.4 294.0,144.2 298.7,143.1 303.3,142.7 308.0,144.4 312.7,142.0 317.3,142.3 322.0,141.4 326.7,139.8 331.3,138.7 336.0,138.0 340.7,139.3 345.3,136.9 350.0,135.4 354.7,134.8 359.3,133.1 364.0,133.0 368.7,133.3 373.3,132.5 378.0,132.1 382.7,132.4 387.3,131.0 392.0,130.8 396.7,127.2 401.3,123.8 406.0,121.3 410.7,122.0 415.3,120.7 420.0,123.5 424.7,120.6 429.3,126.3 434.0,127.7 438.7,124.7 443.3,123.6 448.0,126.9 452.7,128.7 457.3,128.1 462.0,129.3 466.7,128.2 471.3,127.2 476.0,127.9 480.7,126.0 485.3,126.4 490.0,126.7 494.7,127.3 499.3,126.7 504.0,124.5 508.7,124.8 513.3,122.8 518.0,122.3 522.7,119.6 527.3,117.3 532.0,118.3 536.7,119.4 541.3,119.6 546.0,117.4 550.7,116.4 555.3,118.3 560.0,118.6" fill="none" stroke="#9a8c6a" stroke-width="2" stroke-dasharray="4 4" /><polyline points="0.0,139.6 4.7,139.6 9.3,139.6 14.0,139.6 18.7,139.6 23.3,139.6 28.0,139.6 32.7,139.6 37.3,139.6 42.0,139.6 46.7,139.6 51.3,139.6 56.0,139.6 60.7,139.6 65.3,139.6 70.0,139.6 74.7,139.6 79.3,139.6 84.0,139.6 88.7,137.9 93.3,137.2 98.0,135.2 102.7,132.5 107.3,131.4 112.0,131.0 116.7,132.1 121.3,132.2 126.0,125.2 130.7,123.5 135.3,129.0 140.0,133.1 144.7,133.4 149.3,134.8 154.0,127.3 158.7,123.0 163.3,122.7 168.0,118.4 172.7,118.4 177.3,118.8 182.0,115.5 186.7,112.8 191.3,112.0 196.0,114.7 200.7,115.0 205.3,115.0 210.0,115.0 214.7,115.0 219.3,115.0 224.0,115.0 228.7,115.0 233.3,114.9 238.0,114.6 242.7,129.9 247.3,129.7 252.0,130.0 256.7,129.8 261.3,127.9 266.0,128.1 270.7,123.8 275.3,122.8 280.0,120.6 284.7,117.3 289.3,111.9 294.0,129.7 298.7,130.0 303.3,126.8 308.0,128.2 312.7,122.0 317.3,123.5 322.0,115.6 326.7,111.0 331.3,110.0 336.0,107.9 340.7,107.0 345.3,103.6 350.0,102.6 354.7,103.6 359.3,95.4 364.0,94.6 368.7,100.0 373.3,97.5 378.0,99.5 382.7,91.4 387.3,89.8 392.0,80.2 396.7,77.5 401.3,57.0 406.0,46.8 410.7,44.5 415.3,33.9 420.0,36.0 424.7,28.0 429.3,26.6 434.0,27.7 438.7,27.7 443.3,27.7 448.0,27.7 452.7,27.7 457.3,27.7 462.0,27.7 466.7,27.7 471.3,27.7 476.0,27.7 480.7,27.7 485.3,24.6 490.0,19.0 494.7,27.1 499.3,33.6 504.0,28.0 508.7,14.2 513.3,0.0 518.0,5.4 522.7,54.2 527.3,56.6 532.0,60.8 536.7,62.4 541.3,61.5 546.0,61.8 550.7,56.9 555.3,72.8 560.0,72.6" fill="none" stroke="#b06b1d" stroke-width="2.5" /></svg>
       <p class="muted" style="margin-top:10px;">Gold line = candidate; dashed = primary benchmark if available.</p>
     </section>
     <section>
       <h2>Return Curves (Top Candidates by Profile)</h2>
-      <p class="muted"><strong>Timeframe:</strong> Each small multiple below is a Phase 2 stitched validation curve over 2008-01 to 2017-12.</p>
+      <div style="margin:10px 0 12px; padding:10px 12px; border-radius:14px; border:1px solid rgba(176,107,29,.28); background:#fff7eb; color:#5b6762;"><strong style="color:#4b4031;">Timeframe:</strong> Each small multiple below is a Phase 2 stitched validation curve over 2008-01 to 2017-12.</div>
       <div class="grid">
         <div class="card">
           <div class="label">Quick</div>
@@ -148,7 +152,7 @@
     </section>
     <section>
       <h2>Fold Diagnostics (Top Candidate)</h2>
-      <p class="muted"><strong>Timeframe:</strong> Fold metrics below come from the fixed Phase 2 validation windows inside 2008-01 to 2017-12.</p>
+      <div style="margin:10px 0 12px; padding:10px 12px; border-radius:14px; border:1px solid rgba(176,107,29,.28); background:#fff7eb; color:#5b6762;"><strong style="color:#4b4031;">Timeframe:</strong> Fold metrics below come from the fixed Phase 2 validation windows inside 2008-01 to 2017-12.</div>
       <table>
         <thead>
           <tr><th>Fold</th><th>Sharpe</th><th>Max Drawdown</th></tr>
@@ -164,22 +168,22 @@
     </section>
     <section>
       <h2>Profile Comparison (Top Candidate)</h2>
-      <p class="muted"><strong>Timeframe:</strong> Profile rows compare Phase 2 outputs only; the separate Phase 3 holdout lives on the holdout page for 2018-01 to 2026-01.</p>
+      <div style="margin:10px 0 12px; padding:10px 12px; border-radius:14px; border:1px solid rgba(176,107,29,.28); background:#fff7eb; color:#5b6762;"><strong style="color:#4b4031;">Timeframe:</strong> Profile rows compare Phase 2 outputs only; the separate Phase 3 holdout lives on the holdout page for 2018-01 to 2026-01.</div>
       <table>
         <thead>
           <tr><th>Profile</th><th>Candidate</th><th>Params</th><th>Median Sharpe</th><th>Total Return</th><th>Max Drawdown</th><th>PBO</th></tr>
         </thead>
         <tbody>
-          <tr><td>Quick</td><td>l12_s1_n8_strat=trend_filter</td><td>L=12 / skip=1 / top_n=8 / strat=trend_filter / trend_ma=10</td><td>0.783</td><td>1.636</td><td>0.404</td><td>n/a</td></tr>
-<tr><td>Mega</td><td>l12_s1_n8_strat=trend_filter</td><td>L=12 / skip=1 / top_n=8 / strat=trend_filter / trend_ma=10</td><td>0.783</td><td>1.636</td><td>0.404</td><td>n/a</td></tr>
-<tr><td>Certification</td><td>l12_s1_n8_strat=trend_filter</td><td>L=12 / skip=1 / top_n=8 / strat=trend_filter / trend_ma=10</td><td>0.783</td><td>1.636</td><td>0.404</td><td>n/a</td></tr>
+          <tr><td>Quick</td><td>l12_s1_n8_strat=trend_filter</td><td>L=12 / skip=1 / top_n=8 / strat=trend_filter / trend_ma=10</td><td>0.783</td><td>1.636</td><td>0.404</td><td>n/a (single candidate)</td></tr>
+<tr><td>Mega</td><td>l12_s1_n8_strat=trend_filter</td><td>L=12 / skip=1 / top_n=8 / strat=trend_filter / trend_ma=10</td><td>0.783</td><td>1.636</td><td>0.404</td><td>n/a (single candidate)</td></tr>
+<tr><td>Certification</td><td>l12_s1_n8_strat=trend_filter</td><td>L=12 / skip=1 / top_n=8 / strat=trend_filter / trend_ma=10</td><td>0.783</td><td>1.636</td><td>0.404</td><td>n/a (single candidate)</td></tr>
         </tbody>
       </table>
       <p class="muted" style="margin-top:10px;">Use this to compare how the top candidate shifts across quick/mega/certification profiles.</p>
     </section>
     <section>
       <h2>Top Candidates (Certification)</h2>
-      <p class="muted"><strong>Timeframe:</strong> Certification candidates below are ranked only on the Phase 2 validation evidence over 2008-01 to 2017-12.</p>
+      <div style="margin:10px 0 12px; padding:10px 12px; border-radius:14px; border:1px solid rgba(176,107,29,.28); background:#fff7eb; color:#5b6762;"><strong style="color:#4b4031;">Timeframe:</strong> Certification candidates below are ranked only on the Phase 2 validation evidence over 2008-01 to 2017-12.</div>
       <table>
         <thead>
           <tr><th>Candidate</th><th>Params</th><th>Median Sharpe</th><th>Fold Passes</th><th>Bootstrap</th><th>Deflated</th></tr>

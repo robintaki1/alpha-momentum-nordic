@@ -31,6 +31,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--capital-sek", type=float, default=50_000.0)
     parser.add_argument("--data-dir", type=Path, default=Path("data"))
     parser.add_argument("--results-root", type=Path, default=Path("results"))
+    parser.add_argument("--monitor-dir", type=Path, default=Path("results/forward_monitor"))
     parser.add_argument("--state-path", type=Path, default=Path("papertrading/portfolio_state.json"))
     parser.add_argument("--history-path", type=Path, default=Path("papertrading/portfolio_history.csv"))
     parser.add_argument("--ledger-path", type=Path, default=Path("papertrading/trade_ledger.csv"))
@@ -160,7 +161,7 @@ def portfolio_value(holdings: dict[str, Any], prices: dict[str, PriceRow], cash_
 def main() -> int:
     args = parse_args()
 
-    picks_path = args.results_root / "forward_monitor" / "forward_monitor_picks.csv"
+    picks_path = args.monitor_dir / "forward_monitor_picks.csv"
     if not picks_path.exists():
         raise FileNotFoundError(f"Missing picks file: {picks_path}")
 

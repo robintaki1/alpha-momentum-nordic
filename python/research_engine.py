@@ -42,6 +42,29 @@ REQUIRED_FX_SCENARIOS = validation_protocol.REQUIRED_FX_SCENARIOS
 MONTE_CARLO_HIST_BINS = 30
 MONTE_CARLO_SAMPLE_PATHS = 150
 MONTE_CARLO_TRIM_TOP_PCT = 0.05
+MONTE_CARLO_PATH_QUANTILES = (
+    0.01,
+    0.03,
+    0.05,
+    0.10,
+    0.15,
+    0.20,
+    0.25,
+    0.35,
+    0.45,
+    0.50,
+    0.55,
+    0.65,
+    0.75,
+    0.80,
+    0.85,
+    0.90,
+    0.95,
+    0.97,
+    0.99,
+)
+MONTE_CARLO_DENSITY_BINS = 72
+MONTE_CARLO_DENSITY_QUANTILE_RANGE = (0.01, 0.99)
 
 
 @dataclass(frozen=True)
@@ -101,6 +124,38 @@ def format_float(value: float | None, digits: int = 3) -> str:
     if value is None:
         return "n/a"
     return f"{value:.{digits}f}"
+
+
+def equity_index_to_total_return(value: float | None) -> float | None:
+    if value is None or not np.isfinite(value):
+        return None
+    return float(value) / 100.0 - 1.0
+
+
+def format_signed_pct(value: float | None) -> str:
+    if value is None:
+        return "n/a"
+    return f"{value * 100.0:+.1f}%"
+
+
+def format_equity_plus_return(value: float | None, digits: int = 1) -> str:
+    total_return_value = equity_index_to_total_return(value)
+    if total_return_value is None:
+        return "n/a"
+    return f"{format_float(float(value), digits)} ({format_pct(total_return_value)})"
+
+
+def format_equity_plus_return_verbose(value: float | None, digits: int = 1) -> str:
+    total_return_value = equity_index_to_total_return(value)
+    if total_return_value is None:
+        return "n/a"
+    return f"{format_float(float(value), digits)} index ({format_signed_pct(total_return_value)} total return)"
+
+
+def format_equity_plus_return_compact(value: float | None, digits: int = 1) -> str:
+    if value is None or not np.isfinite(value):
+        return "n/a"
+    return format_float(float(value), digits)
 
 
 def format_params(params: dict | None) -> str:
@@ -177,14 +232,16 @@ def monte_carlo_badge(
         p05 = mc_total.get("p05")
         if p05 is not None and np.isfinite(p05):
             max_score += 1
-            if p05 > 0:
+            # A mildly negative 5th-percentile path can still be acceptable for a long
+            # multi-year bootstrap. Treat deeper downside as the caution threshold.
+            if p05 > -0.10:
                 score += 1
             detail_parts.append(f"p05 Return {format_pct(p05)}")
     if mc_dd:
         p95 = mc_dd.get("p95")
         if p95 is not None and np.isfinite(p95):
             max_score += 1
-            if p95 < 0.6:
+            if p95 < 0.65:
                 score += 1
             detail_parts.append(f"p95 Drawdown {format_pct(p95)}")
 
@@ -401,8 +458,8 @@ def render_histogram_svg(
     y_max = max(counts) if counts else 1
     if y_max <= 0:
         y_max = 1
-    margin_left, margin_right = 40, 12
-    margin_top, margin_bottom = 18, 28
+    margin_left, margin_right = 52, 14
+    margin_top, margin_bottom = 18, 46
     inner_w = width - margin_left - margin_right
     inner_h = height - margin_top - margin_bottom
 
@@ -412,6 +469,15 @@ def render_histogram_svg(
     def _y(value: float) -> float:
         return margin_top + inner_h - (value / y_max) * inner_h
 
+    bar_color = "#6b8679"
+    grid_color = "#ddd5c8"
+    axis_color = "#8a7c69"
+    marker_palette = {
+        "p05": "#a9645d",
+        "median": "#a97831",
+        "p95": "#567c72",
+    }
+
     bars = []
     for idx, count in enumerate(counts):
         x0 = _x(edges[idx])
@@ -420,13 +486,13 @@ def render_histogram_svg(
         bar_h = inner_h - (_y(count) - margin_top)
         bars.append(
             f'<rect x="{x0:.1f}" y="{_y(count):.1f}" width="{bar_w:.1f}" height="{bar_h:.1f}" '
-            'fill="#b77a32" opacity="0.75"></rect>'
+            f'fill="{bar_color}" opacity="0.82"></rect>'
         )
 
-    x_ticks = _axis_ticks(x_min, x_max, 5)
+    x_ticks = _axis_ticks(x_min, x_max, 4)
     y_ticks = _axis_ticks(0.0, float(y_max), 4)
     x_labels = [
-        f'<text x="{_x(tick):.1f}" y="{height - 10}" text-anchor="middle">{format_pct(tick) if as_pct else format_float(tick)}</text>'
+        f'<text x="{_x(tick):.1f}" y="{height - 22}" text-anchor="middle">{format_pct(tick) if as_pct else format_float(tick)}</text>'
         for tick in x_ticks
     ]
     y_labels = [
@@ -435,7 +501,7 @@ def render_histogram_svg(
     ]
     y_grid = [
         f'<line x1="{margin_left}" y1="{_y(tick):.1f}" x2="{width - margin_right}" y2="{_y(tick):.1f}" '
-        'stroke="#e4dbc9" stroke-width="1"></line>'
+        f'stroke="{grid_color}" stroke-width="1"></line>'
         for tick in y_ticks
     ]
 
@@ -443,9 +509,9 @@ def render_histogram_svg(
     marker_labels = []
     if metric:
         for label, value, color, dash in (
-            ("p05", metric.get("p05"), "#b06b1d", "4 4"),
-            ("median", metric.get("median"), "#4f7a67", "0"),
-            ("p95", metric.get("p95"), "#b06b1d", "4 4"),
+            ("p05", metric.get("p05"), marker_palette["p05"], "4 4"),
+            ("median", metric.get("median"), marker_palette["median"], "0"),
+            ("p95", metric.get("p95"), marker_palette["p95"], "4 4"),
         ):
             if value is None or not np.isfinite(value):
                 continue
@@ -462,6 +528,8 @@ def render_histogram_svg(
     note_parts = [
         f"X-axis = {x_label}; Y-axis = number of bootstrap samples. Taller bars = more likely outcomes."
     ]
+    if not as_pct and "Equity" in x_label:
+        note_parts.append("On equity-index charts, 100 = start, so 329 means +229% total return from start.")
     if marker_labels:
         note_parts.append(f"Markers: {', '.join(marker_labels)}")
     marker_text = '<div class="chart-note">' + " ".join(note_parts) + "</div>"
@@ -473,10 +541,10 @@ def render_histogram_svg(
         + "".join(y_grid)
         + "".join(bars)
         + "".join(marker_lines)
-        + f'<line x1="{margin_left}" y1="{margin_top}" x2="{margin_left}" y2="{height - margin_bottom}" stroke="#8f7b5f" stroke-width="1"></line>'
-        + f'<line x1="{margin_left}" y1="{height - margin_bottom}" x2="{width - margin_right}" y2="{height - margin_bottom}" stroke="#8f7b5f" stroke-width="1"></line>'
-        + f'<text x="{margin_left}" y="{margin_top - 4}" text-anchor="start">Count</text>'
-        + f'<text x="{(margin_left + inner_w / 2):.1f}" y="{height - 4}" text-anchor="middle">{x_label}</text>'
+        + f'<line x1="{margin_left}" y1="{margin_top}" x2="{margin_left}" y2="{height - margin_bottom}" stroke="{axis_color}" stroke-width="1"></line>'
+        + f'<line x1="{margin_left}" y1="{height - margin_bottom}" x2="{width - margin_right}" y2="{height - margin_bottom}" stroke="{axis_color}" stroke-width="1"></line>'
+        + f'<text x="{margin_left}" y="{margin_top - 6}" text-anchor="start">Count</text>'
+        + f'<text x="{(margin_left + inner_w / 2):.1f}" y="{height - 6}" text-anchor="middle">{x_label}</text>'
         + "".join(x_labels)
         + "".join(y_labels)
         + "</svg>"
@@ -491,9 +559,14 @@ def render_spaghetti_svg(
     title: str,
     width: int = 680,
     height: int = 220,
-    max_lines: int = 70,
-    line_opacity: float = 0.38,
-    line_width: float = 0.85,
+    max_lines: int = 8,
+    line_opacity: float = 0.045,
+    line_width: float = 0.55,
+    display_quantile_range: tuple[float, float] | None = None,
+    fit_plotted_extents: bool = False,
+    center_baseline: float | None = None,
+    path_quantiles: dict[str, Any] | None = None,
+    path_density: dict[str, Any] | None = None,
 ) -> str:
     if not paths:
         return '<div class="muted">Monte Carlo paths not available.</div>'
@@ -505,52 +578,197 @@ def render_spaghetti_svg(
         return '<div class="muted">Monte Carlo paths not available.</div>'
     all_series = [path[:length] for path in series]
     plot_series = _sample_paths_evenly(all_series, max_lines=max_lines)
-    y_min = min(min(path) for path in all_series)
-    y_max = max(max(path) for path in all_series)
-    if y_max <= y_min:
-        y_max = y_min + 1.0
-    margin_left, margin_right = 48, 12
-    margin_top, margin_bottom = 16, 28
+    margin_left, margin_right = 72, 104
+    margin_top, margin_bottom = 18, 44
     inner_w = width - margin_left - margin_right
     inner_h = height - margin_top - margin_bottom
 
     def _x(idx: int) -> float:
         return margin_left + idx / (length - 1) * inner_w
 
+    quantile_cache: dict[str, list[float]] = {}
+    quantile_columns: list[list[float]] | None = None
+
+    def _quantile_series(probability: float) -> list[float] | None:
+        nonlocal quantile_columns
+        key = _quantile_key(probability)
+        cached = quantile_cache.get(key)
+        if cached is not None:
+            return cached
+        if isinstance(path_quantiles, dict):
+            series_values = path_quantiles.get(key)
+            if isinstance(series_values, list) and len(series_values) >= length:
+                quantile_cache[key] = series_values[:length]
+                return quantile_cache[key]
+        if quantile_columns is None:
+            quantile_columns = [sorted(path[idx] for path in all_series) for idx in range(length)]
+        derived = [_quantile(values, probability) for values in quantile_columns]
+        quantile_cache[key] = derived
+        return derived
+
+    median_path = _quantile_series(0.5)
+    display_low: list[float] | None = None
+    display_high: list[float] | None = None
+    if display_quantile_range is not None:
+        lower_q, upper_q = display_quantile_range
+        display_low = _quantile_series(lower_q)
+        display_high = _quantile_series(upper_q)
+    if display_quantile_range is None:
+        display_low = _quantile_series(0.05)
+        display_high = _quantile_series(0.95)
+    if median_path is None or display_low is None or display_high is None:
+        return '<div class="muted">Monte Carlo paths not available.</div>'
+
+    if display_quantile_range is not None and display_low and display_high:
+        y_min = min(display_low)
+        y_max = max(display_high)
+        padding = max((y_max - y_min) * 0.04, 1.0)
+        y_min -= padding
+        y_max += padding
+        if fit_plotted_extents and plot_series:
+            plotted_min = min(min(path) for path in plot_series)
+            plotted_max = max(max(path) for path in plot_series)
+            y_min = min(y_min, plotted_min)
+            y_max = max(y_max, plotted_max)
+            extra_padding = max((y_max - y_min) * 0.08, 4.0)
+            y_min -= extra_padding
+            y_max += extra_padding
+    else:
+        y_min = min(min(path) for path in all_series)
+        y_max = max(max(path) for path in all_series)
+    if center_baseline is not None:
+        baseline_half_range = max(y_max - center_baseline, center_baseline - y_min, 1.0)
+        y_min = center_baseline - baseline_half_range
+        y_max = center_baseline + baseline_half_range
+    if y_max <= y_min:
+        y_max = y_min + 1.0
+
     def _y(value: float) -> float:
         return margin_top + inner_h - (value - y_min) / (y_max - y_min) * inner_h
 
+    plot_bg = "#f5efe5"
+    plot_bg_opacity = "1.0"
+    grid_color = "#ddd5c8"
+    axis_color = "#8a7c69"
+    texture_color = "#7f8680"
+    fan_color = "#4d7d74"
+    concentration_band_specs = [
+        (0.10, 0.90, "#bfd0c7", 0.18),
+        (0.25, 0.75, "#8fb0a5", 0.22),
+        (0.40, 0.60, "#5e857a", 0.28),
+    ]
+    band_polygons: list[str] = []
+    band_lines: list[str] = []
+    for low_q, high_q, fill_color, fill_opacity in concentration_band_specs:
+        low_series = _quantile_series(low_q)
+        high_series = _quantile_series(high_q)
+        if low_series is None or high_series is None:
+            continue
+        band_points = " ".join(f"{_x(i):.1f},{_y(v):.1f}" for i, v in enumerate(high_series))
+        band_points += " " + " ".join(
+            f"{_x(i):.1f},{_y(v):.1f}" for i, v in reversed(list(enumerate(low_series)))
+        )
+        band_polygons.append(
+            f'<polygon points="{band_points}" fill="{fill_color}" opacity="{fill_opacity:.3f}"></polygon>'
+        )
+        low_line = " ".join(f"{_x(i):.1f},{_y(v):.1f}" for i, v in enumerate(low_series))
+        high_line = " ".join(f"{_x(i):.1f},{_y(v):.1f}" for i, v in enumerate(high_series))
+        stroke_opacity = min(0.62, fill_opacity + 0.18)
+        band_lines.append(
+            f'<polyline points="{high_line}" fill="none" stroke="{fill_color}" stroke-width="1.0" '
+            f'opacity="{stroke_opacity:.3f}" stroke-linecap="round"></polyline>'
+        )
+        band_lines.append(
+            f'<polyline points="{low_line}" fill="none" stroke="{fill_color}" stroke-width="1.0" '
+            f'opacity="{stroke_opacity:.3f}" stroke-linecap="round"></polyline>'
+        )
+
+    fan_pairs = [
+        (0.01, 0.99),
+        (0.03, 0.97),
+        (0.05, 0.95),
+        (0.10, 0.90),
+        (0.20, 0.80),
+        (0.35, 0.65),
+    ]
+    fan_polygons: list[str] = []
+    for idx, (low_q, high_q) in enumerate(fan_pairs):
+        low_series = _quantile_series(low_q)
+        high_series = _quantile_series(high_q)
+        if low_series is None or high_series is None:
+            continue
+        points = ' '.join(f"{_x(i):.1f},{_y(v):.1f}" for i, v in enumerate(high_series))
+        points += ' ' + ' '.join(
+            f"{_x(i):.1f},{_y(v):.1f}" for i, v in reversed(list(enumerate(low_series)))
+        )
+        alpha = 0.028 + idx * 0.018
+        fan_polygons.append(
+            f'<polygon points="{points}" fill="{fan_color}" opacity="{alpha:.3f}"></polygon>'
+        )
+
+    density_rects: list[str] = []
+    density_mode = False
+    if isinstance(path_density, dict):
+        y_edges = path_density.get('y_edges') or []
+        counts = path_density.get('counts') or []
+        max_count = float(path_density.get('max_count') or 0)
+        if (
+            isinstance(y_edges, list)
+            and isinstance(counts, list)
+            and len(y_edges) >= 2
+            and counts
+            and max_count > 0
+        ):
+            density_mode = True
+            usable_columns = min(len(counts), length)
+            for idx in range(usable_columns):
+                row = counts[idx] or []
+                if not isinstance(row, list):
+                    continue
+                x0 = _x(idx)
+                x1 = _x(idx + 1) if idx < length - 1 else (width - margin_right)
+                rect_w = max(1.0, x1 - x0 + 0.6)
+                usable_bins = min(len(row), len(y_edges) - 1)
+                for bin_idx in range(usable_bins):
+                    count = row[bin_idx]
+                    if not count:
+                        continue
+                    y_low = float(y_edges[bin_idx])
+                    y_high = float(y_edges[bin_idx + 1])
+                    y0 = _y(y_high)
+                    y1 = _y(y_low)
+                    rect_y = min(y0, y1)
+                    rect_h = abs(y1 - y0) + 0.6
+                    if rect_y > margin_top + inner_h or rect_y + rect_h < margin_top:
+                        continue
+                    intensity = min(1.0, max(0.0, float(count) / max_count))
+                    opacity = 0.01 + 0.62 * (intensity ** 1.8)
+                    density_rects.append(
+                        f'<rect x="{x0:.1f}" y="{rect_y:.1f}" width="{rect_w:.1f}" height="{rect_h:.1f}" '
+                        f'fill="{fan_color}" opacity="{opacity:.3f}"></rect>'
+                    )
+
     polylines = []
-    color_count = max(1, len(plot_series))
-    for idx, path in enumerate(plot_series):
-        hue = 200 + (idx / max(1, color_count - 1)) * 140
-        color = f"hsl({hue:.1f}, 42%, 54%)"
-        points = " ".join(f"{_x(i):.1f},{_y(v):.1f}" for i, v in enumerate(path))
+    for path in plot_series:
+        points = ' '.join(f"{_x(i):.1f},{_y(v):.1f}" for i, v in enumerate(path))
         polylines.append(
-            f'<polyline points="{points}" fill="none" stroke="{color}" '
+            f'<polyline points="{points}" fill="none" stroke="{texture_color}" '
             f'stroke-width="{line_width}" opacity="{line_opacity}" stroke-linecap="round"></polyline>'
         )
 
-    median_path: list[float] = []
-    band_low: list[float] = []
-    band_high: list[float] = []
-    for idx in range(length):
-        values = sorted(path[idx] for path in all_series)
-        median_path.append(_quantile(values, 0.5))
-        band_low.append(_quantile(values, 0.1))
-        band_high.append(_quantile(values, 0.9))
-
-    band_high_points = " ".join(f"{_x(i):.1f},{_y(v):.1f}" for i, v in enumerate(band_high))
-    band_low_points = " ".join(f"{_x(i):.1f},{_y(v):.1f}" for i, v in enumerate(band_low))
-    band_points = band_high_points + " " + " ".join(
-        f"{_x(i):.1f},{_y(v):.1f}" for i, v in reversed(list(enumerate(band_low)))
-    )
-    median_points = " ".join(f"{_x(i):.1f},{_y(v):.1f}" for i, v in enumerate(median_path))
+    lower_q, upper_q = display_quantile_range or (0.05, 0.95)
+    outer_high_points = ' '.join(f"{_x(i):.1f},{_y(v):.1f}" for i, v in enumerate(display_high))
+    outer_low_points = ' '.join(f"{_x(i):.1f},{_y(v):.1f}" for i, v in enumerate(display_low))
+    median_points = ' '.join(f"{_x(i):.1f},{_y(v):.1f}" for i, v in enumerate(median_path))
+    final_p10 = _quantile_series(0.10)
+    final_p25 = _quantile_series(0.25)
+    final_p75 = _quantile_series(0.75)
+    final_p90 = _quantile_series(0.90)
 
     x_ticks = _axis_ticks(0.0, float(length - 1), 5)
     y_ticks = _axis_ticks(y_min, y_max, 5)
     x_labels = [
-        f'<text x="{_x(int(round(tick))):.1f}" y="{height - 8}" text-anchor="middle">{int(round(tick))}</text>'
+        f'<text x="{_x(int(round(tick))):.1f}" y="{height - 20}" text-anchor="middle">{int(round(tick))}</text>'
         for tick in x_ticks
     ]
     y_labels = [
@@ -559,43 +777,135 @@ def render_spaghetti_svg(
     ]
     y_grid = [
         f'<line x1="{margin_left}" y1="{_y(tick):.1f}" x2="{width - margin_right}" y2="{_y(tick):.1f}" '
-        'stroke="#e4dbc9" stroke-width="1"></line>'
+        f'stroke="{grid_color}" stroke-width="1"></line>'
         for tick in y_ticks
     ]
 
+    endpoint_annotations: list[tuple[str, float, str, str]] = []
+    if final_p90 and len(final_p90) == length:
+        endpoint_annotations.append(("P90:", final_p90[-1], "#6f8c5b", format_equity_plus_return_compact(final_p90[-1], 1)))
+    if final_p75 and len(final_p75) == length:
+        endpoint_annotations.append(("P75:", final_p75[-1], "#567c72", format_equity_plus_return_compact(final_p75[-1], 1)))
+    endpoint_annotations.append(("Median:", median_path[-1], "#a97831", format_equity_plus_return_compact(median_path[-1], 1)))
+    if final_p25 and len(final_p25) == length:
+        endpoint_annotations.append(("P25:", final_p25[-1], "#567c72", format_equity_plus_return_compact(final_p25[-1], 1)))
+    if final_p10 and len(final_p10) == length:
+        endpoint_annotations.append(("P10:", final_p10[-1], "#a9645d", format_equity_plus_return_compact(final_p10[-1], 1)))
+
+    endpoint_annotations.sort(key=lambda item: _y(item[1]))
+    label_y_positions: list[float] = []
+    min_gap = 12.0
+    top_bound = margin_top + 10.0
+    bottom_bound = height - margin_bottom - 10.0
+    for _, value, _, _ in endpoint_annotations:
+        y_pos = max(top_bound, _y(value))
+        if label_y_positions:
+            y_pos = max(y_pos, label_y_positions[-1] + min_gap)
+        label_y_positions.append(y_pos)
+    for idx in range(len(label_y_positions) - 2, -1, -1):
+        if label_y_positions[idx + 1] > bottom_bound:
+            label_y_positions[idx + 1] = bottom_bound
+        label_y_positions[idx] = min(label_y_positions[idx], label_y_positions[idx + 1] - min_gap)
+    if label_y_positions and label_y_positions[0] < top_bound:
+        shift = top_bound - label_y_positions[0]
+        label_y_positions = [min(bottom_bound, pos + shift) for pos in label_y_positions]
+
+    endpoint_guides: list[str] = []
+    endpoint_labels: list[str] = []
+    end_x = _x(length - 1)
+    guide_x = end_x + 8.0
+    label_x = end_x + 12.0
+    for (label, value, color, value_text), label_y in zip(endpoint_annotations, label_y_positions):
+        path_y = _y(value)
+        endpoint_guides.append(
+            f'<line x1="{end_x:.1f}" y1="{path_y:.1f}" x2="{guide_x:.1f}" y2="{label_y:.1f}" '
+            f'stroke="{color}" stroke-width="1.0" opacity="0.85"></line>'
+        )
+        endpoint_labels.append(
+            f'<text x="{label_x:.1f}" y="{label_y + 3.0:.1f}" text-anchor="start" fill="{color}">{label} {value_text}</text>'
+        )
+
     total_paths = len(all_series)
     shown_paths = len(plot_series)
+    clipped_note = ''
+    if display_quantile_range is not None:
+        lower_label = f"p{int(round(lower_q * 100)):02d}"
+        upper_label = f"p{int(round(upper_q * 100)):02d}"
+        if fit_plotted_extents:
+            clipped_note = (
+                f"Display axis starts from the {lower_label}-{upper_label} path envelope and expands to fit the plotted sample paths; "
+                'only rarer unshown extremes are clipped. '
+            )
+        else:
+            clipped_note = (
+                f"Display axis is capped to the {lower_label}-{upper_label} path envelope for readability; "
+                'rare extremes are clipped. '
+            )
+    baseline_note = (
+        f"Baseline {format_float(center_baseline)} is centered on the vertical axis for easier up/down comparison. "
+        if center_baseline is not None
+        else ''
+    )
+    concentration_note = ""
+    if (
+        final_p10
+        and final_p25
+        and final_p75
+        and final_p90
+        and len(final_p10) == length
+        and len(final_p25) == length
+        and len(final_p75) == length
+        and len(final_p90) == length
+    ):
+        concentration_note = (
+            f"By month {length - 1}, the middle 50% cluster ends around "
+            f"{format_equity_plus_return_verbose(final_p25[-1])} to {format_equity_plus_return_verbose(final_p75[-1])}, "
+            f"while the middle 80% spans about {format_equity_plus_return_verbose(final_p10[-1])} to {format_equity_plus_return_verbose(final_p90[-1])}. "
+        )
+    fan_desc = 'path density heatmap' if density_mode else 'layered density bands'
     legend = (
         '<div class="chart-note">'
-        "X-axis = months from start; Y-axis = equity index (start=100). "
-        "<span class=\"legend-line\">Thin lines</span> = bootstrap paths &middot; "
-        "<span class=\"legend-line median\">Bold line</span> = median &middot; "
-        "<span class=\"legend-line band\">Band</span> = p10-p90. "
-        "Wider fan = more uncertainty. "
-        f"Showing {shown_paths} of {total_paths} paths (evenly sampled by final equity)."
-        "</div>"
+        f'{concentration_note}'
+        'X-axis = months from start; Y-axis = equity index (100 = start). '
+        '<span class="legend-line density">Core ribbon</span> = middle 20% of outcomes &middot; '
+        '<span class="legend-line density">Dark ribbon</span> = middle 50% of outcomes &middot; '
+        '<span class="legend-line density">Light ribbon</span> = middle 80% of outcomes &middot; '
+        '<span class="legend-line">Texture lines</span> = sampled bootstrap paths &middot; '
+        f'<span class="legend-line density">Fan</span> = {fan_desc} &middot; '
+        '<span class="legend-line median">Bold line</span> = median &middot; '
+        f'<span class="legend-line band">Envelope</span> = p{int(round(lower_q * 100)):02d}-p{int(round(upper_q * 100)):02d}. '
+        'Right-edge labels show ending index first, then total return from start. '
+        f'{baseline_note}'
+        f'{clipped_note}'
+        'Darker fan = more likely outcomes. Wider fan = more uncertainty. '
+        f'Showing {shown_paths} texture paths out of {total_paths} simulated paths.'
+        '</div>'
     )
     return (
         '<div class="chart-block">'
         f'<div class="chart-title">{title}</div>'
         f'<svg viewBox="0 0 {width} {height}" class="chart">'
-        + "".join(y_grid)
-        + f'<polygon points="{band_points}" fill="#bfa47a" opacity="0.35"></polygon>'
-        + f'<polyline points="{band_high_points}" fill="none" stroke="#a87d3f" stroke-width="1.6" opacity="0.75"></polyline>'
-        + f'<polyline points="{band_low_points}" fill="none" stroke="#a87d3f" stroke-width="1.6" opacity="0.75"></polyline>'
-        + "".join(polylines)
-        + f'<polyline points="{median_points}" fill="none" stroke="#4f7a67" stroke-width="2.6"></polyline>'
-        + f'<line x1="{margin_left}" y1="{margin_top}" x2="{margin_left}" y2="{height - margin_bottom}" stroke="#8f7b5f" stroke-width="1"></line>'
-        + f'<line x1="{margin_left}" y1="{height - margin_bottom}" x2="{width - margin_right}" y2="{height - margin_bottom}" stroke="#8f7b5f" stroke-width="1"></line>'
-        + f'<text x="{margin_left}" y="{margin_top - 4}" text-anchor="start">Equity (start=100)</text>'
-        + f'<text x="{(margin_left + inner_w / 2):.1f}" y="{height - 4}" text-anchor="middle">Months from start</text>'
-        + "".join(x_labels)
-        + "".join(y_labels)
-        + "</svg>"
+        + f'<rect x="{margin_left}" y="{margin_top}" width="{inner_w:.1f}" height="{inner_h:.1f}" fill="{plot_bg}" opacity="{plot_bg_opacity}" rx="10"></rect>'
+        + ''.join(y_grid)
+        + (''.join(density_rects) if density_rects else ''.join(fan_polygons))
+        + ''.join(band_polygons)
+        + ''.join(band_lines)
+        + ''.join(polylines)
+        + f'<polyline points="{outer_high_points}" fill="none" stroke="#6f8c5b" stroke-width="1.8" opacity="0.95" stroke-dasharray="5 4"></polyline>'
+        + f'<polyline points="{outer_low_points}" fill="none" stroke="#a9645d" stroke-width="1.8" opacity="0.95" stroke-dasharray="5 4"></polyline>'
+        + f'<polyline points="{median_points}" fill="none" stroke="#a97831" stroke-width="2.5"></polyline>'
+        + ''.join(endpoint_guides)
+        + f'<line x1="{margin_left}" y1="{margin_top}" x2="{margin_left}" y2="{height - margin_bottom}" stroke="{axis_color}" stroke-width="1"></line>'
+        + f'<line x1="{margin_left}" y1="{height - margin_bottom}" x2="{width - margin_right}" y2="{height - margin_bottom}" stroke="{axis_color}" stroke-width="1"></line>'
+        + f'<text x="{margin_left}" y="{margin_top - 6}" text-anchor="start">Equity Index (100 = start)</text>'
+        + f'<text x="{(margin_left + inner_w / 2):.1f}" y="{height - 6}" text-anchor="middle">Months from start</text>'
+        + ''.join(x_labels)
+        + ''.join(y_labels)
+        + ''.join(endpoint_labels)
+        + '</svg>'
         + legend
-        + "</div>"
+        + '</div>'
     )
-
 
 def render_walkforward_svg(
     folds: list[dict[str, Any]] | None,
@@ -816,28 +1126,6 @@ def render_walkforward_compare_svg(
         f'<rect x="{_x(x) - 2.2:.1f}" y="{_y(y) - 2.2:.1f}" width="4.4" height="4.4" fill="#a87d3f"></rect>'
         for x, y in benchmark_sorted
     ]
-    train_label = ""
-    validate_label = ""
-    benchmark_label = ""
-    if train_sorted:
-        x_last, y_last = train_sorted[-1]
-        train_label = (
-            f'<text x="{_x(x_last) + 6:.1f}" y="{_y(y_last) - 4:.1f}" '
-            'text-anchor="start" fill="#7c6f8c">Train (IS)</text>'
-        )
-    if validate_sorted:
-        x_last, y_last = validate_sorted[-1]
-        validate_label = (
-            f'<text x="{_x(x_last) + 6:.1f}" y="{_y(y_last) - 4:.1f}" '
-            'text-anchor="start" fill="#4f7a67">Validation (OOS)</text>'
-        )
-    if benchmark_sorted:
-        x_last, y_last = benchmark_sorted[-1]
-        benchmark_label = (
-            f'<text x="{_x(x_last) + 6:.1f}" y="{_y(y_last) - 4:.1f}" '
-            f'text-anchor="start" fill="#a87d3f">{html.escape(benchmark_label_text)}</text>'
-        )
-
     x_ticks = _axis_ticks(float(x_min), float(x_max), 5)
     y_ticks = _axis_ticks(y_min, y_max, 5)
     x_labels = [
@@ -859,26 +1147,45 @@ def render_walkforward_compare_svg(
         zero_line = f'<line x1="{margin_left}" y1="{_y(0.0):.1f}" x2="{width - margin_right}" y2="{_y(0.0):.1f}" stroke="#b58a60" stroke-width="1.4"></line>'
 
     gate_line = ""
-    gate_label = ""
     if gate_threshold is not None and np.isfinite(gate_threshold) and y_min < gate_threshold < y_max:
         gate_line = (
             f'<line x1="{margin_left}" y1="{_y(gate_threshold):.1f}" x2="{width - margin_right}" y2="{_y(gate_threshold):.1f}" '
             'stroke="#b06b1d" stroke-width="1.4" stroke-dasharray="5 4"></line>'
         )
-        gate_label = (
-            f'<text x="{width - margin_right}" y="{_y(gate_threshold) - 4:.1f}" text-anchor="end">Gate {format_float(gate_threshold)}</text>'
+
+    legend_items = [
+        '<span style="white-space:nowrap;display:inline-flex;align-items:center;gap:6px;margin:0 14px 6px 0;">'
+        '<span style="display:inline-block;width:18px;border-top:3px solid #4f7a67;"></span>'
+        'Validation (OOS)</span>',
+        '<span style="white-space:nowrap;display:inline-flex;align-items:center;gap:6px;margin:0 14px 6px 0;">'
+        '<span style="display:inline-block;width:18px;border-top:3px dashed #7c6f8c;"></span>'
+        'Train (IS)</span>',
+    ]
+    if benchmark_path:
+        legend_items.append(
+            '<span style="white-space:nowrap;display:inline-flex;align-items:center;gap:6px;margin:0 14px 6px 0;">'
+            '<span style="display:inline-block;width:18px;border-top:3px dashed #a87d3f;"></span>'
+            f'{benchmark_label_text}</span>'
+        )
+    if gate_line:
+        legend_items.append(
+            '<span style="white-space:nowrap;display:inline-flex;align-items:center;gap:6px;margin:0 14px 6px 0;">'
+            '<span style="display:inline-block;width:18px;border-top:3px dashed #b06b1d;"></span>'
+            f'Gate {format_float(gate_threshold)}</span>'
         )
 
-    note_parts = [
-        "Green = validation (out-of-sample).",
-        "Gray dashed = train (in-sample).",
-        f"Gold dash-dot = {benchmark_label_text} in the same validation window.",
+    context_parts = [
         "Shaded bands = validation window.",
         "Vertical dashed lines = train to validation split.",
     ]
-    if gate_threshold is not None:
-        note_parts.append("Horizontal dashed line = Sharpe gate (if shown).")
-    note = '<div class="chart-note">' + " ".join(note_parts) + "</div>"
+    note = (
+        '<div class="chart-note"><strong>Line key:</strong> '
+        + "".join(legend_items)
+        + "</div>"
+        + '<div class="chart-note">'
+        + " ".join(context_parts)
+        + "</div>"
+    )
 
     return (
         '<div class="chart-block">'
@@ -895,16 +1202,12 @@ def render_walkforward_compare_svg(
         + "".join(train_markers)
         + "".join(benchmark_markers)
         + "".join(validate_markers)
-        + train_label
-        + benchmark_label
-        + validate_label
         + f'<line x1="{margin_left}" y1="{margin_top}" x2="{margin_left}" y2="{height - margin_bottom}" stroke="#8f7b5f" stroke-width="1"></line>'
         + f'<line x1="{margin_left}" y1="{height - margin_bottom}" x2="{width - margin_right}" y2="{height - margin_bottom}" stroke="#8f7b5f" stroke-width="1"></line>'
         + f'<text x="{margin_left}" y="{margin_top - 4}" text-anchor="start">{title}</text>'
         + f'<text x="{(margin_left + inner_w / 2):.1f}" y="{height - 4}" text-anchor="middle">Validation window (mid-year)</text>'
         + "".join(x_labels)
         + "".join(y_labels)
-        + gate_label
         + "</svg>"
         + note
         + "</div>"
@@ -927,6 +1230,104 @@ def walk_forward_gap_months_summary(folds: list[dict[str, Any]] | None) -> str:
     gaps.sort()
     mid = gaps[len(gaps) // 2]
     return f"gap months: min {min(gaps)}, median {mid}, max {max(gaps)}"
+
+
+def _build_holdout_walkforward_folds(
+    *,
+    start_month: str | None,
+    end_month: str | None,
+    fold_count: int = 5,
+    train_start: str | None = None,
+) -> list[dict[str, Any]]:
+    if not start_month or not end_month:
+        return []
+    start_ord = _month_to_ordinal(start_month)
+    end_ord = _month_to_ordinal(end_month)
+    total_months = end_ord - start_ord + 1
+    if total_months <= 0:
+        return []
+    fold_count = max(1, min(fold_count, total_months))
+    base_len = total_months // fold_count
+    remainder = total_months % fold_count
+    current_start = start_ord
+    if not train_start:
+        train_start = config.ROLLING_ORIGIN_FOLDS[0][1] if config.ROLLING_ORIGIN_FOLDS else start_month
+    train_start_ord = _month_to_ordinal(train_start)
+    folds: list[dict[str, Any]] = []
+    for idx in range(fold_count):
+        length = base_len + (1 if idx < remainder else 0)
+        validate_start_ord = current_start
+        validate_end_ord = current_start + length - 1
+        train_end_ord = max(train_start_ord, validate_start_ord - 1)
+        folds.append(
+            {
+                "fold_id": f"holdout_fold_{idx + 1}",
+                "train_window": {
+                    "start": train_start,
+                    "end": _ordinal_to_month(train_end_ord),
+                },
+                "validate_window": {
+                    "start": _ordinal_to_month(validate_start_ord),
+                    "end": _ordinal_to_month(validate_end_ord),
+                },
+            }
+        )
+        current_start = validate_end_ord + 1
+    return folds
+
+
+def clip_walkforward_folds_to_window(
+    folds: list[dict[str, Any]] | None,
+    *,
+    clip_start: str | None,
+    clip_end: str | None,
+) -> list[dict[str, Any]]:
+    if not folds or not clip_start or not clip_end:
+        return list(folds or [])
+    try:
+        clip_start_ord = _month_to_ordinal(clip_start)
+        clip_end_ord = _month_to_ordinal(clip_end)
+    except (TypeError, ValueError):
+        return list(folds)
+    if clip_end_ord < clip_start_ord:
+        return list(folds)
+    clipped: list[dict[str, Any]] = []
+    for fold in folds:
+        train = fold.get("train_window") or {}
+        validate = fold.get("validate_window") or {}
+        if not train.get("start") or not train.get("end") or not validate.get("start") or not validate.get("end"):
+            clipped.append(fold)
+            continue
+        try:
+            train_start_ord = _month_to_ordinal(train["start"])
+            train_end_ord = _month_to_ordinal(train["end"])
+            validate_start_ord = _month_to_ordinal(validate["start"])
+            validate_end_ord = _month_to_ordinal(validate["end"])
+        except (TypeError, ValueError):
+            clipped.append(fold)
+            continue
+        train_start_ord = max(train_start_ord, clip_start_ord)
+        train_end_ord = min(train_end_ord, clip_end_ord)
+        if train_end_ord < train_start_ord:
+            train_end_ord = train_start_ord
+        validate_start_ord = max(validate_start_ord, clip_start_ord)
+        validate_end_ord = min(validate_end_ord, clip_end_ord)
+        if validate_end_ord < validate_start_ord:
+            continue
+        clipped.append(
+            {
+                **fold,
+                "train_window": {
+                    "start": _ordinal_to_month(train_start_ord),
+                    "end": _ordinal_to_month(train_end_ord),
+                },
+                "validate_window": {
+                    "start": _ordinal_to_month(validate_start_ord),
+                    "end": _ordinal_to_month(validate_end_ord),
+                },
+            }
+        )
+    return clipped
 
 
 def render_walkforward_schedule_svg(
@@ -1030,7 +1431,7 @@ def render_walkforward_schedule_svg(
 def render_phase_boundary_svg(
     segments: list[dict[str, Any]] | None,
     *,
-    title: str = "Test Period vs After-Test Period",
+    title: str = "Test Window vs What Comes Next",
     width: int = 760,
     future_months: int = 24,
     footer_note: str | None = None,
@@ -1130,7 +1531,7 @@ def render_phase_boundary_svg(
         )
 
     footer_html = (
-        f'<div class="chart-note"><strong>Read:</strong> {html.escape(footer_note)}</div>'
+        f'<div class="chart-note"><strong>What this means:</strong> {html.escape(footer_note)}</div>'
         if footer_note
         else ""
     )
@@ -1239,7 +1640,7 @@ def render_walkforward_ladder_svg(
         )
 
     note = (
-        '<div class="chart-note"><strong>Read:</strong> Each pass keeps the same anchor, expands train history, and '
+        '<div class="chart-note"><strong>What this means:</strong> Each pass keeps the same anchor, expands train history, and '
         'tests only the next unseen slice. The bottom row is the realistic out-of-sample stream formed by stitching '
         'those orange slices together.</div>'
     )
@@ -1314,6 +1715,8 @@ def render_walkforward_oos_equity_svg(
     returns: list[float] | None,
     folds: list[dict[str, Any]] | None,
     *,
+    benchmark_returns: list[float] | None = None,
+    benchmark_label: str | None = None,
     title: str = "Validation Equity (Stitched)",
     width: int = 680,
     height: int = 220,
@@ -1323,6 +1726,7 @@ def render_walkforward_oos_equity_svg(
     equity = _returns_to_equity(returns, base=100.0)
     if not equity:
         return '<div class="muted">Validation equity not available.</div>'
+    benchmark_equity = _returns_to_equity(benchmark_returns, base=100.0) if benchmark_returns else []
 
     start_ord, end_ord, _, _ = _walk_forward_validate_bounds(folds)
     total_len = len(equity)
@@ -1345,8 +1749,9 @@ def render_walkforward_oos_equity_svg(
         ordinal = (start_ord + index) if start_ord is not None else index
         return _x_ordinal(ordinal)
 
-    y_min = min(equity)
-    y_max = max(equity)
+    plotted_series = equity + benchmark_equity
+    y_min = min(plotted_series)
+    y_max = max(plotted_series)
     if y_max <= y_min:
         y_max = y_min + 1.0
 
@@ -1378,6 +1783,11 @@ def render_walkforward_oos_equity_svg(
     ] if split_lines and start_ord is not None else []
 
     points = " ".join(f"{_x_index(i):.1f},{_y(v):.1f}" for i, v in enumerate(equity))
+    benchmark_points = (
+        " ".join(f"{_x_index(i):.1f},{_y(v):.1f}" for i, v in enumerate(benchmark_equity))
+        if benchmark_equity
+        else ""
+    )
     x_ticks = _axis_ticks(float(x_min), float(x_max), 5)
     y_ticks = _axis_ticks(y_min, y_max, 5)
     x_labels = [
@@ -1396,9 +1806,14 @@ def render_walkforward_oos_equity_svg(
 
     note = (
         '<div class="chart-note">'
-        "Stitched equity from validation windows only (out-of-sample). "
-        "Shaded bands mark validation folds."
-        "</div>"
+        + "Stitched equity from validation windows only (out-of-sample). "
+        + "Shaded bands mark validation folds."
+        + (
+            f" Dashed line = {benchmark_label or config.PRIMARY_PASSIVE_BENCHMARK} on the same stitched timeline."
+            if benchmark_equity
+            else ""
+        )
+        + "</div>"
     )
 
     return (
@@ -1408,11 +1823,111 @@ def render_walkforward_oos_equity_svg(
         + "".join(y_grid)
         + "".join(window_rects)
         + "".join(split_markers)
+        + (
+            f'<polyline points="{benchmark_points}" fill="none" stroke="#b06b1d" stroke-width="1.4" '
+            'stroke-dasharray="5 4" opacity="0.95"></polyline>'
+            if benchmark_points
+            else ""
+        )
         + f'<polyline points="{points}" fill="none" stroke="#4f7a67" stroke-width="1.8"></polyline>'
         + f'<line x1="{margin_left}" y1="{margin_top}" x2="{margin_left}" y2="{height - margin_bottom}" stroke="#8f7b5f" stroke-width="1"></line>'
         + f'<line x1="{margin_left}" y1="{height - margin_bottom}" x2="{width - margin_right}" y2="{height - margin_bottom}" stroke="#8f7b5f" stroke-width="1"></line>'
         + f'<text x="{margin_left}" y="{margin_top - 4}" text-anchor="start">Equity (start=100)</text>'
         + f'<text x="{(margin_left + inner_w / 2):.1f}" y="{height - 4}" text-anchor="middle">Validation timeline</text>'
+        + "".join(x_labels)
+        + "".join(y_labels)
+        + "</svg>"
+        + note
+        + "</div>"
+    )
+
+
+def render_holdout_equity_svg(
+    returns: list[float] | None,
+    benchmark: list[float] | None = None,
+    *,
+    window_start: str | None = None,
+    benchmark_label: str | None = None,
+    title: str = "Holdout Equity (Primary Track)",
+    width: int = 680,
+    height: int = 220,
+) -> str:
+    if not returns:
+        return '<div class="muted">Holdout equity not available.</div>'
+
+    equity = _returns_to_equity(returns, base=100.0)
+    benchmark_equity = _returns_to_equity(benchmark, base=100.0) if benchmark else []
+    series = equity + (benchmark_equity or [])
+    if not series:
+        return '<div class="muted">Holdout equity not available.</div>'
+
+    start_ord = _month_to_ordinal(window_start) if window_start else None
+    x_min = start_ord if start_ord is not None else 0
+    x_max = (start_ord + len(equity) - 1) if start_ord is not None else (len(equity) - 1)
+    if x_max <= x_min:
+        x_max = x_min + 1
+    margin_left, margin_right = 72, 16
+    margin_top, margin_bottom = 18, 44
+    inner_w = width - margin_left - margin_right
+    inner_h = height - margin_top - margin_bottom
+
+    def _x_index(index: int) -> float:
+        ordinal = (start_ord + index) if start_ord is not None else index
+        return margin_left + (ordinal - x_min) / (x_max - x_min) * inner_w
+
+    y_min = min(series)
+    y_max = max(series)
+    if y_max <= y_min:
+        y_max = y_min + 1.0
+
+    def _y(value: float) -> float:
+        return margin_top + inner_h - (value - y_min) / (y_max - y_min) * inner_h
+
+    strategy_points = " ".join(f"{_x_index(i):.1f},{_y(v):.1f}" for i, v in enumerate(equity))
+    benchmark_points = (
+        " ".join(f"{_x_index(i):.1f},{_y(v):.1f}" for i, v in enumerate(benchmark_equity))
+        if benchmark_equity
+        else ""
+    )
+    x_ticks = _axis_ticks(float(x_min), float(x_max), 5)
+    y_ticks = _axis_ticks(y_min, y_max, 5)
+    x_labels = [
+        f'<text x="{margin_left + (tick - x_min) / (x_max - x_min) * inner_w:.1f}" y="{height - 20}" text-anchor="middle">'
+        f'{_ordinal_to_year_label(tick) if start_ord is not None else int(round(tick))}</text>'
+        for tick in x_ticks
+    ]
+    y_labels = [
+        f'<text x="{margin_left - 6}" y="{_y(tick):.1f}" text-anchor="end">{format_float(tick, 2)}</text>'
+        for tick in y_ticks
+    ]
+    y_grid = [
+        f'<line x1="{margin_left}" y1="{_y(tick):.1f}" x2="{width - margin_right}" y2="{_y(tick):.1f}" '
+        'stroke="#e4dbc9" stroke-width="1"></line>'
+        for tick in y_ticks
+    ]
+    benchmark_poly = (
+        f'<polyline points="{benchmark_points}" fill="none" stroke="#9a8c6a" stroke-width="2" stroke-dasharray="4 4"></polyline>'
+        if benchmark_points
+        else ""
+    )
+    note = (
+        '<div class="chart-note">'
+        f'Orange = strategy. Dashed line = {html.escape(benchmark_label or config.PRIMARY_PASSIVE_BENCHMARK)} when available. '
+        'X-axis shows the holdout timeline; Y-axis is the equity index starting at 100.'
+        '</div>'
+    )
+
+    return (
+        '<div class="chart-block">'
+        f'<div class="chart-title">{title}</div>'
+        f'<svg viewBox="0 0 {width} {height}" class="chart">'
+        + "".join(y_grid)
+        + benchmark_poly
+        + f'<polyline points="{strategy_points}" fill="none" stroke="#b06b1d" stroke-width="2.4"></polyline>'
+        + f'<line x1="{margin_left}" y1="{margin_top}" x2="{margin_left}" y2="{height - margin_bottom}" stroke="#8f7b5f" stroke-width="1"></line>'
+        + f'<line x1="{margin_left}" y1="{height - margin_bottom}" x2="{width - margin_right}" y2="{height - margin_bottom}" stroke="#8f7b5f" stroke-width="1"></line>'
+        + f'<text x="{margin_left}" y="{margin_top - 6}" text-anchor="start">Equity (start=100)</text>'
+        + f'<text x="{(margin_left + inner_w / 2):.1f}" y="{height - 6}" text-anchor="middle">Holdout timeline</text>'
         + "".join(x_labels)
         + "".join(y_labels)
         + "</svg>"
@@ -2425,7 +2940,7 @@ def build_phase1_dashboard(
     </section>
     {render_phase_map_html(phase1_href="phase1_summary.html", selection_href=selection_href, holdout_href=holdout_href)}
     <section>
-      <h2>Validation Snapshot</h2>
+      <h2>Validation Overview</h2>
       <div class="grid">
         <div class="card"><div class="label">Overall Status</div><div class="value"><span class="badge {status_tone}">{status_label}</span></div></div>
         <div class="card"><div class="label">Data Root</div><div class="value">{html.escape(str(input_dir))}</div></div>
@@ -2482,10 +2997,17 @@ def walk_forward_diagnostic_result(walk_forward: dict[str, Any] | None) -> str:
     values = [fold.get("validate_sharpe") for fold in folds if fold.get("validate_sharpe") is not None]
     neg_count = sum(1 for value in values if value < 0.0)
     total_folds = len(values) if values else 0
+    positive_count = sum(1 for value in values if value > 0.0)
+    combined_sharpe = combined.get("sharpe")
+    if combined_sharpe is not None and np.isfinite(combined_sharpe) and combined_sharpe >= 0.4:
+        stability_note = "the stitched Phase 3 read stays above the Sharpe gate even though shorter slices are noisier"
+    else:
+        stability_note = "short slices were mixed, so this is best read as context rather than a second gate"
     return (
-        f"Combined Sharpe {format_float(combined.get('sharpe'))}, "
+        f"Combined Sharpe {format_float(combined_sharpe)}, "
         f"Total Return {format_pct(combined.get('total_return'))}, "
-        f"{neg_count}/{total_folds} negative folds"
+        f"{positive_count}/{total_folds} positive slices, {neg_count}/{total_folds} negative slices, "
+        f"{stability_note}"
     )
 
 
@@ -2583,7 +3105,36 @@ def monte_carlo_interpretation(mc_sharpe: dict, mc_total: dict, mc_dd: dict) -> 
     )
 
 
-def render_trimmed_monte_carlo(monte: dict[str, Any]) -> str:
+def ensure_summary_monte_carlo(summary: dict[str, Any] | None) -> dict[str, Any]:
+    if not isinstance(summary, dict):
+        return {}
+    monte = summary.get("monte_carlo")
+    if isinstance(monte, dict) and monte.get("status") in {"ok", "unavailable"}:
+        return summary
+    locked_candidate = summary.get("locked_candidate")
+    if not isinstance(locked_candidate, dict):
+        return summary
+    returns = locked_candidate.get("concatenated_returns")
+    if not returns:
+        return summary
+    periods_per_year = int(summary.get("periods_per_year") or 12)
+    enriched = dict(summary)
+    enriched["monte_carlo"] = monte_carlo_summary(
+        returns,
+        periods_per_year=periods_per_year,
+        n_resamples=config.MONTE_CARLO_RESAMPLES,
+        block_length_months=config.MONTE_CARLO_BLOCK_LENGTH_MONTHS,
+        seed=config.MONTE_CARLO_SEED,
+    )
+    return enriched
+
+
+def render_trimmed_monte_carlo(
+    monte: dict[str, Any],
+    *,
+    display_quantile_range: tuple[float, float] | None = (0.05, 0.95),
+    center_baseline: float | None = None,
+) -> str:
     trimmed = monte.get("trimmed") if isinstance(monte, dict) else None
     if not isinstance(trimmed, dict) or trimmed.get("status") != "ok":
         return ""
@@ -2593,21 +3144,26 @@ def render_trimmed_monte_carlo(monte: dict[str, Any]) -> str:
     mc_sharpe = metrics.get("sharpe", {})
     mc_total = metrics.get("total_return", {})
     mc_dd = metrics.get("max_drawdown", {})
+    mc_final_equity = metrics.get("final_equity", {})
     hist = trimmed.get("histograms", {})
     paths = trimmed.get("sample_paths", [])
+    quantiles = trimmed.get("path_quantiles", {})
+    density = trimmed.get("path_density", {})
     interp = monte_carlo_interpretation(mc_sharpe, mc_total, mc_dd)
     quality_label, quality_tone, quality_detail = monte_carlo_badge(mc_sharpe, mc_total, mc_dd)
     return (
-        f"<details class=\"trimmed\"><summary>{trim_label} View</summary>"
+        f"<div class=\"trimmed-monte-carlo\">"
+        f"<h3>{trim_label} View</h3>"
         "<p class=\"muted\">Removes the top 5% of total-return outcomes to show performance without extreme winners.</p>"
         f"<div class=\"badge-row\"><span class=\"label\">Trimmed quality</span>{render_badge(quality_label, quality_tone, quality_detail)}</div>"
         f"<p class=\"muted\"><strong>Trimmed summary:</strong> {interp}</p>"
         "<div class=\"grid\">"
+        f"<div class=\"card full\">{render_histogram_svg(hist.get('final_equity'), metric=mc_final_equity, title='Distribution @ Ending Equity Index (Trimmed)', x_label='Ending Equity Index (100 = start)', as_pct=False, width=680, height=180)}</div>"
         f"<div class=\"card\">{render_histogram_svg(hist.get('sharpe'), metric=mc_sharpe, title='Sharpe (Trimmed)', x_label='Sharpe', as_pct=False)}</div>"
-        f"<div class=\"card\">{render_histogram_svg(hist.get('total_return'), metric=mc_total, title='Total Return (Trimmed)', x_label='Total Return (%)', as_pct=True)}</div>"
+        f"<div class=\"card\">{render_histogram_svg(hist.get('total_return'), metric=mc_total, title='Total Return From Start (Trimmed)', x_label='Total Return From Start (%)', as_pct=True)}</div>"
         f"<div class=\"card\">{render_histogram_svg(hist.get('max_drawdown'), metric=mc_dd, title='Max Drawdown (Trimmed)', x_label='Max Drawdown (%)', as_pct=True)}</div>"
-        f"<div class=\"card full\">{render_spaghetti_svg(paths, title='Monte Carlo Paths (Trimmed)', max_lines=60, line_opacity=0.45, line_width=0.9)}</div>"
-        "</div></details>"
+        f"<div class=\"card full\">{render_spaghetti_svg(paths, title='Monte Carlo Paths (Trimmed Equity Index)', max_lines=3, line_opacity=0.028, line_width=0.45, display_quantile_range=display_quantile_range, fit_plotted_extents=True, center_baseline=center_baseline, path_quantiles=quantiles, path_density=density)}</div>"
+        "</div></div>"
     )
 
 
@@ -2801,6 +3357,7 @@ def build_profile_dashboard(
     selection_href: str = "selection_summary.html",
     holdout_href: str = "holdout_results.html",
 ) -> str:
+    summary = ensure_summary_monte_carlo(summary)
     candidates = summary.get("ranked_candidates") or []
     backtest = summary.get("backtest_overfitting", {})
     thesis = summary.get("thesis") or {}
@@ -2821,8 +3378,13 @@ def build_profile_dashboard(
     mc_dd = mc_metrics.get("max_drawdown", {})
     mc_hist = monte.get("histograms", {}) if isinstance(monte, dict) else {}
     mc_paths = monte.get("sample_paths", []) if isinstance(monte, dict) else []
+    mc_quantiles = monte.get("path_quantiles", {}) if isinstance(monte, dict) else {}
+    mc_density = monte.get("path_density", {}) if isinstance(monte, dict) else {}
     wf_folds = walk_forward.get("folds", []) if isinstance(walk_forward, dict) else []
     wf_combined_returns = walk_forward.get("combined_returns", []) if isinstance(walk_forward, dict) else []
+    wf_combined_benchmark_returns = (
+        walk_forward.get("combined_benchmark_returns", []) if isinstance(walk_forward, dict) else []
+    )
     wf_periods_per_year = wf_combined.get("periods_per_year", 12) if isinstance(wf_combined, dict) else 12
     sensitivity_sections = render_sensitivity_sections(summary.get("parameter_sensitivity"))
     wf_gate_text = walk_forward_gate_summary(wf_folds)
@@ -2844,7 +3406,12 @@ def build_profile_dashboard(
         train_value_fn=lambda fold: _fold_cagr(fold, total_key="train_total_return", months_key="train_months"),
         validate_value_fn=lambda fold: _fold_cagr(fold, total_key="validate_total_return", months_key="validate_months"),
     )
-    wf_oos_equity_chart = render_walkforward_oos_equity_svg(wf_combined_returns, wf_folds)
+    wf_oos_equity_chart = render_walkforward_oos_equity_svg(
+        wf_combined_returns,
+        wf_folds,
+        benchmark_returns=wf_combined_benchmark_returns,
+        benchmark_label=config.PRIMARY_PASSIVE_BENCHMARK,
+    )
     wf_rolling_sharpe_chart = render_walkforward_rolling_sharpe_svg(
         wf_combined_returns, wf_folds, periods_per_year=wf_periods_per_year
     )
@@ -2941,6 +3508,7 @@ def build_profile_dashboard(
     .legend-line {{ font-weight:600; color:#7a6aa0; }}
     .legend-line.median {{ color:#4f7a67; }}
     .legend-line.band {{ color:#bfa47a; }}
+    .legend-line.density {{ color:#2f9abf; }}
     .badge-row {{ display:flex; align-items:center; gap:8px; margin:6px 0 6px; }}
     .badge {{ display:inline-block; padding:4px 8px; border-radius:999px; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; font-weight:700; }}
     .badge.good {{ background:#dcefe3; color:#2f5c46; border:1px solid #a9c7b4; }}
@@ -2974,7 +3542,7 @@ def build_profile_dashboard(
       <a href="{back_href}">{back_label}</a>
     </section>
     <section>
-      <h2>Status Snapshot</h2>
+      <h2>Status Overview</h2>
       <div class="grid">
         <div class="card"><div class="label">Selection Status</div><div class="value">{summary.get('selection_status','n/a')}</div></div>
         <div class="card"><div class="label">PBO</div><div class="value">{pbo_display}</div></div>
@@ -3023,11 +3591,11 @@ def build_profile_dashboard(
       <div class="badge-row"><span class="label">Walk-forward quality (diagnostic)</span>{wf_quality_html}</div>
       <p class="muted"><strong>Result (diagnostic):</strong> {wf_diag}.</p>
       <p class="muted"><strong>Gap summary:</strong> Sharpe {wf_gap_sharpe}. Annualized Return {wf_gap_return}. {wf_gap_months}.</p>
-      <p class="muted"><strong>How to read:</strong> Green line = validation (out-of-sample). Gray dashed = train (in-sample). X-axis is the mid-year of each validation window; shaded bands show each validation window.</p>
+      <p class="muted"><strong>What the chart shows:</strong> Green line = validation (out-of-sample). Gray dashed = train (in-sample). X-axis is the mid-year of each validation window; shaded bands show each validation window.</p>
       {benchmark_context}
       <p class="muted"><strong>Integrity boundary:</strong> These validation windows are out-of-sample relative to each fold's training span. The untouched final holdout starts at {config.OOS_START} and is not part of this walk-forward schedule.</p>
       <p class="muted">Diagnostic summary (not a hard gate): {wf_gate_text}. Dashed horizontal line is the 0.4 reference; solid horizontal line is zero (break-even) when visible.</p>
-      <p class="muted"><strong>Interpretation:</strong> Validation close to train with few negatives = more stable; big gaps or repeated negatives = weaker robustness.</p>
+      <p class="muted"><strong>What it means:</strong> Validation close to train with few negatives = more stable; big gaps or repeated negatives = weaker robustness.</p>
       <p class="muted"><strong>Higher-frequency view:</strong> The stitched validation equity and rolling Sharpe below update monthly, so you can see movement inside folds.</p>
       <div class="grid">
         <div class="card full">
@@ -3068,31 +3636,31 @@ def build_profile_dashboard(
         </div>
       </div>
     </section>
-    {monte_carlo_section}
-      {render_timeframe_note(f"Bootstrap resamples are drawn only from the Phase 2 validation history over {validation_window_text}; they do not consume or extrapolate the Phase 3 holdout {holdout_window_text_value}.")}
+    <section>
+      <h2>Monte Carlo Distribution</h2>
       {render_timeframe_note(f"Monte Carlo uses the frozen Phase 2 validation return history over {validation_window_text}; it does not include or project the Phase 3 holdout {holdout_window_text_value}.")}
       <p class="muted">Samples: {monte.get('sample_count','n/a')} · Block length: {monte.get('block_length_months','n/a')} months</p>
       <p class="muted">Method: stationary block bootstrap of historical monthly returns (not IID random-walk).</p>
       <p class="muted"><strong>Integrity boundary:</strong> This bootstrap uses realized historical returns from the frozen candidate's validation record. It is diagnostic only and does not project or consume the untouched holdout.</p>
       <div class="badge-row"><span class="label">Monte Carlo quality (not a gate)</span>{mc_badge_html}</div>
       <p class="muted"><strong>Result (diagnostic):</strong> {mc_badge_label}. {mc_badge_detail}</p>
-      <p class="muted"><strong>How to read histograms:</strong> X-axis = metric value, Y-axis = frequency across bootstrap samples. Taller bars = more likely outcomes. Higher Sharpe/return is better; lower drawdown is better. Markers show p05/median/p95.</p>
-      <p class="muted"><strong>How to read paths:</strong> X-axis = months from start; Y-axis = equity index (start=100). Thin lines are individual bootstrap paths; bold line is the median; shaded band is p10-p90.</p>
-      <p class="muted"><strong>Interpretation:</strong> Distributions centered above zero with tight spread are stronger; large left tails or very wide fans signal more uncertainty.</p>
-      <p class="muted"><strong>Quick read:</strong> {mc_interp}</p>
+      <p class="muted"><strong>What the histograms show:</strong> X-axis = metric value, Y-axis = frequency across bootstrap samples. Taller bars = more likely outcomes. Higher Sharpe/return is better; lower drawdown is better. Markers show p05/median/p95.</p>
+      <p class="muted"><strong>What the paths show:</strong> X-axis = months from start; Y-axis = equity index (start=100). Thin lines are sample bootstrap paths; the blue fan shows path density (darker = more likely); bold line is the median; shaded band is p10-p90.</p>
+      <p class="muted"><strong>What it means:</strong> Distributions centered above zero with tight spread are stronger; large left tails or very wide fans signal more uncertainty.</p>
+      <p class="muted"><strong>Bottom line:</strong> {mc_interp}</p>
       {mc_anomaly}
       <div class="grid">
         <div class="card">
           {render_histogram_svg(mc_hist.get("sharpe"), metric=mc_sharpe, title="Sharpe", x_label="Sharpe", as_pct=False)}
         </div>
         <div class="card">
-          {render_histogram_svg(mc_hist.get("total_return"), metric=mc_total, title="Total Return", x_label="Total Return (%)", as_pct=True)}
+          {render_histogram_svg(mc_hist.get("total_return"), metric=mc_total, title="Total Return From Start", x_label="Total Return From Start (%)", as_pct=True)}
         </div>
         <div class="card">
           {render_histogram_svg(mc_hist.get("max_drawdown"), metric=mc_dd, title="Max Drawdown", x_label="Max Drawdown (%)", as_pct=True)}
         </div>
         <div class="card full">
-          {render_spaghetti_svg(mc_paths, title="Monte Carlo Paths (Equity)")}
+          {render_spaghetti_svg(mc_paths, title="Monte Carlo Paths (Equity Index)", display_quantile_range=(0.05, 0.95), path_quantiles=mc_quantiles, path_density=mc_density)}
         </div>
       </div>
       {trimmed_html}
@@ -3101,7 +3669,7 @@ def build_profile_dashboard(
       <h2>Parameter Sensitivity</h2>
       {render_timeframe_note(f"Sensitivity charts summarize Phase 2 fold outcomes across {validation_window_text}; they are not computed on the holdout.")}
       {sensitivity_sections}
-      <p class="muted" style="margin-top:8px;"><strong>How to read:</strong> X-axis = parameter value; Y-axis = median validation Sharpe. Flatter lines = more robust; steep slopes = sensitivity/overfit. Largest dot marks the best value. Table retains pass rates and counts.</p>
+      <p class="muted" style="margin-top:8px;"><strong>What the chart shows:</strong> X-axis = parameter value; Y-axis = median validation Sharpe. Flatter lines = more robust; steep slopes = sensitivity/overfit. Largest dot marks the best value. Table retains pass rates and counts.</p>
     </section>
   </main>
 </body>
@@ -3120,6 +3688,9 @@ def build_holdout_dashboard(
     phase1_href: str = "phase1_summary.html",
     selection_href: str = "selection_summary.html",
     holdout_href: str = "holdout_results.html",
+    diagnostic_holdout: dict[str, Any] | None = None,
+    diagnostic_label: str | None = None,
+    diagnostic_href: str | None = None,
 ) -> str:
     phase4 = holdout.get("phase4_gate", {})
     holdout_window = holdout.get("holdout_window", {}) if isinstance(holdout, dict) else {}
@@ -3127,8 +3698,24 @@ def build_holdout_dashboard(
     window_end = holdout_window.get("end") or getattr(config, "OOS_END", None)
     window_text = f"{window_start} to {window_end}" if window_start and window_end else (window_start or window_end or "n/a")
     track_bundle = _find_holdout_primary_track(holdout)
+    fallback_track_bundle = _find_holdout_primary_track(diagnostic_holdout)
+    preserved_has_returns = bool(track_bundle and (track_bundle[1].get("strategy_returns") or []))
+    fallback_has_returns = bool(fallback_track_bundle and (fallback_track_bundle[1].get("strategy_returns") or []))
+    use_diagnostic_replay = (not preserved_has_returns) and fallback_has_returns
+    if use_diagnostic_replay:
+        track_bundle = fallback_track_bundle
     track_meta = track_bundle[0] if track_bundle else {}
     track_metrics = track_bundle[1] if track_bundle else {}
+    track_source_holdout = diagnostic_holdout if use_diagnostic_replay else holdout
+    diagnostic_phase4 = (diagnostic_holdout or {}).get("phase4_gate", {}) if isinstance(diagnostic_holdout, dict) else {}
+    diagnostic_window = (diagnostic_holdout or {}).get("holdout_window", {}) if isinstance(diagnostic_holdout, dict) else {}
+    diagnostic_window_start = diagnostic_window.get("start") or window_start
+    diagnostic_window_end = diagnostic_window.get("end") or window_end
+    diagnostic_window_text = (
+        f"{diagnostic_window_start} to {diagnostic_window_end}"
+        if diagnostic_window_start and diagnostic_window_end
+        else (diagnostic_window_start or diagnostic_window_end or window_text)
+    )
     track_label = (
         f"{track_meta.get('universe_variant','n/a')} / {track_meta.get('execution_model','n/a')} / "
         f"{track_meta.get('fx_scenario','n/a')} / cost={track_meta.get('cost_model_name','n/a')}"
@@ -3137,6 +3724,7 @@ def build_holdout_dashboard(
     )
     periods_per_year = int(
         track_metrics.get("periods_per_year")
+        or track_source_holdout.get("periods_per_year")
         or holdout.get("periods_per_year")
         or 12
     )
@@ -3159,11 +3747,16 @@ def build_holdout_dashboard(
     mc_dd = mc_metrics.get("max_drawdown", {})
     mc_hist = monte.get("histograms", {}) if isinstance(monte, dict) else {}
     mc_paths = monte.get("sample_paths", []) if isinstance(monte, dict) else []
+    mc_quantiles = monte.get("path_quantiles", {}) if isinstance(monte, dict) else {}
+    mc_density = monte.get("path_density", {}) if isinstance(monte, dict) else {}
     mc_badge_label, mc_badge_tone, mc_badge_detail = monte_carlo_badge(mc_sharpe, mc_total, mc_dd)
     mc_badge_html = render_badge(mc_badge_label, mc_badge_tone, mc_badge_detail)
     mc_interp = monte_carlo_interpretation(mc_sharpe, mc_total, mc_dd)
     mc_anomaly = render_monte_carlo_anomaly_panel(monte)
-    trimmed_html = render_trimmed_monte_carlo(monte)
+    trimmed_html = render_trimmed_monte_carlo(
+        monte,
+        display_quantile_range=(0.01, 0.99),
+    )
     selection_walk_forward = (selection_summary or {}).get("walk_forward", {}) if selection_summary else {}
     selection_folds = selection_walk_forward.get("folds", []) if isinstance(selection_walk_forward, dict) else []
     phase2_start = config.ROLLING_ORIGIN_FOLDS[0][1] if config.ROLLING_ORIGIN_FOLDS else None
@@ -3179,7 +3772,7 @@ def build_holdout_dashboard(
             },
             {
                 "label": "One-shot holdout",
-                "detail": "this page's test window",
+                "detail": "this page's main test window",
                 "start": window_start,
                 "end": window_end,
                 "fill": "#eadca7",
@@ -3199,8 +3792,38 @@ def build_holdout_dashboard(
     )
     lineage_chart = render_walkforward_ladder_svg(
         selection_folds,
-        title="Phase 2 Walk-Forward That Led Into This Holdout",
+        title="Phase 2 Lineage (Context Only)",
         stitched_label="Phase 2 stitched OOS",
+    )
+    phase3_folds = _build_holdout_walkforward_folds(
+        start_month=window_start,
+        end_month=window_end,
+        fold_count=5,
+        train_start=phase2_start,
+    )
+    phase3_fold_count = len(phase3_folds)
+    phase3_fold_count_display = phase3_fold_count if phase3_fold_count else "n/a"
+    phase3_schedule_folds = clip_walkforward_folds_to_window(
+        phase3_folds,
+        clip_start=window_start,
+        clip_end=window_end,
+    )
+    phase3_schedule_chart = render_walkforward_schedule_svg(
+        phase3_schedule_folds,
+        title="Phase 3 Walk-Forward Schedule",
+    )
+    phase3_oos_equity_chart = render_walkforward_oos_equity_svg(
+        track_returns,
+        phase3_folds,
+        benchmark_returns=track_benchmark_returns,
+        benchmark_label=config.PRIMARY_PASSIVE_BENCHMARK,
+        title="Phase 3 Holdout Equity (Stitched)",
+    )
+    phase3_rolling_sharpe_chart = render_walkforward_rolling_sharpe_svg(
+        track_returns,
+        phase3_folds,
+        periods_per_year=periods_per_year,
+        title="Rolling Sharpe (Phase 3 Holdout, 12m)",
     )
     evidence_stack_html = render_evidence_stack_html(
         selection_summary=selection_summary,
@@ -3209,7 +3832,7 @@ def build_holdout_dashboard(
         holdout_href=holdout_href,
     )
     track_rows: list[str] = []
-    results = holdout.get("results", {}) if isinstance(holdout, dict) else {}
+    results = track_source_holdout.get("results", {}) if isinstance(track_source_holdout, dict) else {}
     if isinstance(results, dict):
         for universe_variant, execution_bundle in results.items():
             if not isinstance(execution_bundle, dict):
@@ -3240,9 +3863,15 @@ def build_holdout_dashboard(
         else "<p class=\"muted\">No holdout track table is available.</p>"
     )
     blocked_holdout_html = ""
+    phase3_walkforward_section = ""
     primary_track_section = ""
     track_comparison_section = ""
     monte_carlo_section = ""
+    diagnostic_replay_html = ""
+    equity_section_title = "Primary Track Equity"
+    comparison_section_title = "Track Comparison"
+    monte_carlo_section_title = "Monte Carlo Distribution"
+    chart_window_text = diagnostic_window_text if use_diagnostic_replay else window_text
     if not track_returns:
         blocked_holdout_html = (
             "<section>"
@@ -3256,25 +3885,90 @@ def build_holdout_dashboard(
             "</section>"
         )
     else:
-        primary_track_section = f"""
-    {blocked_holdout_html}
-    {primary_track_section}
+        if use_diagnostic_replay:
+            source_html = (
+                f' <a href="{diagnostic_href}">Open the replay source</a>.'
+                if diagnostic_href
+                else ""
+            )
+            diagnostic_label_text = diagnostic_label or "a current exact-candidate replay"
+            diagnostic_replay_html = (
+                "<section>"
+                "<h2>Diagnostic Replay Source</h2>"
+                f"{render_timeframe_note(f'The preserved holdout window is {window_text}. The charts below use a replay over {diagnostic_window_text} because the rebuild snapshot only kept summary metrics, not monthly returns.')}"
+                "<div style=\"margin-top:12px; padding:12px 14px; border-radius:16px; border:1px solid rgba(176,107,29,.28); background:#fff7eb; color:#5b6762;\">"
+                "<strong style=\"color:#4b4031;\">The preserved rebuild snapshot did not store month-by-month holdout returns.</strong>"
+                f"<div style=\"margin-top:6px;\">To make Phase 3 path risk visible, the charts below use {html.escape(diagnostic_label_text)}. Keep the historical snapshot metrics above separate from these replay diagnostics.{source_html}</div>"
+                "</div>"
+                "<div class=\"grid\">"
+                f"<div class=\"card\"><div class=\"label\">Preserved Snapshot Sharpe</div><div class=\"value\">{format_float(phase4.get('base_main_net_sharpe'))}</div></div>"
+                f"<div class=\"card\"><div class=\"label\">Diagnostic Replay Sharpe</div><div class=\"value\">{format_float(diagnostic_phase4.get('base_main_net_sharpe'))}</div></div>"
+                f"<div class=\"card\"><div class=\"label\">Preserved Window</div><div class=\"value\">{window_text}</div></div>"
+                f"<div class=\"card\"><div class=\"label\">Replay Window</div><div class=\"value\">{diagnostic_window_text}</div></div>"
+                f"<div class=\"card\"><div class=\"label\">Replay Track</div><div class=\"value\">{track_label}</div></div>"
+                "</div>"
+                "</section>"
+            )
+            equity_section_title = "Diagnostic Replay Equity"
+            comparison_section_title = "Diagnostic Replay Track Comparison"
+            monte_carlo_section_title = "Diagnostic Replay Monte Carlo"
+        phase3_walkforward_section = f"""
     <section>
-      <h2>Primary Track Equity</h2>
-      {render_timeframe_note(f"Return curve uses the frozen holdout series from {window_text} on the primary track.")}
-      {render_return_curve(track_returns, track_benchmark_returns)}
-      <p class="muted" style="margin-top:10px;">Gold line = strategy; dashed = {config.PRIMARY_PASSIVE_BENCHMARK} if available.</p>
+      <h2>Phase 3 Walk-Forward View</h2>
+      {render_timeframe_note(f"Charts below split the Phase 3 holdout window {window_text} into {phase3_fold_count_display} sequential slices for visualization. The candidate is frozen; this does not re-optimize or reselect.")}
+      <p class="muted">Schedule, stitched equity, and rolling Sharpe are computed on the same holdout return series. The schedule axis is clipped to the Phase 3 window ({window_text}) so the earlier training history does not dominate the view.</p>
+      <div class="grid">
+        <div class="card full">{phase3_schedule_chart}</div>
+        <div class="card full">{phase3_oos_equity_chart}</div>
+        <div class="card full">{phase3_rolling_sharpe_chart}</div>
+      </div>
+    </section>
+"""
+        primary_track_section = f"""
+    <section>
+      <h2>{equity_section_title}</h2>
+      {render_timeframe_note(f"Return curve uses the {'diagnostic replay' if use_diagnostic_replay else 'frozen holdout'} series from {chart_window_text} on the primary track.")}
+      {render_holdout_equity_svg(
+          track_returns,
+          track_benchmark_returns,
+          window_start=diagnostic_window_start if use_diagnostic_replay else window_start,
+          benchmark_label=config.PRIMARY_PASSIVE_BENCHMARK,
+      )}
     </section>
 """
         track_comparison_section = f"""
     <section>
-      <h2>Track Comparison</h2>
-      {render_timeframe_note(f"Every row below is evaluated on the same Phase 3 holdout window {window_text}.")}
+      <h2>{comparison_section_title}</h2>
+      {render_timeframe_note(f"Every row below is evaluated on the same {'diagnostic replay' if use_diagnostic_replay else 'Phase 3 holdout'} window {chart_window_text}.")}
       {track_table_html}
     </section>
 """
         monte_carlo_section = f"""
-    {monte_carlo_section}
+    <section>
+      <h2>{monte_carlo_section_title}</h2>
+      {render_timeframe_note(f"Monte Carlo uses the realized {'diagnostic replay' if use_diagnostic_replay else 'Phase 3 holdout'} monthly return series from {chart_window_text}. It is diagnostic only and does not project beyond this window.")}
+      <p class="muted">Sample count: {monte.get('sample_count','n/a')} / Block length: {monte.get('block_length_months','n/a')} months</p>
+      <p class="muted">Method: stationary block bootstrap of the primary-track monthly holdout returns.</p>
+      <div class="badge-row"><span class="label">Monte Carlo quality (diagnostic)</span>{mc_badge_html}</div>
+      <p class="muted"><strong>Result (diagnostic):</strong> {mc_badge_label}. {mc_badge_detail}</p>
+      <p class="muted"><strong>Bottom line:</strong> {mc_interp}</p>
+      {mc_anomaly}
+      <div class="grid">
+        <div class="card">
+          {render_histogram_svg(mc_hist.get("sharpe"), metric=mc_sharpe, title="Sharpe", x_label="Sharpe", as_pct=False)}
+        </div>
+        <div class="card">
+          {render_histogram_svg(mc_hist.get("total_return"), metric=mc_total, title="Total Return From Start", x_label="Total Return From Start (%)", as_pct=True)}
+        </div>
+        <div class="card">
+          {render_histogram_svg(mc_hist.get("max_drawdown"), metric=mc_dd, title="Max Drawdown", x_label="Max Drawdown (%)", as_pct=True)}
+        </div>
+        <div class="card full">
+          {render_spaghetti_svg(mc_paths, title="Monte Carlo Paths (Equity Index)", display_quantile_range=(0.03, 0.97), path_quantiles=mc_quantiles, path_density=mc_density)}
+        </div>
+      </div>
+      {trimmed_html}
+    </section>
 """
     return f"""<!doctype html>
 <html lang="en">
@@ -3298,6 +3992,15 @@ def build_holdout_dashboard(
     .badge.weak {{ background:#f3d7d7; color:#7a2f2f; border:1px solid #d6a3a3; }}
     .badge.neutral {{ background:#ece7dd; color:#6c5842; border:1px solid #d7cdbc; }}
     .card.full {{ grid-column: 1 / -1; }}
+    .chart-block {{ display:flex; flex-direction:column; gap:6px; }}
+    .chart-title {{ font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; color:#6c5842; }}
+    .chart {{ width:100%; height:auto; }}
+    .chart text {{ font-family:Georgia, serif; font-size:10px; fill:#5d685f; }}
+    .chart-note {{ font-size:.78rem; color:#6c5842; }}
+    .legend-line {{ font-weight:600; color:#7a6aa0; }}
+    .legend-line.median {{ color:#4f7a67; }}
+    .legend-line.band {{ color:#bfa47a; }}
+    .legend-line.density {{ color:#2f9abf; }}
     a {{ color:#b06b1d; }}
     table {{ width:100%; border-collapse:collapse; margin-top:12px; }}
     th, td {{ border-bottom:1px solid rgba(23,33,26,.08); text-align:left; padding:8px; }}
@@ -3343,33 +4046,11 @@ def build_holdout_dashboard(
       </div>
     </section>
     {blocked_holdout_html}
+    {diagnostic_replay_html}
+    {phase3_walkforward_section}
     {primary_track_section}
     {track_comparison_section}
-    <section>
-      <h2>Monte Carlo Distribution</h2>
-      {render_timeframe_note(f"Monte Carlo uses the realized Phase 3 holdout monthly return series from {window_text}. It is diagnostic only and does not project beyond this window.")}
-      <p class="muted">Samples: {monte.get('sample_count','n/a')} Â· Block length: {monte.get('block_length_months','n/a')} months</p>
-      <p class="muted">Method: stationary block bootstrap of the primary-track monthly holdout returns.</p>
-      <div class="badge-row"><span class="label">Monte Carlo quality (diagnostic)</span>{mc_badge_html}</div>
-      <p class="muted"><strong>Result (diagnostic):</strong> {mc_badge_label}. {mc_badge_detail}</p>
-      <p class="muted"><strong>Quick read:</strong> {mc_interp}</p>
-      {mc_anomaly}
-      <div class="grid">
-        <div class="card">
-          {render_histogram_svg(mc_hist.get("sharpe"), metric=mc_sharpe, title="Sharpe", x_label="Sharpe", as_pct=False)}
-        </div>
-        <div class="card">
-          {render_histogram_svg(mc_hist.get("total_return"), metric=mc_total, title="Total Return", x_label="Total Return (%)", as_pct=True)}
-        </div>
-        <div class="card">
-          {render_histogram_svg(mc_hist.get("max_drawdown"), metric=mc_dd, title="Max Drawdown", x_label="Max Drawdown (%)", as_pct=True)}
-        </div>
-        <div class="card full">
-          {render_spaghetti_svg(mc_paths, title="Monte Carlo Paths (Equity)")}
-        </div>
-      </div>
-      {trimmed_html}
-    </section>
+    {monte_carlo_section}
   </main>
 </body>
 </html>
@@ -3389,6 +4070,7 @@ def build_thesis_dashboard(
     selection_href: str = "selection_summary.html",
     holdout_href: str = "holdout_results.html",
 ) -> str:
+    certification = ensure_summary_monte_carlo(certification)
     selection_status = certification.get("selection_status", "n/a")
     backtest = certification.get("backtest_overfitting", {})
     pbo_value = backtest.get("pbo")
@@ -3413,6 +4095,9 @@ def build_thesis_dashboard(
     mc_paths = monte.get("sample_paths", []) if isinstance(monte, dict) else []
     wf_folds = walk_forward.get("folds", []) if isinstance(walk_forward, dict) else []
     wf_combined_returns = walk_forward.get("combined_returns", []) if isinstance(walk_forward, dict) else []
+    wf_combined_benchmark_returns = (
+        walk_forward.get("combined_benchmark_returns", []) if isinstance(walk_forward, dict) else []
+    )
     wf_periods_per_year = wf_combined.get("periods_per_year", 12) if isinstance(wf_combined, dict) else 12
     sensitivity_sections = render_sensitivity_sections(certification.get("parameter_sensitivity"))
     wf_gate_text = walk_forward_gate_summary(wf_folds)
@@ -3433,7 +4118,12 @@ def build_thesis_dashboard(
         validate_value_fn=lambda fold: _fold_cagr(fold, total_key="validate_total_return", months_key="validate_months"),
     )
     wf_gap_months = walk_forward_gap_months_summary(wf_folds)
-    wf_oos_equity_chart = render_walkforward_oos_equity_svg(wf_combined_returns, wf_folds)
+    wf_oos_equity_chart = render_walkforward_oos_equity_svg(
+        wf_combined_returns,
+        wf_folds,
+        benchmark_returns=wf_combined_benchmark_returns,
+        benchmark_label=config.PRIMARY_PASSIVE_BENCHMARK,
+    )
     wf_rolling_sharpe_chart = render_walkforward_rolling_sharpe_svg(
         wf_combined_returns, wf_folds, periods_per_year=wf_periods_per_year
     )
@@ -3649,6 +4339,7 @@ def build_thesis_dashboard(
     .legend-line {{ font-weight:600; color:#7a6aa0; }}
     .legend-line.median {{ color:#4f7a67; }}
     .legend-line.band {{ color:#bfa47a; }}
+    .legend-line.density {{ color:#2f9abf; }}
     .badge-row {{ display:flex; align-items:center; gap:8px; margin:6px 0 6px; }}
     .badge {{ display:inline-block; padding:4px 8px; border-radius:999px; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; font-weight:700; }}
     .badge.good {{ background:#dcefe3; color:#2f5c46; border:1px solid #a9c7b4; }}
@@ -3704,7 +4395,7 @@ def build_thesis_dashboard(
       </div>
     </section>
     <section>
-      <h2>Diagnostics Snapshot</h2>
+      <h2>Diagnostics Overview</h2>
       {render_timeframe_note(f"Snapshot cards mix Phase 2 certification outputs over {validation_window_text} with the current Phase 3 status for {holdout_window_text_value}.")}
       <div class="grid">
         <div class="card">
@@ -3768,11 +4459,11 @@ def build_thesis_dashboard(
       <div class="badge-row"><span class="label">Walk-forward quality (diagnostic)</span>{wf_quality_html}</div>
       <p class="muted"><strong>Result (diagnostic):</strong> {wf_diag}.</p>
       <p class="muted"><strong>Gap summary:</strong> Sharpe {wf_gap_sharpe}. Annualized Return {wf_gap_return}. {wf_gap_months}.</p>
-      <p class="muted"><strong>How to read:</strong> Green line = validation (out-of-sample). Gray dashed = train (in-sample). X-axis is the mid-year of each validation window; shaded bands show each validation window.</p>
+      <p class="muted"><strong>What the chart shows:</strong> Green line = validation (out-of-sample). Gray dashed = train (in-sample). X-axis is the mid-year of each validation window; shaded bands show each validation window.</p>
       {benchmark_context}
       <p class="muted"><strong>Integrity boundary:</strong> These validation windows are out-of-sample relative to each fold's training span. The untouched final holdout starts at {config.OOS_START} and is not part of this walk-forward schedule.</p>
       <p class="muted">Diagnostic summary (not a hard gate): {wf_gate_text}. Dashed horizontal line is the 0.4 reference; solid horizontal line is zero (break-even) when visible.</p>
-      <p class="muted"><strong>Interpretation:</strong> Validation close to train with few negatives = more stable; big gaps or repeated negatives = weaker robustness.</p>
+      <p class="muted"><strong>What it means:</strong> Validation close to train with few negatives = more stable; big gaps or repeated negatives = weaker robustness.</p>
       <p class="muted"><strong>Higher-frequency view:</strong> The stitched validation equity and rolling Sharpe below update monthly, so you can see movement inside folds.</p>
       <div class="grid">
         <div class="card full">
@@ -3820,23 +4511,23 @@ def build_thesis_dashboard(
       <p class="muted"><strong>Integrity boundary:</strong> This bootstrap uses realized historical returns from the frozen candidate's validation record. It is diagnostic only and does not project or consume the untouched holdout.</p>
       <div class="badge-row"><span class="label">Monte Carlo quality (not a gate)</span>{mc_badge_html}</div>
       <p class="muted"><strong>Result (diagnostic):</strong> {mc_badge_label}. {mc_badge_detail}</p>
-      <p class="muted"><strong>How to read histograms:</strong> X-axis = metric value, Y-axis = frequency across bootstrap samples. Taller bars = more likely outcomes. Higher Sharpe/return is better; lower drawdown is better. Markers show p05/median/p95.</p>
-      <p class="muted"><strong>How to read paths:</strong> X-axis = months from start; Y-axis = equity index (start=100). Thin lines are individual bootstrap paths; bold line is the median; shaded band is p10-p90.</p>
-      <p class="muted"><strong>Interpretation:</strong> Distributions centered above zero with tight spread are stronger; large left tails or very wide fans signal more uncertainty.</p>
-      <p class="muted"><strong>Quick read:</strong> {mc_interp}</p>
+      <p class="muted"><strong>What the histograms show:</strong> X-axis = metric value, Y-axis = frequency across bootstrap samples. Taller bars = more likely outcomes. Higher Sharpe/return is better; lower drawdown is better. Markers show p05/median/p95.</p>
+      <p class="muted"><strong>What the paths show:</strong> X-axis = months from start; Y-axis = equity index (start=100). Thin lines are sample bootstrap paths; the blue fan shows path density (darker = more likely); bold line is the median; shaded band is p10-p90.</p>
+      <p class="muted"><strong>What it means:</strong> Distributions centered above zero with tight spread are stronger; large left tails or very wide fans signal more uncertainty.</p>
+      <p class="muted"><strong>Bottom line:</strong> {mc_interp}</p>
       {mc_anomaly}
       <div class="grid">
         <div class="card">
           {render_histogram_svg(mc_hist.get("sharpe"), metric=mc_sharpe, title="Sharpe", x_label="Sharpe", as_pct=False)}
         </div>
         <div class="card">
-          {render_histogram_svg(mc_hist.get("total_return"), metric=mc_total, title="Total Return", x_label="Total Return (%)", as_pct=True)}
+          {render_histogram_svg(mc_hist.get("total_return"), metric=mc_total, title="Total Return From Start", x_label="Total Return From Start (%)", as_pct=True)}
         </div>
         <div class="card">
           {render_histogram_svg(mc_hist.get("max_drawdown"), metric=mc_dd, title="Max Drawdown", x_label="Max Drawdown (%)", as_pct=True)}
         </div>
         <div class="card full">
-          {render_spaghetti_svg(mc_paths, title="Monte Carlo Paths (Equity)")}
+          {render_spaghetti_svg(mc_paths, title="Monte Carlo Paths (Equity Index)", display_quantile_range=(0.05, 0.95), path_quantiles=mc_quantiles, path_density=mc_density)}
         </div>
       </div>
       {trimmed_html}
@@ -3845,7 +4536,7 @@ def build_thesis_dashboard(
       <h2>Parameter Sensitivity (Certification)</h2>
       {render_timeframe_note(f"Sensitivity summaries below are computed from Phase 2 certification folds over {validation_window_text}.")}
       {sensitivity_sections}
-      <p class="muted" style="margin-top:10px;"><strong>How to read:</strong> X-axis = parameter value; Y-axis = median validation Sharpe. Flatter lines = more robust; steep slopes = sensitivity/overfit. Largest dot marks the best value. Table retains pass rates and counts.</p>
+      <p class="muted" style="margin-top:10px;"><strong>What the chart shows:</strong> X-axis = parameter value; Y-axis = median validation Sharpe. Flatter lines = more robust; steep slopes = sensitivity/overfit. Largest dot marks the best value. Table retains pass rates and counts.</p>
     </section>
     <section>
       <h2>Return Curves (Top Candidates)</h2>
@@ -3920,7 +4611,7 @@ def build_thesis_dashboard(
           )}
         </tbody>
       </table>
-      <p class="muted" style="margin-top:10px;">Use this to compare stability across neighbors and see which gates block progress.</p>
+      <p class="muted" style="margin-top:10px;">This is the easiest way to compare nearby candidates and see which gates are stopping them.</p>
     </section>
   </main>
 </body>
@@ -3998,7 +4689,7 @@ def build_summary_dashboard(summary: dict[str, Any]) -> str:
     </section>
     {render_phase_map_html(phase1_href="phase1_summary.html")}
     <section>
-      <h2>Cycle Snapshot</h2>
+      <h2>Cycle Overview</h2>
       <div class="grid">
         <div class="card"><div class="label">Phase 1 Status</div><div class="value">{'green' if phase1_green else 'not green'}</div></div>
         <div class="card"><div class="label">Theses</div><div class="value">{len(thesis_rows)}</div></div>
@@ -4149,6 +4840,76 @@ def _quantile(sorted_values: Sequence[float], probability: float) -> float:
     return sorted_values[lower] * (1.0 - weight) + sorted_values[upper] * weight
 
 
+def _quantile_key(probability: float) -> str:
+    if abs(probability - 0.5) < 1e-9:
+        return "median"
+    return f"p{int(round(probability * 100)):02d}"
+
+
+def _path_quantiles(
+    paths: list[list[float]], quantiles: Sequence[float]
+) -> dict[str, list[float]]:
+    if not paths:
+        return {}
+    length = min(len(path) for path in paths)
+    if length < 2:
+        return {}
+    matrix = np.array([path[:length] for path in paths], dtype=float)
+    result: dict[str, list[float]] = {}
+    for q in quantiles:
+        key = _quantile_key(float(q))
+        series = np.quantile(matrix, q, axis=0)
+        result[key] = [float(value) for value in series]
+    return result
+
+
+def _density_range_from_quantiles(
+    path_quantiles: dict[str, list[float]],
+    q_low: float,
+    q_high: float,
+    *,
+    fallback_paths: list[list[float]],
+) -> tuple[float, float]:
+    low_series = path_quantiles.get(_quantile_key(q_low))
+    high_series = path_quantiles.get(_quantile_key(q_high))
+    if low_series and high_series:
+        y_min = min(low_series)
+        y_max = max(high_series)
+    else:
+        y_min = min(min(path) for path in fallback_paths)
+        y_max = max(max(path) for path in fallback_paths)
+    if y_max <= y_min:
+        y_max = y_min + 1.0
+    return (y_min, y_max)
+
+
+def _path_density(
+    paths: list[list[float]], y_min: float, y_max: float, bins: int
+) -> dict[str, Any]:
+    if not paths or bins < 2:
+        return {}
+    length = min(len(path) for path in paths)
+    if length < 2:
+        return {}
+    if y_max <= y_min:
+        y_max = y_min + 1.0
+    edges = np.linspace(y_min, y_max, bins + 1)
+    counts: list[list[int]] = []
+    max_count = 1
+    for idx in range(length):
+        values = [path[idx] for path in paths]
+        hist, _ = np.histogram(values, bins=edges)
+        row = [int(value) for value in hist]
+        counts.append(row)
+        if row:
+            max_count = max(max_count, max(row))
+    return {
+        "y_edges": [float(edge) for edge in edges],
+        "counts": counts,
+        "max_count": int(max_count),
+    }
+
+
 def stationary_bootstrap_sharpe_ci(
     returns: Sequence[float],
     *,
@@ -4276,8 +5037,19 @@ def monte_carlo_summary(
         "sharpe": _histogram(sharpe_values, MONTE_CARLO_HIST_BINS),
         "total_return": _histogram(total_values, MONTE_CARLO_HIST_BINS),
         "max_drawdown": _histogram(drawdown_values, MONTE_CARLO_HIST_BINS),
+        "final_equity": _histogram([path[-1] for path in all_paths if path], MONTE_CARLO_HIST_BINS),
     }
-    sample_paths = all_paths[:MONTE_CARLO_SAMPLE_PATHS]
+    path_quantiles = _path_quantiles(all_paths, MONTE_CARLO_PATH_QUANTILES)
+    path_density: dict[str, Any] = {}
+    if path_quantiles:
+        density_min, density_max = _density_range_from_quantiles(
+            path_quantiles,
+            MONTE_CARLO_DENSITY_QUANTILE_RANGE[0],
+            MONTE_CARLO_DENSITY_QUANTILE_RANGE[1],
+            fallback_paths=all_paths,
+        )
+        path_density = _path_density(all_paths, density_min, density_max, MONTE_CARLO_DENSITY_BINS)
+    sample_paths = _sample_paths_evenly(all_paths, max_lines=MONTE_CARLO_SAMPLE_PATHS)
     sample_length = len(sample_paths[0]) if sample_paths else 0
     trimmed: dict[str, Any] | None = None
     trim_top_n = int(len(total_values) * MONTE_CARLO_TRIM_TOP_PCT)
@@ -4287,7 +5059,23 @@ def monte_carlo_summary(
         trimmed_sharpe = [sharpe_values[idx] for idx in keep]
         trimmed_total = [total_values[idx] for idx in keep]
         trimmed_dd = [drawdown_values[idx] for idx in keep]
-        trimmed_paths = [all_paths[idx] for idx in keep][:MONTE_CARLO_SAMPLE_PATHS]
+        trimmed_paths_all = [all_paths[idx] for idx in keep]
+        trimmed_quantiles = _path_quantiles(trimmed_paths_all, MONTE_CARLO_PATH_QUANTILES)
+        trimmed_density: dict[str, Any] = {}
+        if trimmed_quantiles:
+            density_min, density_max = _density_range_from_quantiles(
+                trimmed_quantiles,
+                MONTE_CARLO_DENSITY_QUANTILE_RANGE[0],
+                MONTE_CARLO_DENSITY_QUANTILE_RANGE[1],
+                fallback_paths=trimmed_paths_all,
+            )
+            trimmed_density = _path_density(
+                trimmed_paths_all, density_min, density_max, MONTE_CARLO_DENSITY_BINS
+            )
+        trimmed_paths = _sample_paths_evenly(
+            trimmed_paths_all,
+            max_lines=MONTE_CARLO_SAMPLE_PATHS,
+        )
         trimmed = {
             "status": "ok",
             "trim_top_pct": MONTE_CARLO_TRIM_TOP_PCT,
@@ -4296,13 +5084,17 @@ def monte_carlo_summary(
                 "sharpe": _histogram(trimmed_sharpe, MONTE_CARLO_HIST_BINS),
                 "total_return": _histogram(trimmed_total, MONTE_CARLO_HIST_BINS),
                 "max_drawdown": _histogram(trimmed_dd, MONTE_CARLO_HIST_BINS),
+                "final_equity": _histogram([path[-1] for path in trimmed_paths_all if path], MONTE_CARLO_HIST_BINS),
             },
             "metrics": {
                 "sharpe": _metric_summary(trimmed_sharpe),
                 "total_return": _metric_summary(trimmed_total),
                 "max_drawdown": _metric_summary(trimmed_dd),
+                "final_equity": _metric_summary([path[-1] for path in trimmed_paths_all if path]),
             },
             "sample_paths": trimmed_paths,
+            "path_quantiles": trimmed_quantiles,
+            "path_density": trimmed_density,
         }
     return {
         "status": "ok",
@@ -4311,12 +5103,15 @@ def monte_carlo_summary(
         "sample_paths": sample_paths,
         "sample_length": sample_length,
         "path_base": 100.0,
+        "path_quantiles": path_quantiles,
+        "path_density": path_density,
         "histograms": histograms,
         "base_return_stats": base_return_stats,
         "metrics": {
             "sharpe": _metric_summary(sharpe_values),
             "total_return": _metric_summary(total_values),
             "max_drawdown": _metric_summary(drawdown_values),
+            "final_equity": _metric_summary([path[-1] for path in all_paths if path]),
         },
         "trimmed": trimmed,
     }
@@ -4738,6 +5533,7 @@ def walk_forward_test(
     excluded_countries = tuple(thesis.get("excluded_countries", ()))
     fold_results: list[dict[str, Any]] = []
     combined_returns: list[float] = []
+    combined_benchmark_returns: list[float] = []
     selected_params: list[dict[str, Any]] = []
 
     for fold in folds:
@@ -4788,6 +5584,7 @@ def walk_forward_test(
         validate_returns = _clean_returns(sim_validate.monthly_returns)
         validate_benchmark_returns = _clean_returns(sim_validate.primary_benchmark_returns or [])
         combined_returns.extend(validate_returns)
+        combined_benchmark_returns.extend(validate_benchmark_returns)
         selected_params.append(best_params)
 
         fold_results.append(
@@ -4844,6 +5641,7 @@ def walk_forward_test(
         "folds": fold_results,
         "combined": combined,
         "combined_returns": combined_returns,
+        "combined_benchmark_returns": combined_benchmark_returns,
         "selection_distribution": _selection_distribution(selected_params),
     }
 

@@ -32,7 +32,7 @@
       <p class="label">Phase 3</p>
       <h1>Holdout Diagnostics</h1>
       <p>Phase 3: untouched holdout evaluation for the locked certification candidate (if any).</p>
-      <p class="muted"><strong>Timeframe:</strong> This page is the untouched Phase 3 holdout for 2018-01 to 2026-01. Any charts below use that window unless they explicitly say they are Phase 2 lineage charts.</p>
+      <div style="margin:10px 0 12px; padding:10px 12px; border-radius:14px; border:1px solid rgba(176,107,29,.28); background:#fff7eb; color:#5b6762;"><strong style="color:#4b4031;">Timeframe:</strong> This page is the untouched Phase 3 holdout for 2018-01 to 2026-01. Any charts below use that window unless they explicitly say they are Phase 2 lineage charts.</div>
       <a href="dashboard.html">Back to pair dashboard</a>
     </section>
     <section><h2>Phase Map</h2><div class="grid"><div class="card"><div class="label">Phase 1</div><div class="value">Infrastructure &amp; Data</div><div class="muted">Gate this cycle with <code>validate.py</code>. This stage checks the engine and core artifacts before any research result is trusted. <a href="phase1_summary.html">Open Phase 1 validation.</a></div></div><div class="card"><div class="label">Phase 2</div><div class="value">Research Certification</div><div class="muted">Selection boundary 2000-01 to 2017-12. Validation windows 2008-01 to 2017-12. <a href="selection_summary.html">Open Phase 2 certification.</a></div></div><div class="card"><div class="label">Phase 3</div><div class="value">Untouched Holdout</div><div class="muted">Official holdout window 2018-01 to 2026-01. <a href="walk_forward_results.html">Open Phase 3 holdout.</a></div></div><div class="card"><div class="label">Phase 4</div><div class="value">Paper Trading</div><div class="muted">Only unlock after the frozen Phase 3 result is accepted.</div></div></div></section>
@@ -53,8 +53,8 @@
         </div>
         <div class="card">
           <div class="label">Phase 2B. Anti-Overfitting Checks</div>
-          <div class="value">PBO n/a</div>
-          <div class="muted">Selection status no_candidate_passed_hard_gates. Bootstrap CI low -0.125. Deflated Sharpe 0.161. Cross shuffle 0/500; block null 29/200.</div>
+          <div class="value">PBO n/a (single candidate)</div>
+          <div class="muted">Selection status no_candidate_passed_hard_gates. PBO is not applicable here because this replay freezes one exact candidate rather than ranking a multi-candidate grid. Bootstrap CI low -0.125. Deflated Sharpe 0.161. Cross shuffle 0/500; block null 29/200.</div>
         </div>
         <div class="card">
           <div class="label">Phase 3. Untouched Final Holdout</div>
@@ -71,7 +71,7 @@
     
     <section>
       <h2>Boundary Insight</h2>
-      <p class="muted"><strong>Timeframe:</strong> The boundary chart spans Phase 2 research 2000-01 to 2017-12, the untouched Phase 3 holdout 2018-01 to 2026-01, and the future Phase 4 period after 2026-02.</p>
+      <div style="margin:10px 0 12px; padding:10px 12px; border-radius:14px; border:1px solid rgba(176,107,29,.28); background:#fff7eb; color:#5b6762;"><strong style="color:#4b4031;">Timeframe:</strong> The boundary chart spans Phase 2 research 2000-01 to 2017-12, the untouched Phase 3 holdout 2018-01 to 2026-01, and the future Phase 4 period after 2026-02.</div>
       <p class="muted"><strong>What this page is testing:</strong> the orange holdout block is the single post-selection evaluation window. It is not another rolling walk-forward stage on this shared holdout page.</p>
       <div class="grid">
         <div class="card" style="grid-column:1 / -1;"><div class="chart-block"><div class="chart-title">Test Period vs After-Test Period</div><svg viewBox="0 0 760 118" class="chart"><rect x="28.0" y="22.0" width="461.5" height="54" fill="#d9cab8" stroke="#8f7b5f" stroke-width="1"></rect><rect x="489.5" y="22.0" width="207.2" height="54" fill="#eadca7" stroke="#8f7b5f" stroke-width="2"></rect><rect x="696.7" y="22.0" width="51.3" height="54" fill="#efe6d7" stroke="#8f7b5f" stroke-width="1"></rect><line x1="489.5" y1="16" x2="489.5" y2="86" stroke="#17211a" stroke-width="3"></line><line x1="696.7" y1="16" x2="696.7" y2="86" stroke="#17211a" stroke-width="3"></line><line x1="28.0" y1="78" x2="28.0" y2="84" stroke="#d9cbb6" stroke-width="1"></line><line x1="171.1" y1="78" x2="171.1" y2="84" stroke="#d9cbb6" stroke-width="1"></line><line x1="314.3" y1="78" x2="314.3" y2="84" stroke="#d9cbb6" stroke-width="1"></line><line x1="459.6" y1="78" x2="459.6" y2="84" stroke="#d9cbb6" stroke-width="1"></line><line x1="602.7" y1="78" x2="602.7" y2="84" stroke="#d9cbb6" stroke-width="1"></line><line x1="745.9" y1="78" x2="745.9" y2="84" stroke="#d9cbb6" stroke-width="1"></line><text x="258.7" y="46.0" text-anchor="middle" font-size="11" font-weight="700">Selection history</text><text x="258.7" y="60.0" text-anchor="middle" font-size="9">Phase 2 research and locking</text><text x="593.1" y="46.0" text-anchor="middle" font-size="11" font-weight="700">One-shot holdout</text><text x="593.1" y="60.0" text-anchor="middle" font-size="9">this page&#x27;s test window</text><text x="28.0" y="110" text-anchor="middle">2000</text><text x="171.1" y="110" text-anchor="middle">2005</text><text x="314.3" y="110" text-anchor="middle">2011</text><text x="459.6" y="110" text-anchor="middle">2016</text><text x="602.7" y="110" text-anchor="middle">2022</text><text x="745.9" y="110" text-anchor="middle">2028</text></svg><div class="chart-note"><span style="display:inline-block;width:12px;height:12px;background:#d9cab8;margin-right:6px;border-radius:2px;"></span><strong>Selection history</strong>: 2000-01 to 2017-12 - Phase 2 research and locking</div><div class="chart-note"><span style="display:inline-block;width:12px;height:12px;background:#eadca7;margin-right:6px;border-radius:2px;"></span><strong>One-shot holdout</strong>: 2018-01 to 2026-01 - this page&#x27;s test window</div><div class="chart-note"><span style="display:inline-block;width:12px;height:12px;background:#efe6d7;margin-right:6px;border-radius:2px;"></span><strong>After holdout</strong>: 2026-02 to 2028-01 - paper/live or future appended data</div><div class="chart-note"><strong>Read:</strong> This page is meant to be a one-shot test: the candidate should already be frozen before the orange window begins.</div></div></div>
@@ -96,54 +96,10 @@
         <div class="card"><div class="label">Periods per Year</div><div class="value">n/a</div></div>
       </div>
     </section>
-    <section>
-      <h2>Primary Track (Holdout)</h2>
-      <p class="muted"><strong>Timeframe:</strong> Primary-track metrics and equity use the holdout window 2018-01 to 2026-01 only.</p>
-      <div class="grid">
-        <div class="card"><div class="label">Track</div><div class="value">n/a</div></div>
-        <div class="card"><div class="label">Net Sharpe</div><div class="value">n/a</div></div>
-        <div class="card"><div class="label">Total Return</div><div class="value">n/a</div></div>
-        <div class="card"><div class="label">Max Drawdown</div><div class="value">n/a</div></div>
-        <div class="card"><div class="label">Beats Benchmark</div><div class="value">n/a</div></div>
-        <div class="card"><div class="label">Benchmark Total Return</div><div class="value">n/a</div></div>
-      </div>
-    </section>
-    <section>
-      <h2>Primary Track Equity</h2>
-      <p class="muted"><strong>Timeframe:</strong> Return curve uses the frozen holdout series from 2018-01 to 2026-01 on the primary track.</p>
-      <div class="muted">Return curve not available (rerun rebuild to populate return series).</div>
-      <p class="muted" style="margin-top:10px;">Gold line = strategy; dashed = XACT Norden if available.</p>
-    </section>
-    <section>
-      <h2>Track Comparison</h2>
-      <p class="muted"><strong>Timeframe:</strong> Every row below is evaluated on the same Phase 3 holdout window 2018-01 to 2026-01.</p>
-      <p class="muted">No holdout track table is available.</p>
-    </section>
-    <section>
-      <h2>Monte Carlo Distribution</h2>
-      <p class="muted"><strong>Timeframe:</strong> Monte Carlo uses the realized Phase 3 holdout monthly return series from 2018-01 to 2026-01. It is diagnostic only and does not project beyond this window.</p>
-      <p class="muted">Samples: n/a Â· Block length: n/a months</p>
-      <p class="muted">Method: stationary block bootstrap of the primary-track monthly holdout returns.</p>
-      <div class="badge-row"><span class="label">Monte Carlo quality (diagnostic)</span><span class="badge neutral">n/a</span><span class="badge-detail">No Monte Carlo metrics.</span></div>
-      <p class="muted"><strong>Result (diagnostic):</strong> n/a. No Monte Carlo metrics.</p>
-      <p class="muted"><strong>Quick read:</strong> Monte Carlo summary not available.</p>
-      
-      <div class="grid">
-        <div class="card">
-          <div class="muted">Histogram not available.</div>
-        </div>
-        <div class="card">
-          <div class="muted">Histogram not available.</div>
-        </div>
-        <div class="card">
-          <div class="muted">Histogram not available.</div>
-        </div>
-        <div class="card full">
-          <div class="muted">Monte Carlo paths not available.</div>
-        </div>
-      </div>
-      
-    </section>
+    <section><h2>Phase 3 Run Status</h2><div style="margin-top:12px; padding:12px 14px; border-radius:16px; border:1px solid rgba(176,107,29,.28); background:#fff7eb; color:#5b6762;"><strong style="color:#4b4031;">No Phase 3 simulation was produced for this branch.</strong><div style="margin-top:6px;">Status is <code>blocked_by_missing_selection</code>. Phase 2 did not lock a candidate for this path, so there is no holdout equity curve, no track table, and no Monte Carlo sample to display. This page is only showing the reserved holdout window and the lineage boundary.</div></div></section>
+    
+    
+    
   </main>
 </body>
 </html>

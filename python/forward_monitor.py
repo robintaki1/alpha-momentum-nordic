@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 import os
 import html
 import shutil
@@ -37,6 +38,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--results-root", default=Path("results"), type=Path)
     parser.add_argument("--output-dir", default=Path("results/forward_monitor"), type=Path)
     parser.add_argument(
+        "--selection-summaries",
+        nargs="+",
+        type=Path,
+        default=None,
+        help="Optional explicit selection_summary.json paths; order determines lead then shadow and can point to multiple candidates from the same thesis.",
+    )
+    parser.add_argument(
         "--theses",
         nargs="+",
         choices=tuple(config.RESEARCH_THESIS_SETTINGS.keys()),
@@ -44,11 +52,73 @@ def parse_args() -> argparse.Namespace:
         help="Optional override for thesis ordering; when omitted, the rebuild winner is treated as lead.",
     )
     parser.add_argument("--history-months", default=6, type=int)
+    parser.add_argument(
+        "--skip-package-export",
+        action="store_true",
+        help="Skip portfolio package side effects; useful for manual forward-trial monitors.",
+    )
     return parser.parse_args()
 
 
 def month_after(month: str) -> str:
     return str(pd.Period(month, freq="M") + 1)
+
+
+def month_before(month: str) -> str:
+    return str(pd.Period(month, freq="M") - 1)
+
+
+def month_plus(month: str, months: int) -> str:
+    return str(pd.Period(month, freq="M") + months)
+
+
+def month_label(month: str) -> str:
+    try:
+        return pd.Period(month, freq="M").to_timestamp().strftime("%b %Y")
+    except Exception:
+        return str(month)
+
+
+def forward_trial_decision_windows(start_month: str) -> dict[str, str]:
+    earliest_review = month_plus(start_month, 6)
+    preferred_review = month_plus(start_month, 12)
+    return {
+        "earliest_review_month": earliest_review,
+        "earliest_review_label": month_label(earliest_review),
+        "preferred_review_month": preferred_review,
+        "preferred_review_label": month_label(preferred_review),
+    }
+
+
+def selected_strategy_summary(thesis: dict[str, Any]) -> str:
+    params = thesis.get("params") or {}
+    universe = (thesis.get("label") or thesis.get("name") or "Lead thesis").split("[", 1)[0].strip()
+    parts = [universe]
+    lookback = params.get("l")
+    skip = params.get("skip")
+    if lookback is not None and skip is not None:
+        try:
+            parts.append(f"{int(lookback)}-{int(skip)} price momentum")
+        except (TypeError, ValueError):
+            parts.append(f"{lookback}-{skip} price momentum")
+    else:
+        parts.append("price momentum")
+    top_n = params.get("top_n")
+    if top_n is not None:
+        try:
+            parts.append(f"Top {int(top_n)}")
+        except (TypeError, ValueError):
+            parts.append(f"Top {top_n}")
+    if params.get("trend_filter") and params.get("ma_window") is not None:
+        try:
+            parts.append(f"trend filter (MA{int(params['ma_window'])})")
+        except (TypeError, ValueError):
+            parts.append(f"trend filter (MA{params['ma_window']})")
+    else:
+        strategy_id = params.get("strategy_id")
+        if strategy_id and strategy_id != "baseline":
+            parts.append(str(strategy_id).replace("_", " "))
+    return " | ".join(parts)
 
 
 def thesis_results_dir(results_root: Path, thesis_name: str) -> Path:
@@ -78,28 +148,68 @@ def _path_within_root(path: Path) -> bool:
         return False
 
 
-def load_frozen_selection(results_root: Path, thesis_name: str) -> dict[str, Any]:
-    results_dir = thesis_results_dir(results_root, thesis_name)
-    selection_path = resolve_authoritative_selection_path(results_root, thesis_name)
-    if not selection_path.exists():
-        raise FileNotFoundError(f"Missing frozen selection summary for thesis '{thesis_name}': {selection_path}")
-    selection = load_json(selection_path)
+def candidate_short_label(candidate_id: str | None, params: dict[str, Any]) -> str:
+    parts: list[str] = []
+    top_n = params.get("top_n")
+    if top_n is not None:
+        try:
+            parts.append(f"n{int(top_n)}")
+        except (TypeError, ValueError):
+            parts.append(f"n{top_n}")
+    strategy_id = params.get("strategy_id")
+    if strategy_id and strategy_id != "baseline":
+        parts.append(str(strategy_id))
+    if params.get("trend_filter") and params.get("ma_window"):
+        try:
+            parts.append(f"ma{int(params['ma_window'])}")
+        except (TypeError, ValueError):
+            parts.append(f"ma{params['ma_window']}")
+    if parts:
+        return " / ".join(parts)
+    return str(candidate_id or "locked_candidate")
+
+
+def load_frozen_selection_from_path(selection_path: Path) -> dict[str, Any]:
+    resolved = Path(selection_path)
+    if resolved.is_dir():
+        resolved = resolved / "selection_summary.json"
+    if not resolved.is_absolute():
+        resolved = (ROOT / resolved).resolve()
+    if not resolved.exists():
+        raise FileNotFoundError(f"Missing frozen selection summary: {resolved}")
+    selection = load_json(resolved)
     if selection.get("selection_status") != "selected":
-        raise ValueError(f"Thesis '{thesis_name}' does not have a selected locked candidate.")
+        raise ValueError(f"Selection summary does not have a selected locked candidate: {resolved}")
     locked = selection.get("locked_candidate")
     if not isinstance(locked, dict) or not isinstance(locked.get("params"), dict):
-        raise ValueError(f"Thesis '{thesis_name}' selection summary is missing locked_candidate.params.")
+        raise ValueError(f"Selection summary is missing locked_candidate.params: {resolved}")
     thesis_payload = selection.get("thesis")
     if not isinstance(thesis_payload, dict):
+        thesis_name = resolved.parent.name
         thesis_payload = build_thesis(thesis_name).manifest_metadata()
+    thesis_name = str(thesis_payload.get("name") or resolved.parent.name)
+    params = dict(locked["params"])
+    candidate_id = locked.get("candidate_id")
     return {
         "name": thesis_name,
-        "results_dir": str(results_dir),
-        "selection_path": str(selection_path),
+        "results_dir": str(resolved.parent),
+        "selection_path": str(resolved),
         "thesis": thesis_payload,
-        "params": locked["params"],
+        "params": params,
         "selection_mode": selection.get("mode"),
+        "candidate_id": candidate_id,
+        "candidate_label": candidate_short_label(candidate_id, params),
+        "selection_source_kind": "explicit_path",
     }
+
+
+def load_frozen_selection(results_root: Path, thesis_name: str) -> dict[str, Any]:
+    selection_path = resolve_authoritative_selection_path(results_root, thesis_name)
+    loaded = load_frozen_selection_from_path(selection_path)
+    loaded["name"] = thesis_name
+    loaded["results_dir"] = str(thesis_results_dir(results_root, thesis_name))
+    loaded["selection_source_kind"] = "authoritative_default"
+    return loaded
 
 
 def build_security_lookup(data_dir: Path) -> pd.DataFrame:
@@ -402,6 +512,7 @@ def build_history_records(
     universe_lookup: pd.DataFrame,
     holding_signal_map: dict[str, str],
     history_months: int,
+    exclude_holding_month: str | None = None,
 ) -> tuple[list[dict[str, Any]], set[str]]:
     thesis = build_thesis(selection["name"])
     simulation = dataset.simulate_window(
@@ -417,6 +528,8 @@ def build_history_records(
     records: list[dict[str, Any]] = []
     previous_selection: set[str] = set()
     for detail in simulation.details or []:
+        if exclude_holding_month and detail["holding_month"] == exclude_holding_month:
+            continue
         signal_month = holding_signal_map.get(detail["holding_month"])
         if signal_month is None:
             continue
@@ -814,6 +927,7 @@ def build_monitor_payload(
     results_root: Path,
     theses: Sequence[str],
     history_months: int,
+    selection_summaries: Sequence[Path] | None = None,
 ) -> dict[str, Any]:
     dataset = ResearchDataset(data_dir)
     security_lookup = build_security_lookup(data_dir)
@@ -827,25 +941,42 @@ def build_monitor_payload(
     if latest_available_holding_month is None:
         raise ValueError("The research dataset does not expose any holding months.")
 
+    pending_holding_month = dataset.holding_months[-1]
+    history_end_month = latest_available_holding_month
+    if pending_holding_month and pd.Period(pending_holding_month, freq="M") > pd.Period(monitor_start, freq="M"):
+        history_end_month = month_before(pending_holding_month)
+
+    explicit_selection_paths = list(selection_summaries or [])
+    loaded_selections = (
+        [load_frozen_selection_from_path(selection_path) for selection_path in explicit_selection_paths]
+        if explicit_selection_paths
+        else [load_frozen_selection(results_root, thesis_name) for thesis_name in theses]
+    )
+    if not loaded_selections:
+        raise ValueError("Need at least one frozen selection to build the forward monitor.")
+    duplicate_name_counts = Counter(selection["name"] for selection in loaded_selections)
+    monitor_mode = "manual_forward_trial" if explicit_selection_paths else "authoritative_reference_monitor"
+
     thesis_payloads: list[dict[str, Any]] = []
-    for index, thesis_name in enumerate(theses):
-        selection = load_frozen_selection(results_root, thesis_name)
+    for index, selection in enumerate(loaded_selections):
         selection["role"] = "lead" if index == 0 else "shadow"
+        selection["role_display"] = "Lead" if index == 0 else "Shadow"
+        selection["label"] = str(selection["thesis"]["label"])
+        if explicit_selection_paths or duplicate_name_counts[selection["name"]] > 1:
+            selection["label"] = f"{selection['label']} [{selection['candidate_label']}]"
         history, previous_selection = build_history_records(
             dataset=dataset,
             selection=selection,
             start_month=monitor_start,
-            end_month=latest_available_holding_month,
+            end_month=history_end_month,
             security_lookup=security_lookup,
             universe_lookup=universe_lookup,
             holding_signal_map=holding_signal,
             history_months=history_months,
+            exclude_holding_month=pending_holding_month,
         )
         current_previous_selection = previous_selection
         current_previous_record = history[-1] if history else None
-        if history and history[-1]["holding_month"] == dataset.holding_months[-1]:
-            current_previous_selection = set(history[-2]["selected_security_ids"]) if len(history) > 1 else set()
-            current_previous_record = history[-2] if len(history) > 1 else None
         current_pick = build_current_pick(
             dataset=dataset,
             selection=selection,
@@ -866,14 +997,19 @@ def build_monitor_payload(
         thesis_payloads.append(
             {
                 "name": selection["name"],
-                "label": selection["thesis"]["label"],
+                "label": selection["label"],
+                "base_label": selection["thesis"]["label"],
                 "role": selection["role"],
+                "role_display": selection["role_display"],
                 "scope_note": selection["thesis"]["scope_note"],
                 "results_dir": selection["results_dir"],
                 "selection_path": selection["selection_path"],
                 "selection_mode": selection["selection_mode"],
                 "params": selection["params"],
                 "params_label": params_label(selection["params"]),
+                "candidate_id": selection.get("candidate_id"),
+                "candidate_label": selection.get("candidate_label"),
+                "selection_source_kind": selection.get("selection_source_kind"),
                 "history": history,
                 "current_pick": current_pick,
                 "pre_trade_audit": pre_trade_audit,
@@ -881,9 +1017,8 @@ def build_monitor_payload(
             }
         )
 
-    thesis_by_name = {item["name"]: item for item in thesis_payloads}
-    lead = thesis_by_name[theses[0]]
-    comparison = thesis_by_name[theses[1]] if len(theses) > 1 else None
+    lead = thesis_payloads[0]
+    comparison = thesis_payloads[1] if len(thesis_payloads) > 1 else None
     current_overlap = overlap_summary(
         lead["current_pick"]["selected_security_ids"],
         comparison["current_pick"]["selected_security_ids"] if comparison else [],
@@ -907,12 +1042,15 @@ def build_monitor_payload(
 
     return {
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "monitor_mode": monitor_mode,
         "results_root": str(results_root),
         "monitoring_window": {
             "start_after_holdout": monitor_start,
             "latest_available_holding_month": latest_available_holding_month,
+            "latest_completed_holding_month": history_end_month,
             "current_pick_month": lead["current_pick"]["holding_month"],
         },
+        "lead_role": lead["role"],
         "lead_thesis": lead["name"],
         "authoritative_status": summarize_authoritative_status(results_root, lead["name"]),
         "theses": thesis_payloads,
@@ -927,22 +1065,29 @@ def build_monitor_payload(
 
 def frozen_strategy_manifest(payload: dict[str, Any]) -> dict[str, Any]:
     theses = payload["theses"]
-    lead = next(thesis for thesis in theses if thesis["name"] == payload["lead_thesis"])
-    shadow = next((thesis for thesis in theses if thesis["name"] != payload["lead_thesis"]), None)
+    lead = theses[0]
+    shadow = theses[1] if len(theses) > 1 else None
     authoritative = payload.get("authoritative_status", {})
     is_active = bool(authoritative.get("active_validated_strategy"))
-    status = "paper_trading_active" if is_active else "legacy_monthly_candidate_preserved_for_reference"
+    manual_trial = payload.get("monitor_mode") == "manual_forward_trial"
+    status = "manual_forward_trial" if manual_trial else ("paper_trading_active" if is_active else "legacy_monthly_candidate_preserved_for_reference")
     governance_notes = [
         "This manifest freezes the active paper-trading lead/shadow definitions under the authoritative package.",
         "No parameter, thesis, or universe edits should be made without explicitly starting a new research cycle and replacing this manifest.",
     ]
-    if not is_active:
+    if manual_trial:
+        governance_notes = [
+            "This manifest freezes a manual forward-trial lead/shadow pair from explicit selection sources.",
+            "It does not override the repo-level authoritative verdict; use it only for unchanged paper-trading observation.",
+        ]
+    elif not is_active:
         governance_notes = [
             "This manifest preserves the old monthly lead/shadow definitions for reference after cadence revalidation became authoritative.",
             "No parameter, thesis, or universe edits should be made without explicitly starting a new research cycle and replacing this manifest.",
         ]
     manifest: dict[str, Any] = {
         "generated_at_utc": payload["generated_at_utc"],
+        "monitor_mode": payload.get("monitor_mode"),
         "status": status,
         "authoritative_validation_model": authoritative.get("authoritative_validation_model", "current_validation_model"),
         "authoritative_active_validated_strategy": is_active,
@@ -950,6 +1095,8 @@ def frozen_strategy_manifest(payload: dict[str, Any]) -> dict[str, Any]:
         "lead_strategy": {
             "thesis_name": lead["name"],
             "thesis_label": lead["label"],
+            "candidate_id": lead.get("candidate_id"),
+            "candidate_label": lead.get("candidate_label"),
             "selection_mode": lead["selection_mode"],
             "params": lead["params"],
             "params_label": lead["params_label"],
@@ -960,8 +1107,8 @@ def frozen_strategy_manifest(payload: dict[str, Any]) -> dict[str, Any]:
         },
         "governance": {
             "search_reopened": False,
-            "paper_trading_only": is_active,
-            "legacy_reference_only": not is_active,
+            "paper_trading_only": manual_trial or is_active,
+            "legacy_reference_only": (not manual_trial) and (not is_active),
             "notes": governance_notes,
         },
     }
@@ -969,6 +1116,8 @@ def frozen_strategy_manifest(payload: dict[str, Any]) -> dict[str, Any]:
         manifest["shadow_control"] = {
             "thesis_name": shadow["name"],
             "thesis_label": shadow["label"],
+            "candidate_id": shadow.get("candidate_id"),
+            "candidate_label": shadow.get("candidate_label"),
             "selection_mode": shadow["selection_mode"],
             "params": shadow["params"],
             "params_label": shadow["params_label"],
@@ -993,6 +1142,8 @@ def flatten_pick_rows(payload: dict[str, Any]) -> pd.DataFrame:
                     "thesis_name": thesis["name"],
                     "thesis_label": thesis["label"],
                     "role": thesis["role"],
+                    "candidate_id": thesis.get("candidate_id"),
+                    "candidate_label": thesis.get("candidate_label"),
                     "params_label": thesis["params_label"],
                     "anchor_trade_date": current.get("anchor_trade_date"),
                     "next_execution_date": current.get("next_execution_date"),
@@ -1009,6 +1160,8 @@ def flatten_pick_rows(payload: dict[str, Any]) -> pd.DataFrame:
                         "thesis_name": thesis["name"],
                         "thesis_label": thesis["label"],
                         "role": thesis["role"],
+                        "candidate_id": thesis.get("candidate_id"),
+                        "candidate_label": thesis.get("candidate_label"),
                         "params_label": thesis["params_label"],
                         "anchor_trade_date": record.get("anchor_trade_date"),
                         "next_execution_date": record.get("next_execution_date"),
@@ -1511,7 +1664,7 @@ def build_research_dossier(payload: dict[str, Any], manifest: dict[str, Any]) ->
     thesis_count = len(payload["theses"])
     monitoring = payload["monitoring_window"]
     model_name = display_validation_model_name(authoritative.get("authoritative_validation_model"))
-    return f"""# Alpha Momentum Research Dossier
+    return f"""# Systematic Nordic Equity Research & Validation Dossier
 
 Generated: `{payload['generated_at_utc']}`
 
@@ -1555,11 +1708,11 @@ This dossier is intentionally scoped to the package branch you chose to present.
 
 ## Artifact Index
 
-- `PROJECT_STATUS.html`: current plain-English repo status
+- `PROJECT_STATUS.html`: current project status
 - `cadence_compare_summary/dashboard.html`: authoritative current-state dashboard
 - `cadence_compare_summary/cadence_comparison_report.html`: written verdict summary
 
-## Employer-Facing Interpretation
+## Why This Matters
 
 This project demonstrates a serious validation workflow: scoped hypotheses, fixed folds, robust diagnostics, untouched holdout evaluation, cadence-sensitive re-testing, and a shareable reporting layer. Under the selected entry/exit execution model, the repo retains a validated candidate, while the discarded transaction-cost branch remains an internal contrast point.
 """
@@ -1613,9 +1766,9 @@ def build_portfolio_package_readme(
         if authoritative and authoritative.get("rebuild_summary_available")
         else ""
     )
-    return f"""# Alpha Momentum Validation Package
+    return f"""# Systematic Nordic Equity Research & Validation
 
-This folder is the consolidated employer-facing package for the Alpha Momentum strategy work.
+This folder is the consolidated employer-facing package for the Systematic Nordic Equity Research & Validation project.
 
 ## Current Repo Truth
 
@@ -1624,13 +1777,13 @@ This folder is the consolidated employer-facing package for the Alpha Momentum s
 ## What This Contains
 
 - `research_audit_dossier.html`: current written summary for external readers
-- `PROJECT_STATUS.html`: one-page snapshot of the current state and sensible next branch
+- `PROJECT_STATUS.html`: one-page status view with the current state and next steps
 {cadence_line}
 {rebuild_line}
 ## Main Visualisations
 
 - `dashboard.html`: package landing page with the cleanest route through the visuals
-- `PROJECT_STATUS.html`: fastest plain-English status read
+- `PROJECT_STATUS.html`: fastest status read
 - `research_audit_dossier.html`: written narrative of what the repo currently proves
 {('- `cadence_compare_summary/dashboard.html`: selected candidate dashboard\n' if has_cadence_summary else '')}{('- `cadence_compare_summary/cadence_comparison_report.html`: written package verdict\n' if has_cadence_summary else '')}
 {('- `research_engine_rebuild/summary/dashboard.html`: experimental research-engine cadence summary\n' if authoritative and authoritative.get("rebuild_summary_available") else '')}{('- `research_engine_rebuild/summary/cadence_comparison_report.html`: experimental rebuild report\n' if authoritative and authoritative.get("rebuild_summary_available") else '')}
@@ -1806,7 +1959,7 @@ def build_portfolio_package_dashboard_html(
       <a class="card" href="cadence_compare_summary/cadence_comparison_report.html">
         <span class="eyebrow">Written Verdict</span>
         <h2>Cadence Summary Report</h2>
-        <p>Compact written version of the selected package verdict.</p>
+        <p>Short written version of the selected package verdict.</p>
         <span class="path">cadence_compare_summary/cadence_comparison_report.html</span>
       </a>
 """
@@ -1820,7 +1973,7 @@ def build_portfolio_package_dashboard_html(
         ),
         (
             "PROJECT_STATUS.html",
-            "Fastest plain-English snapshot of the current repo truth.",
+            "Fastest short read on where the project stands.",
         ),
         (
             "research_audit_dossier.html",
@@ -1861,178 +2014,157 @@ def build_portfolio_package_dashboard_html(
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Alpha Momentum Research Package</title>
+  <title>Systematic Nordic Equity Research & Validation - Research Package</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="../assets/portfolio.css" />
+  <link rel="stylesheet" href="../assets/portfolio-theme.css" />
   <style>
-    :root {{
-      --paper: #f6f0e3;
-      --paper-strong: rgba(255, 251, 244, 0.92);
-      --ink: #16211e;
-      --muted: #53615d;
-      --line: rgba(22, 33, 30, 0.12);
-      --accent: #b06b1d;
-      --warn: #7d3d2a;
-      --warn-soft: #f7ddd3;
-      --good: #295741;
-      --good-soft: #dcebdd;
-      --shadow: 0 20px 60px rgba(22, 33, 30, 0.08);
-    }}
-    * {{ box-sizing: border-box; }}
-    body {{
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      color: var(--ink);
-      background:
-        radial-gradient(circle at top left, rgba(176, 107, 29, 0.16), transparent 32%),
-        linear-gradient(180deg, #fbf6eb 0%, var(--paper) 100%);
-    }}
-    main {{
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 40px 24px 56px;
-    }}
-    .hero, .section {{
-      background: var(--paper-strong);
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      padding: 32px;
-      box-shadow: var(--shadow);
-    }}
-    .section {{
-      margin-top: 28px;
-      padding: 24px;
-      border-radius: 24px;
-    }}
-    .eyebrow {{
-      display: inline-block;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      font-size: 12px;
-      color: var(--accent);
-      margin-bottom: 12px;
-    }}
-    h1, h2, h3, p {{ margin-top: 0; }}
-    h1 {{
-      font-size: clamp(2rem, 4vw, 3.4rem);
-      line-height: 1.05;
-      margin-bottom: 16px;
-    }}
-    .hero p {{
+    .package-page .hero p {{
       max-width: 820px;
-      font-size: 1.05rem;
-      color: var(--muted);
     }}
-    .status-row {{
+    .package-page .status-row {{
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
       margin-top: 20px;
     }}
-    .pill {{
+    .package-page .pill {{
       display: inline-flex;
       align-items: center;
       border-radius: 999px;
       padding: 10px 14px;
       font-size: 0.95rem;
       border: 1px solid transparent;
+      background: var(--accent-soft);
+      color: var(--accent-strong);
     }}
-    .pill.warn {{
+    .package-page .pill.warn {{
       background: var(--warn-soft);
       color: var(--warn);
-      border-color: rgba(125, 61, 42, 0.18);
+      border-color: rgba(123, 67, 49, 0.18);
     }}
-    .pill.good {{
+    .package-page .pill.good {{
       background: var(--good-soft);
       color: var(--good);
-      border-color: rgba(41, 87, 65, 0.18);
+      border-color: rgba(36, 94, 71, 0.18);
     }}
-    .grid, .notes {{
+    .package-page .grid,
+    .package-page .notes {{
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 16px;
       margin-top: 16px;
     }}
-    .card, .note {{
+    .package-page .card,
+    .package-page .note {{
       display: block;
       text-decoration: none;
       color: inherit;
-      background: #fffdf8;
+      background: var(--panel-strong);
       border: 1px solid var(--line);
       border-radius: 20px;
       padding: 20px;
+      box-shadow: var(--shadow-sm);
     }}
-    .label {{
+    .package-page .label {{
       text-transform: uppercase;
       letter-spacing: 0.12em;
       font-size: 0.72rem;
       color: var(--muted);
     }}
-    .card {{
+    .package-page .card {{
       min-height: 220px;
       transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
     }}
-    .card:hover {{
+    .package-page .card:hover {{
       transform: translateY(-2px);
-      box-shadow: 0 18px 36px rgba(22, 33, 30, 0.1);
-      border-color: rgba(176, 107, 29, 0.35);
+      box-shadow: var(--shadow);
+      border-color: rgba(22, 94, 88, 0.25);
     }}
-    .card.primary {{
-      background: linear-gradient(180deg, #fff7eb 0%, #fffdf8 100%);
-      border-color: rgba(176, 107, 29, 0.28);
+    .package-page .card.primary {{
+      background: linear-gradient(180deg, rgba(22, 94, 88, 0.08) 0%, var(--panel-strong) 100%);
+      border-color: rgba(22, 94, 88, 0.22);
     }}
-    .card h2 {{
+    .package-page .card h2 {{
       font-size: 1.45rem;
       margin-bottom: 12px;
     }}
-    .card h3, .note h3, .value, .path {{
+    .package-page .card h3,
+    .package-page .note h3,
+    .package-page .value,
+    .package-page .path {{
       overflow-wrap: anywhere;
       word-break: break-word;
     }}
-    .card p, .note p {{
+    .package-page .card p,
+    .package-page .note p {{
       color: var(--muted);
     }}
-    .path {{
+    .package-page .path {{
       display: inline-block;
       margin-top: 10px;
       font-size: 0.92rem;
-      color: var(--accent);
+      color: var(--accent-strong);
       word-break: break-word;
     }}
-    table {{
+    .package-page table {{
       width: 100%;
       border-collapse: collapse;
       margin-top: 14px;
-      background: #fffdf8;
+      background: var(--panel-strong);
       border-radius: 18px;
       overflow: hidden;
+      box-shadow: var(--shadow-sm);
     }}
-    .metric-table th, .metric-table td {{ vertical-align: middle; }}
-    .bar-cell {{ display: flex; align-items: center; gap: 10px; }}
-    .bar-track {{
+    .package-page .metric-table th,
+    .package-page .metric-table td {{
+      vertical-align: middle;
+    }}
+    .package-page .bar-cell {{
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }}
+    .package-page .bar-track {{
       flex: 1;
       height: 10px;
-      background: rgba(22, 33, 30, 0.08);
+      background: rgba(18, 36, 29, 0.08);
       border-radius: 999px;
       overflow: hidden;
       min-width: 120px;
     }}
-    .bar-fill {{ height: 100%; }}
-    .bar-fill.auth {{ background: var(--good); }}
-    .bar-fill.rebuild {{ background: var(--accent); }}
-    .bar-value {{ min-width: 64px; text-align: right; font-variant-numeric: tabular-nums; }}
-    .metric-note {{ color: var(--muted); font-size: 0.85rem; margin-top: 4px; }}
-    .return-panel {{
+    .package-page .bar-fill {{
+      height: 100%;
+    }}
+    .package-page .bar-fill.auth {{
+      background: var(--good);
+    }}
+    .package-page .bar-fill.rebuild {{
+      background: var(--copper);
+    }}
+    .package-page .bar-value {{
+      min-width: 64px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }}
+    .package-page .metric-note {{
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-top: 4px;
+    }}
+    .package-page .return-panel {{
       margin-top: 16px;
-      background: #fffdf8;
+      background: var(--panel-strong);
       border: 1px solid var(--line);
       border-radius: 18px;
       padding: 14px;
+      box-shadow: var(--shadow-sm);
     }}
-    .return-curve {{
+    .package-page .return-curve {{
       display: block;
       width: 100%;
     }}
-    .return-legend {{
+    .package-page .return-legend {{
       display: flex;
       flex-wrap: wrap;
       gap: 16px;
@@ -2040,21 +2172,21 @@ def build_portfolio_package_dashboard_html(
       font-size: 0.85rem;
       color: var(--muted);
     }}
-    .curve-stats {{
+    .package-page .curve-stats {{
       margin-top: 6px;
     }}
-    .legend-line {{
+    .package-page .legend-line {{
       display: inline-block;
       width: 26px;
       height: 0;
-      border-top: 3px solid #295741;
+      border-top: 3px solid var(--good);
       margin-right: 6px;
       transform: translateY(-2px);
     }}
-    .legend-line.benchmark {{
-      border-top: 3px dashed #b06b1d;
+    .package-page .legend-line.benchmark {{
+      border-top: 3px dashed var(--copper);
     }}
-    .gate-tag {{
+    .package-page .gate-tag {{
       display: inline-flex;
       align-items: center;
       padding: 4px 10px;
@@ -2062,46 +2194,72 @@ def build_portfolio_package_dashboard_html(
       font-size: 0.75rem;
       border: 1px solid transparent;
     }}
-    .gate-pass {{
+    .package-page .gate-pass {{
       background: var(--good-soft);
       color: var(--good);
-      border-color: rgba(41, 87, 65, 0.18);
+      border-color: rgba(36, 94, 71, 0.18);
     }}
-    .gate-fail {{
+    .package-page .gate-fail {{
       background: var(--warn-soft);
       color: var(--warn);
-      border-color: rgba(125, 61, 42, 0.18);
+      border-color: rgba(123, 67, 49, 0.18);
     }}
-    .gate-na {{
-      background: rgba(22, 33, 30, 0.08);
+    .package-page .gate-na {{
+      background: rgba(18, 36, 29, 0.08);
       color: var(--muted);
-      border-color: rgba(22, 33, 30, 0.12);
+      border-color: rgba(18, 36, 29, 0.12);
     }}
-    th, td {{
+    .package-page th,
+    .package-page td {{
       padding: 14px 16px;
       text-align: left;
       border-bottom: 1px solid var(--line);
       vertical-align: top;
     }}
-    th {{
-      background: rgba(176, 107, 29, 0.08);
+    .package-page th {{
+      background: rgba(22, 94, 88, 0.08);
       font-size: 0.92rem;
     }}
-    tr:last-child td {{ border-bottom: 0; }}
-    a {{ color: var(--accent); }}
+    .package-page tr:last-child td {{
+      border-bottom: 0;
+    }}
+    .package-page .back-link {{
+      margin-top: 28px;
+    }}
     @media (max-width: 720px) {{
-      main {{ padding: 20px 14px 40px; }}
-      .hero, .section {{ padding: 18px; border-radius: 18px; }}
-      th, td {{ padding: 12px; }}
+      .package-page .hero,
+      .package-page .section {{
+        padding: 18px;
+        border-radius: 18px;
+      }}
+      .package-page th,
+      .package-page td {{
+        padding: 12px;
+      }}
     }}
   </style>
 </head>
-<body>
-  <main>
+<body class="am-theme">
+  <main class="page-shell package-page">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">VP</div>
+        <div class="brand-copy">
+          <strong>Validation Package</strong>
+          <span>Developer-facing package summary</span>
+        </div>
+      </div>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="../index.html">Portfolio Home</a>
+        <a href="README.html">Package README</a>
+        <a href="PROJECT_STATUS.html">Project Status</a>
+        <a href="research_audit_dossier.html">Dossier</a>
+      </nav>
+    </header>
     <section class="hero">
       <span class="eyebrow">Portfolio Folder</span>
-      <h1>Alpha Momentum Research Package</h1>
-      <p>This package is the clean front door to the project: what the validation stack does, where the current decision stands, and what branch makes sense next.</p>
+      <h1>Systematic Nordic Equity Research & Validation</h1>
+      <p>This package is the easiest way into the project: what the validation work covers, where things stand today, and what we would do next.</p>
       <div class="status-row">
         <span class="pill {status_tone}">{html.escape(status_label)}</span>
         <span class="pill warn">Package model: {html.escape(model_name)}</span>
@@ -2116,20 +2274,20 @@ def build_portfolio_package_dashboard_html(
 {cadence_summary_card}{rebuild_card}        <a class="card" href="PROJECT_STATUS.html">
           <span class="eyebrow">One Page</span>
           <h2>Current Project Status</h2>
-          <p>Plain-English snapshot of what is active, what is blocked, and what the next sensible implementation branch is.</p>
+          <p>A direct look at where the project stands and what we would do next.</p>
           <span class="path">PROJECT_STATUS.html</span>
         </a>
 {cadence_library_card}        <a class="card" href="research_audit_dossier.html">
           <span class="eyebrow">Written Summary</span>
           <h2>Research Dossier</h2>
-          <p>Short employer-facing narrative of what the validation stack does and what the current verdict means.</p>
+          <p>A short write-up of the validation process and what the current result actually means.</p>
           <span class="path">research_audit_dossier.html</span>
         </a>
       </div>
     </section>
 
     <section class="section">
-      <h2>How To Read The Package</h2>
+      <h2>What's In The Package</h2>
       <div class="notes">
         <div class="note">
           <h3>Current Verdict</h3>
@@ -2137,18 +2295,18 @@ def build_portfolio_package_dashboard_html(
         </div>
         <div class="note">
           <h3>Written Narrative</h3>
-          <p>Use <a href="research_audit_dossier.html">research_audit_dossier.html</a> when you want the plain-English explanation instead of the raw run tree.</p>
+          <p>Open <a href="research_audit_dossier.html">research_audit_dossier.html</a> if you want the written explanation instead of digging through the raw run tree.</p>
         </div>
         <div class="note">
           <h3>Next Branch</h3>
-          <p>The package currently points toward scoped implementation work such as PTI market-cap/liquid-subset support rather than strategy promotion.</p>
+          <p>From here, the sensible next work is implementation detail such as PTI market-cap or liquid-subset support, not another round of strategy shopping.</p>
         </div>
       </div>
     </section>
 
     <section class="section">
-      <h2>Validation Context (Plain-English)</h2>
-      <p>This section makes the key numbers and sources explicit so an external reader understands what is authoritative versus experimental.</p>
+      <h2>Validation Context</h2>
+      <p>This section lays out the key numbers and source files so it is clear what is authoritative and what is still experimental.</p>
       <div class="notes">
         <div class="note">
           <div class="label">Authoritative Locked Params</div>
@@ -2385,46 +2543,44 @@ def build_portfolio_root_dashboard_html(*, package_name: str) -> str:
 def build_project_status_markdown(payload: dict[str, Any], manifest: dict[str, Any]) -> str:
     authoritative = payload.get("authoritative_status", {})
     model_name = display_validation_model_name(authoritative.get("authoritative_validation_model", "legacy_entry_exit_costs"))
+    manual_trial = payload.get("monitor_mode") == "manual_forward_trial"
+    theses = payload.get("theses") or []
+    lead = theses[0] if theses else {}
+    shadow = theses[1] if len(theses) > 1 else {}
+    decision_windows = forward_trial_decision_windows(payload["monitoring_window"]["start_after_holdout"])
+    package_role = "frozen forward-trial pair" if manual_trial else "validated candidate branch"
     lines = [
         "# Current Project Status",
         "",
-        f"- Generated: `{payload['generated_at_utc']}`",
-        f"- Package model: `{model_name}`",
-        f"- Package verdict: `{authoritative.get('verdict', 'n/a')}`",
-        f"- Active validated strategy exists: `{'yes' if authoritative.get('active_validated_strategy') else 'no'}`",
-        "- Shareable package focus: `validated candidate branch`",
+        f"- Selected strategy: `{selected_strategy_summary(lead) if lead else 'n/a'}`",
+        f"- Shadow check: `{selected_strategy_summary(shadow) if shadow else 'n/a'}`",
+        f"- Earliest live-decision review: `{decision_windows['earliest_review_label']}`",
+        f"- Preferred review: `{decision_windows['preferred_review_label']}`",
+        f"- Package role: `{package_role}`",
+        "",
+        "## What This Package Is",
+        "",
+        (
+            "- A fixed paper-trading view of the frozen lead and shadow pair."
+            if manual_trial
+            else "- A snapshot of the candidate that currently leads under the selected entry and exit model."
+        ),
+        (
+            "- The historical verdict still comes from the certification and Phase 3 holdout pages."
+            if manual_trial
+            else f"- The package verdict under `{model_name}` is `{authoritative.get('verdict', 'n/a')}`."
+        ),
+        "",
+        "## What Still Needs To Happen",
+        "",
+        (
+            "- Keep the parameters fixed and judge the pair only on new forward data."
+            if manual_trial
+            else "- Keep the evaluation rules fixed before declaring a new branch better."
+        ),
+        "- PTI liquid-subset coverage and a more realistic banded rebalance model are still open.",
         "",
     ]
-    lead_source = manifest.get("lead_strategy", {}).get("selection_path")
-    if lead_source and _path_within_root(Path(lead_source)):
-        lines.append(f"- Lead selection source: `{lead_source}`")
-    shadow_source = None
-    if manifest.get("shadow_control") is not None:
-        shadow_source = manifest.get("shadow_control", {}).get("selection_path")
-    if shadow_source and _path_within_root(Path(shadow_source)):
-        lines.append(f"- Shadow selection source: `{shadow_source}`")
-    lines.extend(
-        [
-            "## What This Means",
-            "",
-            "- The package currently points to a validated candidate under the selected entry/exit execution model.",
-            "- The discarded cadence transaction-cost model is not the source of truth for this package.",
-            "- The repo is still strongest as a research and validation system rather than a finished production strategy stack.",
-            "",
-            "## Best Next Steps",
-            "",
-            "- Keep the evaluation rules fixed before running another branch.",
-            "- Prioritize a scoped implementation branch such as PTI market-cap/liquid-subset support or a realistic rebalance-band model.",
-            "- Use the cadence summary as the source of truth for whether a new branch improved the situation.",
-            "",
-            "## Main Remaining Gaps",
-            "",
-            "- Liquid-subset diagnostics are still suspended because PTI market-cap history is missing.",
-            "- A more realistic banded rebalance model is still unimplemented.",
-            "- The package is for research communication, not live deployment.",
-            "",
-        ]
-    )
     return "\n".join(lines)
 
 
@@ -2987,7 +3143,7 @@ def build_package_cadence_summary_dashboard(authoritative: dict[str, Any] | None
       <div class="grid">
         <a class="card" href="../PROJECT_STATUS.html">
           <h3>Project Status</h3>
-          <p>Plain-English summary of what is active, what is blocked, and the next sensible branch.</p>
+          <p>A straightforward look at what is working, what is still blocked, and what we would do next.</p>
           <span class="path">../PROJECT_STATUS.html</span>
         </a>
         <a class="card" href="../research_audit_dossier.html">
@@ -3038,10 +3194,10 @@ def export_portfolio_package(
         )
         (cadence_package_dir / "cadence_comparison_report.html").write_text(
             build_markdown_dashboard_html(
-                title="Cadence Summary Report",
-                subtitle="Compact written version of the selected package verdict.",
-                markdown_text=report_text,
-            ),
+            title="Cadence Summary Report",
+            subtitle="Short written version of the selected package verdict.",
+            markdown_text=report_text,
+        ),
             encoding="utf-8",
         )
 
@@ -3077,8 +3233,8 @@ def export_portfolio_package(
                     shutil.rmtree(destination, ignore_errors=True)
                 shutil.copytree(output_path, destination, dirs_exist_ok=True)
 
-    lead = next(thesis for thesis in payload["theses"] if thesis["name"] == payload["lead_thesis"])
-    shadow = next((thesis for thesis in payload["theses"] if thesis["name"] != payload["lead_thesis"]), None)
+    lead = payload["theses"][0]
+    shadow = payload["theses"][1] if len(payload["theses"]) > 1 else None
 
     readme = build_portfolio_package_readme(
         lead=lead,
@@ -3089,7 +3245,7 @@ def export_portfolio_package(
     (package_dir / "README.html").write_text(
         build_markdown_dashboard_html(
             title="Validation Package README",
-            subtitle="Overview of the package contents and how to read them.",
+            subtitle="What is in the package and where to start.",
             markdown_text=readme,
         ),
         encoding="utf-8",
@@ -3097,7 +3253,7 @@ def export_portfolio_package(
     (package_dir / "PROJECT_STATUS.html").write_text(
         build_markdown_dashboard_html(
             title="Current Project Status",
-            subtitle="Plain-English snapshot of what is active, what is blocked, and what the next sensible implementation branch is.",
+            subtitle="A clear look at where the project stands and what we would do next.",
             markdown_text=project_status,
         ),
         encoding="utf-8",
@@ -3105,7 +3261,7 @@ def export_portfolio_package(
     (package_dir / "research_audit_dossier.html").write_text(
         build_markdown_dashboard_html(
             title="Research Dossier",
-            subtitle="Employer-facing narrative of what the validation stack does and what the current verdict means.",
+            subtitle="A short write-up of the validation process and what the current result actually means.",
             markdown_text=research_dossier,
         ),
         encoding="utf-8",
@@ -3126,7 +3282,7 @@ def export_portfolio_package(
     (portfolio_dir / "README.html").write_text(
         build_markdown_dashboard_html(
             title="Portfolio Folder",
-            subtitle="Entry point for the validation package visuals.",
+            subtitle="Starting point for the validation package visuals.",
             markdown_text=build_portfolio_root_readme(package_name=package_dir.name),
             back_href=f"{package_dir.name}/dashboard.html",
             back_label="Open package dashboard",
@@ -3763,71 +3919,285 @@ def build_markdown_dashboard_html(
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root {{
-      --paper: #f6f0e3;
-      --paper-strong: rgba(255, 251, 244, 0.92);
-      --ink: #16211e;
-      --muted: #53615d;
-      --line: rgba(22, 33, 30, 0.12);
-      --accent: #b06b1d;
-      --shadow: 0 20px 60px rgba(22, 33, 30, 0.08);
+      --hero: rgba(255, 253, 249, 0.98);
+      --panel: rgba(251, 248, 241, 0.96);
+      --ink: #1b2420;
+      --muted: #5f685f;
+      --muted-strong: #37443d;
+      --line: rgba(27, 36, 32, 0.12);
+      --accent: #1f6159;
+      --accent-strong: #154943;
+      --shadow: 0 22px 54px rgba(34, 41, 37, 0.08);
+      --blur: 14px;
+      --saturate: 120%;
     }}
     * {{ box-sizing: border-box; }}
     body {{
       margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
+      min-height: 100vh;
+      font-family: "Palatino Linotype", Georgia, serif;
       color: var(--ink);
       background:
-        radial-gradient(circle at top left, rgba(176, 107, 29, 0.16), transparent 32%),
-        linear-gradient(180deg, #fbf6eb 0%, var(--paper) 100%);
+        radial-gradient(circle at top left, rgba(31, 97, 89, 0.12), transparent 32%),
+        radial-gradient(circle at top right, rgba(166, 109, 69, 0.11), transparent 26%),
+        radial-gradient(circle at 18% 78%, rgba(120, 144, 125, 0.08), transparent 24%),
+        linear-gradient(180deg, #fbf8f2 0%, #f5f1e8 48%, #e3dbcd 100%);
+    }}
+    body::before {{
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.06) 25%, transparent 25%) 0 0 / 38px 38px,
+        linear-gradient(315deg, rgba(255, 255, 255, 0.04) 25%, transparent 25%) 0 0 / 38px 38px;
+      opacity: 0.24;
     }}
     main {{
-      max-width: 980px;
+      position: relative;
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 40px 24px 56px;
+      padding: 28px 20px 48px;
     }}
-    .hero, .section {{
-      background: var(--paper-strong);
+    .topbar {{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      border-radius: 24px;
       border: 1px solid var(--line);
-      border-radius: 28px;
-      padding: 32px;
-      box-shadow: var(--shadow);
+      background: rgba(250, 247, 240, 0.82);
+      backdrop-filter: blur(var(--blur)) saturate(var(--saturate));
+      -webkit-backdrop-filter: blur(var(--blur)) saturate(var(--saturate));
+      box-shadow:
+        var(--shadow),
+        inset 0 1px 0 rgba(255, 255, 255, 0.72);
     }}
-    .section {{ margin-top: 24px; }}
-    .eyebrow {{
-      display: inline-block;
+    .brand {{
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }}
+    .brand-mark {{
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: linear-gradient(160deg, #1f6159, #154943);
+      color: #f7f2e8;
+      display: grid;
+      place-items: center;
+      font: 700 0.84rem Consolas, "Courier New", monospace;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      letter-spacing: 0.12em;
-      font-size: 12px;
-      color: var(--accent);
-      margin-bottom: 12px;
+      border: 1px solid rgba(21, 73, 67, 0.24);
+      box-shadow:
+        0 10px 22px rgba(21, 73, 67, 0.14),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18);
     }}
-    h1 {{ margin-top: 0; font-size: clamp(2rem, 4vw, 3rem); }}
-    h2, h3 {{ margin-top: 24px; }}
-    p {{ color: var(--muted); line-height: 1.6; }}
-    ul {{ margin: 12px 0 18px 18px; color: var(--muted); }}
-    li {{ margin-bottom: 6px; }}
-    a {{ color: var(--accent); }}
-    .back {{
-      display: inline-block;
-      margin-top: 12px;
+    .brand-copy strong,
+    .brand-copy span {{
+      display: block;
+    }}
+    .brand-copy strong {{
+      font-size: 1rem;
+      color: var(--ink);
+    }}
+    .brand-copy span {{
+      margin-top: 3px;
+      color: var(--muted-strong);
+      font-size: 0.88rem;
+    }}
+    .topbar a,
+    .button {{
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 11px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(27, 36, 32, 0.12);
+      color: var(--ink);
+      background: rgba(255, 253, 249, 0.92);
       text-decoration: none;
-      color: var(--accent);
+      backdrop-filter: blur(calc(var(--blur) * 0.7));
+      -webkit-backdrop-filter: blur(calc(var(--blur) * 0.7));
+      box-shadow:
+        0 10px 22px rgba(34, 41, 37, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.68);
+      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
     }}
-    @media (max-width: 720px) {{
-      main {{ padding: 20px 14px 40px; }}
-      .hero, .section {{ padding: 18px; border-radius: 18px; }}
+    .topbar a:hover,
+    .button:hover {{
+      transform: translateY(-1px);
+      border-color: rgba(31, 97, 89, 0.2);
+      box-shadow:
+        0 12px 24px rgba(34, 41, 37, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.72);
+    }}
+    .hero,
+    .section {{
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      padding: 34px 36px;
+      box-shadow:
+        var(--shadow),
+        inset 0 1px 0 rgba(255, 255, 255, 0.62);
+    }}
+    .hero {{ background: var(--hero); }}
+    .section {{ margin-top: 24px; background: var(--panel); }}
+    .eyebrow {{
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.10em;
+      font: 0.78rem Consolas, "Courier New", monospace;
+      color: var(--accent-strong);
+      background: rgba(31, 97, 89, 0.08);
+      border: 1px solid rgba(31, 97, 89, 0.15);
+      margin-bottom: 14px;
+    }}
+    h1 {{
+      margin: 0;
+      font-size: clamp(2.6rem, 5vw, 4.2rem);
+      line-height: 0.96;
+      letter-spacing: -0.04em;
+      color: var(--ink);
+    }}
+    h2,
+    h3 {{
+      margin-top: 28px;
+      color: var(--ink);
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.24);
+    }}
+    h2 {{
+      font-size: clamp(1.7rem, 3vw, 2.45rem);
+      letter-spacing: -0.02em;
+    }}
+    h3 {{
+      font-size: 1.2rem;
+    }}
+    p,
+    li {{
+      color: var(--muted-strong);
+      line-height: 1.72;
+      font-size: 1.02rem;
+    }}
+    .hero p {{
+      max-width: 72ch;
+      margin-top: 18px;
+      color: var(--muted-strong);
+    }}
+    .hero-actions {{
+      margin-top: 20px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }}
+    .markdown-body > :first-child {{
+      margin-top: 0;
+    }}
+    .markdown-body h1 {{
+      font-size: clamp(2.2rem, 4vw, 3.4rem);
+      margin-bottom: 8px;
+    }}
+    .markdown-body h2,
+    .markdown-body h3 {{
+      margin-bottom: 10px;
+    }}
+    ul,
+    ol {{
+      margin: 14px 0 18px 1.35rem;
+      padding: 0;
+    }}
+    li {{
+      margin-bottom: 8px;
+    }}
+    a {{
+      color: var(--accent-strong);
+    }}
+    code {{
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.95em;
+      color: var(--ink);
+      background: rgba(27, 36, 32, 0.05);
+      padding: 0.15em 0.4em;
+      border-radius: 8px;
+      border: 1px solid rgba(27, 36, 32, 0.1);
+    }}
+    pre {{
+      margin: 18px 0;
+      padding: 14px 16px;
+      border-radius: 18px;
+      overflow: auto;
+      border: 1px solid rgba(27, 36, 32, 0.1);
+      background: rgba(248, 244, 236, 0.92);
+    }}
+    pre code {{
+      padding: 0;
+      background: transparent;
+      border: 0;
+    }}
+    blockquote {{
+      margin: 18px 0;
+      padding-left: 16px;
+      border-left: 3px solid rgba(31, 97, 89, 0.22);
+    }}
+    hr {{
+      border: 0;
+      border-top: 1px solid var(--line);
+      margin: 28px 0;
+    }}
+    table {{
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 18px;
+    }}
+    th,
+    td {{
+      text-align: left;
+      padding: 10px 8px;
+      border-bottom: 1px solid rgba(27, 36, 32, 0.1);
+      vertical-align: top;
+    }}
+    th {{
+      color: var(--accent-strong);
+      font: 0.78rem Consolas, "Courier New", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.10em;
+    }}
+    @media (max-width: 760px) {{
+      main {{ padding: 20px 14px 36px; }}
+      .hero,
+      .section {{ padding: 24px 20px; border-radius: 24px; }}
     }}
   </style>
 </head>
-<body>
+<body class="am-theme">
   <main>
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">FT</div>
+        <div class="brand-copy">
+          <strong>{html.escape(title)}</strong>
+          <span>{html.escape(eyebrow)}</span>
+        </div>
+      </div>
+      <a href="{html.escape(back_href)}">{html.escape(back_label)}</a>
+    </header>
     <section class="hero">
       <span class="eyebrow">{html.escape(eyebrow)}</span>
       <h1>{html.escape(title)}</h1>
       <p>{html.escape(subtitle)}</p>
-      <a class="back" href="{html.escape(back_href)}">{html.escape(back_label)}</a>
+      <div class="hero-actions">
+        <a class="button" href="{html.escape(back_href)}">{html.escape(back_label)}</a>
+      </div>
     </section>
-    <section class="section">
+    <section class="section markdown-body">
       {body_html}
     </section>
   </main>
@@ -3860,14 +4230,16 @@ def thesis_card(thesis: dict[str, Any]) -> str:
     current = thesis["current_pick"]
     entered = ", ".join(current["entry_security_ids"]) or "none"
     exited = ", ".join(current["exit_security_ids"]) or "none"
+    candidate_line = html.escape(thesis.get("candidate_label") or "locked candidate")
     return f"""
 <article class="card">
   <div class="head">
     <div>
       <h3>{html.escape(thesis['label'])}</h3>
+      <p><strong>Candidate:</strong> {candidate_line}</p>
       <p>{html.escape(thesis['params_label'])}</p>
     </div>
-    {status_badge("Lead" if thesis["role"] == "lead" else "Shadow", "good" if thesis["role"] == "lead" else "muted")}
+    {status_badge(thesis.get("role_display") or ("Lead" if thesis["role"] == "lead" else "Shadow"), "good" if thesis["role"] == "lead" else "muted")}
   </div>
   <p>{html.escape(thesis['scope_note'])}</p>
   <div class="metrics">
@@ -4056,32 +4428,60 @@ def render_forward_dashboard(payload: dict[str, Any]) -> str:
     current_overlap = payload["current_overlap"]
     authoritative = payload.get("authoritative_status", {})
     active_validated = bool(authoritative.get("active_validated_strategy"))
-    eyebrow = "Forward Monitor / Paper Trading" if active_validated else "Legacy Monitor / Reference Package"
-    dashboard_title = "Alpha Momentum<br>Forward Monitor" if active_validated else "Alpha Momentum<br>Legacy Monthly Monitor"
+    manual_trial = payload.get("monitor_mode") == "manual_forward_trial"
+    monitoring_window = payload["monitoring_window"]
+    decision_windows = forward_trial_decision_windows(monitoring_window["start_after_holdout"])
+    selected_strategy = selected_strategy_summary(lead)
+    eyebrow = (
+        "Forward Trial / Manual Paper Trading"
+        if manual_trial
+        else ("Forward Monitor / Paper Trading" if active_validated else "Legacy Monitor / Reference Package")
+    )
+    dashboard_title = (
+        "Systematic Nordic Equity Research & Validation<br>Frozen Forward Trial"
+        if manual_trial
+        else (
+            "Systematic Nordic Equity Research & Validation<br>Forward Monitor"
+            if active_validated
+            else "Systematic Nordic Equity Research & Validation<br>Legacy Monthly Monitor"
+        )
+    )
     hero_summary = (
-        "This view freezes the validated strategy definitions and shows the live/current monthly picks side by side, without opening the search space again."
-        if active_validated
-        else "This view preserves the old monthly candidate definitions for reference. The stricter cadence review is now authoritative, and no active validated lead exists yet."
+        "This page freezes an explicit lead/shadow pair for forward observation without reopening the search or overriding the repo-level verdict."
+        if manual_trial
+        else (
+            "This page keeps the validated strategy definitions fixed and shows the current monthly picks side by side."
+            if active_validated
+            else "This page preserves the old monthly candidate definitions for reference. The stricter cadence review is now authoritative, and there is no active validated lead yet."
+        )
     )
     purpose_copy = (
-        "Use this to paper-trade the lead candidate and shadow the broader baseline. The job now is prospective discipline: no retuning, just watching whether the frozen picks behave the way the validation said they should."
-        if active_validated
-        else "Use this to inspect the preserved monthly books, their audit trail, and the shadow comparison without treating them as an active paper-trading mandate."
+        "The job here is straightforward: paper trade the frozen lead and shadow books side by side, without retuning, and see how they behave on genuinely new months."
+        if manual_trial
+        else (
+            "This is where the lead candidate is paper traded against the broader baseline, with the rules left unchanged so we can see whether the live picks behave the way validation suggested."
+            if active_validated
+            else "This page is for inspecting the preserved monthly books, their audit trail, and the shadow comparison without treating any of it as an active mandate."
+        )
     )
-    picks_heading = "Current Monthly Picks" if active_validated else "Legacy Monthly Picks"
+    picks_heading = "Frozen Forward-Trial Picks" if manual_trial else ("Current Monthly Picks" if active_validated else "Legacy Monthly Picks")
     picks_copy = (
-        "These are the frozen current-book names formed with the repo's production assumptions: "
-        if active_validated
-        else "These are the preserved monthly names formed with the older monthly selection assumptions: "
+        "These are the frozen current-book names formed from explicit locked candidates under the repo's production assumptions: "
+        if manual_trial
+        else (
+            "These are the frozen current-book names formed with the repo's production assumptions: "
+            if active_validated
+            else "These are the preserved monthly names formed with the older monthly selection assumptions: "
+        )
     )
     cards = "".join(thesis_card(thesis) for thesis in theses)
-    comparison_name = html.escape(theses[1]["name"]) if len(theses) > 1 else "comparison"
+    comparison_name = html.escape(theses[1].get("candidate_label") or theses[1]["name"]) if len(theses) > 1 else "comparison"
     return f"""<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{"Alpha Momentum Forward Monitor" if active_validated else "Alpha Momentum Legacy Monthly Monitor"}</title>
+  <title>{"Systematic Nordic Equity Research & Validation Forward Trial" if manual_trial else ("Systematic Nordic Equity Research & Validation Forward Monitor" if active_validated else "Systematic Nordic Equity Research & Validation Legacy Monthly Monitor")}</title>
   <style>
     :root {{
       --ink:#17211a; --muted:#5d685f; --paper:#f6f1e7; --card:rgba(255,250,241,.92);
@@ -4142,16 +4542,21 @@ def render_forward_dashboard(payload: dict[str, Any]) -> str:
           <h1>{dashboard_title}</h1>
           <p>{html.escape(hero_summary)}</p>
           <div class="meta">
-            <div><span>Lead thesis</span><strong>{html.escape(lead['label'])}</strong></div>
+            <div><span>Selected strategy</span><strong>{html.escape(selected_strategy)}</strong></div>
+            <div><span>{'Lead candidate' if manual_trial else 'Lead thesis'}</span><strong>{html.escape(lead['label'])}</strong></div>
             <div><span>Authoritative verdict</span><strong>{html.escape(authoritative.get('verdict', 'n/a'))}</strong></div>
-            <div><span>Monitor start</span><strong>{html.escape(payload['monitoring_window']['start_after_holdout'])}</strong></div>
-            <div><span>Current pick month</span><strong>{html.escape(payload['monitoring_window']['current_pick_month'] or 'n/a')}</strong></div>
+            <div><span>Monitor start</span><strong>{html.escape(monitoring_window['start_after_holdout'])}</strong></div>
+            <div><span>Earliest live-decision review</span><strong>{html.escape(decision_windows['earliest_review_label'])} (after 6 paper months)</strong></div>
+            <div><span>Preferred review</span><strong>{html.escape(decision_windows['preferred_review_label'])} (after 12 paper months)</strong></div>
+            <div><span>Latest completed month</span><strong>{html.escape(monitoring_window.get('latest_completed_holding_month') or 'n/a')}</strong></div>
+            <div><span>Current pick month</span><strong>{html.escape(monitoring_window['current_pick_month'] or 'n/a')}</strong></div>
             <div><span>Generated</span><strong>{html.escape(payload['generated_at_utc'])}</strong></div>
           </div>
         </div>
         <div class="card">
           <div class="head"><h3>What This Is For</h3>{status_badge('Watch', 'warn')}</div>
           <p>{html.escape(purpose_copy)}</p>
+          <p style="margin-top:12px;"><strong>Decision clock:</strong> if the frozen lead stays accepted, the earliest live-trading review window opens in {html.escape(decision_windows['earliest_review_label'])}; the more conservative 12-month review lands in {html.escape(decision_windows['preferred_review_label'])}.</p>
           <div class="metrics">
             <div><span>Current overlap</span><strong>{current_overlap['overlap_count']} names</strong></div>
             <div><span>Share of smaller book</span><strong>{format_pct(current_overlap['overlap_share_of_smaller_book'])}</strong></div>
@@ -4175,20 +4580,6 @@ def render_forward_dashboard(payload: dict[str, Any]) -> str:
         <tbody>{render_history_rows(payload)}</tbody>
       </table>
     </section>
-    <section class="section">
-      <div class="head"><div><h2>Artifacts</h2><p>Use the CSV for spreadsheet tracking, the JSON for downstream automation, and this page for the quick side-by-side read.</p></div></div>
-      <div class="artifact-list">
-        <a href="forward_monitor_summary.json"><span>forward_monitor_summary.json</span><span>Summary payload</span></a>
-        <a href="frozen_strategy_manifest.json"><span>frozen_strategy_manifest.json</span><span>Explicit lead/shadow lockfile</span></a>
-        <a href="forward_monitor_picks.csv"><span>forward_monitor_picks.csv</span><span>Flat picks + history rows</span></a>
-        <a href="holdout_name_dependence.csv"><span>holdout_name_dependence.csv</span><span>Top contributors in untouched holdout</span></a>
-        <a href="project_status.html"><span>project_status.html</span><span>One-page current repo status</span></a>
-        <a href="research_audit_dossier.html"><span>research_audit_dossier.html</span><span>Employer-friendly validation summary</span></a>
-        <a href="../../portfolio/alpha_momentum_validation_package/cadence_compare_summary/dashboard.html"><span>portfolio/alpha_momentum_validation_package/cadence_compare_summary/dashboard.html</span><span>Authoritative cadence verdict</span></a>
-        <a href="../../portfolio/alpha_momentum_validation_package/cadence_compare_summary/cadence_comparison_report.html"><span>portfolio/alpha_momentum_validation_package/cadence_compare_summary/cadence_comparison_report.html</span><span>Written cadence comparison summary</span></a>
-        <a href="../../portfolio/alpha_momentum_validation_package/dashboard.html"><span>portfolio/alpha_momentum_validation_package/dashboard.html</span><span>Dedicated project folder for sharing</span></a>
-      </div>
-    </section>
   </main>
 </body>
 </html>
@@ -4202,12 +4593,15 @@ def build_forward_monitor(
     output_dir: Path,
     theses: Sequence[str],
     history_months: int,
+    selection_summaries: Sequence[Path] | None = None,
+    export_package: bool = True,
 ) -> dict[str, Any]:
     payload = build_monitor_payload(
         data_dir=data_dir,
         results_root=results_root,
         theses=theses,
         history_months=history_months,
+        selection_summaries=selection_summaries,
     )
     manifest = frozen_strategy_manifest(payload)
     dossier = build_research_dossier(payload, manifest)
@@ -4220,7 +4614,7 @@ def build_forward_monitor(
     (output_dir / "research_audit_dossier.html").write_text(
         build_markdown_dashboard_html(
             title="Research Dossier",
-            subtitle="Employer-facing narrative of what the validation stack does and what the current verdict means.",
+            subtitle="A short write-up of the validation process and what the current result actually means.",
             markdown_text=dossier,
         ),
         encoding="utf-8",
@@ -4228,29 +4622,30 @@ def build_forward_monitor(
     (output_dir / "project_status.html").write_text(
         build_markdown_dashboard_html(
             title="Current Project Status",
-            subtitle="Plain-English snapshot of what is active, what is blocked, and what the next sensible implementation branch is.",
+            subtitle="A clear look at where the project stands and what we would do next.",
             markdown_text=project_status,
         ),
         encoding="utf-8",
     )
-    if output_dir != results_root:
+    if export_package and output_dir != results_root:
         (results_root / "project_status.html").write_text(
             build_markdown_dashboard_html(
                 title="Current Project Status",
-                subtitle="Plain-English snapshot of what is active, what is blocked, and what the next sensible implementation branch is.",
+                subtitle="A clear look at where the project stands and what we would do next.",
                 markdown_text=project_status,
             ),
             encoding="utf-8",
         )
     (output_dir / "dashboard.html").write_text(render_forward_dashboard(payload), encoding="utf-8")
-    export_portfolio_package(
-        payload=payload,
-        project_status=project_status,
-        research_dossier=dossier,
-        output_dir=output_dir,
-        results_root=results_root,
-    )
-    export_pair_dashboards_from_cadence_summary(results_root)
+    if export_package:
+        export_portfolio_package(
+            payload=payload,
+            project_status=project_status,
+            research_dossier=dossier,
+            output_dir=output_dir,
+            results_root=results_root,
+        )
+        export_pair_dashboards_from_cadence_summary(results_root)
     return payload
 
 
@@ -4263,6 +4658,8 @@ def main() -> int:
         output_dir=args.output_dir,
         theses=theses,
         history_months=int(args.history_months),
+        selection_summaries=args.selection_summaries,
+        export_package=not bool(args.skip_package_export),
     )
     print(
         f"Forward monitor ready for {payload['monitoring_window']['current_pick_month']}. "
