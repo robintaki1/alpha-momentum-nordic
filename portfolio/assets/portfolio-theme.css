@@ -192,11 +192,36 @@ body.am-theme .strategy-spotlight-action {
   white-space: nowrap;
 }
 
+body.am-theme .strategy-launch {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+  margin-bottom: 18px;
+  max-width: 560px;
+}
+
+body.am-theme .strategy-launch-button {
+  min-width: 220px;
+  width: fit-content;
+  font-size: 1.03rem;
+  letter-spacing: 0.01em;
+}
+
+body.am-theme .strategy-launch p {
+  max-width: 56ch;
+  color: var(--muted-strong);
+  line-height: 1.55;
+}
+
 @media (max-width: 760px) {
   body.am-theme .strategy-spotlight {
     width: 100%;
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  body.am-theme .strategy-launch-button {
+    width: 100%;
   }
 
   body.am-theme .strategy-spotlight-action {
