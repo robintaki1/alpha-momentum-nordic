@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Strategy | Systematic Nordic Equity Research &amp; Validation</title>
+  <meta name="description" content="Plain-English explanation of the current Nordic momentum strategy, including buy and sell rules." />
+  <link rel="stylesheet" href="../../assets/portfolio.css" />
+  <link rel="stylesheet" href="../../assets/portfolio-theme.css" />
+</head>
+<body class="am-theme">
+  <main class="page-shell">
+    <header class="topbar reveal">
+      <div class="brand">
+        <div class="brand-mark">AM</div>
+        <div class="brand-copy">
+          <strong>Systematic Nordic Equity Research &amp; Validation</strong>
+          <span>Hiring-ready portfolio view</span>
+        </div>
+      </div>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="../../index.html">Home</a>
+        <a href="../index.html">Employer Package</a>
+        <a href="index.html" aria-current="page" class="strategy-link">Strategy</a>
+        <a href="../analysis_suite/index.html">Evidence</a>
+        <a href="../forward_trial/index.html">Forward Trial</a>
+      </nav>
+    </header>
+
+    <section class="hero reveal delay-1">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow">Strategy</span>
+          <h1 class="hero-title hero-title-wide">How the model buys and sells</h1>
+          <p class="hero-subtitle">A monthly rules engine that ranks eligible Nordic names, buys the strongest eight, and sells the ones that drop out.</p>
+          <p class="lede">The technical name is <code>12-1</code> price momentum with a trend filter. This page explains what that means in plain English and how it turns into trades.</p>
+
+          <div class="tag-row">
+            <span class="tag"><strong>Monthly</strong> rebalance</span>
+            <span class="tag"><strong>Top 8</strong> equal weight</span>
+            <span class="tag"><strong>12-1</strong> momentum</span>
+            <span class="tag good"><strong>MA10</strong> trend filter</span>
+          </div>
+
+          <div class="cta-row">
+            <a class="button primary" href="../../alpha_momentum_validation_package/PROJECT_STATUS.html">Open Project Status</a>
+            <a class="button secondary" href="../analysis_suite/current_replay_ex_norway_n8/ex_norway/holdout_results.html">Open Phase 3 Holdout</a>
+            <a class="button ghost" href="../forward_trial/index.html">Open Forward Trial</a>
+          </div>
+        </div>
+
+        <aside class="status-panel">
+          <p class="section-kicker">At a glance</p>
+          <h2>Buy winners, sell dropouts.</h2>
+          <ul class="status-list">
+            <li>
+              <span>Signal</span>
+              <strong>Compare price from 12 months ago with price from 1 month ago, so the latest month is skipped.</strong>
+            </li>
+            <li>
+              <span>Buy</span>
+              <strong>Keep the eight highest-ranked eligible names and weight them equally.</strong>
+            </li>
+            <li>
+              <span>Sell</span>
+              <strong>Remove names that fall out of the top eight at the next rebalance.</strong>
+            </li>
+            <li>
+              <span>Cash</span>
+              <strong>When the benchmark sits below its 10-month average, the book can step aside instead of forcing new buys.</strong>
+            </li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section reveal delay-2">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Signal to trade</p>
+          <h2>What happens each month</h2>
+        </div>
+        <p class="section-intro">The strategy is intentionally simple. Most of the heavy lifting happens in the data and validation layers, not in the signal itself.</p>
+      </div>
+
+      <div class="phase-ladder">
+        <article class="phase-step">
+          <span class="phase-label">1. Score</span>
+          <strong class="phase-value">Find the strongest recent winners</strong>
+          <p class="phase-note">For every eligible stock, compare the price from 12 months ago with the price from 1 month ago. That measures the trend while skipping the latest month.</p>
+        </article>
+        <article class="phase-step">
+          <span class="phase-label">2. Select</span>
+          <strong class="phase-value">Keep the top 8</strong>
+          <p class="phase-note">Only the eight highest-ranked names make the portfolio, after tradability, capacity, and data checks have passed.</p>
+        </article>
+        <article class="phase-step">
+          <span class="phase-label">3. Buy</span>
+          <strong class="phase-value">Equal-weight the winners</strong>
+          <p class="phase-note">The selected names each get the same weight, so no single stock dominates the book just because it is large.</p>
+        </article>
+        <article class="phase-step">
+          <span class="phase-label">4. Sell</span>
+          <strong class="phase-value">Exit the names that drop out</strong>
+          <p class="phase-note">At the next rebalance, anything no longer in the top 8 is sold. If the trend filter is off, the strategy can stay in cash.</p>
+        </article>
+      </div>
+
+      <div class="section-callout">
+        <strong>Plain-English takeaway:</strong> this is a monthly rotation into the strongest recent winners. The trend filter is the safety switch, and the sell rule is simply "anything that no longer ranks high enough gets removed."
+      </div>
+    </section>
+
+    <section class="section reveal delay-3">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Lead and shadow</p>
+          <h2>Why there are two books</h2>
+        </div>
+        <p class="section-intro">The lead is the focused candidate. The shadow keeps the broader Nordic control visible so the comparison is not hand-waved away.</p>
+      </div>
+
+      <div class="comparison-grid">
+        <article class="comparison-card">
+          <p class="label">Lead thesis</p>
+          <h3 class="comparison-title">Ex-Norway</h3>
+          <p class="comparison-meta">Sweden and Denmark only. This is the currently highlighted branch because it is the tighter version of the same momentum rule set.</p>
+          <div class="metric-inline">
+            <span>12-1 price momentum</span>
+            <span>Top 8</span>
+            <span>MA10 trend filter</span>
+          </div>
+        </article>
+        <article class="comparison-card">
+          <p class="label">Shadow control</p>
+          <h3 class="comparison-title">Baseline</h3>
+          <p class="comparison-meta">Sweden, Denmark, and Norway. It exists as the broader comparison book, not as a separate secret strategy.</p>
+          <div class="metric-inline">
+            <span>Same signal</span>
+            <span>Same trade rules</span>
+            <span>Broader country scope</span>
+          </div>
+        </article>
+      </div>
+
+      <div class="note footer-note">
+        <strong>One-sentence pitch:</strong> every month the strategy ranks eligible Nordic stocks by recent strength, buys the top eight equally weighted, and sells anything that falls out, with a trend filter that can keep the book in cash when the market looks weak.
+      </div>
+
+      <div class="cta-row">
+        <a class="button primary" href="../../alpha_momentum_validation_package/PROJECT_STATUS.html">Open Project Status</a>
+        <a class="button secondary" href="../analysis_suite/current_replay_ex_norway_n8/ex_norway/holdout_results.html">Open Phase 3 Holdout</a>
+        <a class="button ghost" href="../index.html">Back to Employer Package</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
