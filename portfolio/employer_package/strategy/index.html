@@ -4,11 +4,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Strategy | Systematic Nordic Equity Research &amp; Validation</title>
-  <meta name="description" content="Plain-English guide to how the portfolio picks stocks, buys the top eight, sells dropouts, and uses a market safety switch." />
+  <meta name="description" content="Plain-English guide to how the portfolio checks the market, ranks eligible stocks, buys the top eight, and sells dropouts." />
   <link rel="stylesheet" href="../../assets/portfolio.css" />
   <link rel="stylesheet" href="../../assets/portfolio-theme.css" />
 </head>
-<body class="am-theme">
+<body class="am-theme strategy-page">
   <main class="page-shell">
     <header class="topbar reveal">
       <div class="brand">
@@ -27,19 +27,29 @@
       </nav>
     </header>
 
-    <section class="hero reveal delay-1">
-      <div class="hero-grid">
+    <section class="hero reveal delay-1 strategy-hero">
+      <div class="hero-grid strategy-hero-grid">
         <div>
-          <span class="eyebrow">Strategy</span>
-          <h1 class="hero-title hero-title-wide">How the model buys and sells</h1>
-          <p class="hero-subtitle">Each month it ranks the eligible stocks, buys the eight strongest, and steps aside when the market looks weak.</p>
-          <p class="lede">You do not need the technical label to follow the logic. It is a simple winner-ranking system with a market safety check.</p>
+          <span class="eyebrow">Strategy playbook</span>
+          <h1 class="hero-title hero-title-wide">The monthly playbook</h1>
+          <p class="hero-subtitle">Check the market first. If it is healthy, buy the strongest eligible stocks. If it is weak, sit in cash.</p>
+          <p class="lede">This is the quick route: a checklist you can follow without learning the technical label.</p>
+
+          <div class="strategy-roadmap" aria-label="Strategy flow">
+            <span class="roadmap-step"><strong>1</strong><span>Market check</span></span>
+            <span class="roadmap-arrow">-&gt;</span>
+            <span class="roadmap-step"><strong>2</strong><span>Rank winners</span></span>
+            <span class="roadmap-arrow">-&gt;</span>
+            <span class="roadmap-step"><strong>3</strong><span>Buy 8</span></span>
+            <span class="roadmap-arrow">-&gt;</span>
+            <span class="roadmap-step good"><strong>4</strong><span>Reset next month</span></span>
+          </div>
 
           <div class="tag-row">
-            <span class="tag"><strong>Monthly</strong> review</span>
+            <span class="tag"><strong>Monthly</strong> rhythm</span>
             <span class="tag"><strong>Top 8</strong> holdings</span>
             <span class="tag"><strong>Recent</strong> winners</span>
-            <span class="tag good"><strong>Market</strong> safety switch</span>
+            <span class="tag good"><strong>Cash</strong> when weak</span>
           </div>
 
           <div class="cta-row">
@@ -49,83 +59,161 @@
           </div>
         </div>
 
-        <aside class="status-panel">
-          <p class="section-kicker">At a glance</p>
-          <h2>Buy the strongest names, sell the ones that fall out.</h2>
-          <ul class="status-list">
+        <aside class="status-panel strategy-hero-panel">
+          <p class="section-kicker">Shortcut</p>
+          <h2>Do these four things</h2>
+          <ul class="status-list strategy-quick-list">
             <li>
-              <span>Look back</span>
-              <strong>Compare where each stock is now with where it was a year ago, while ignoring the last month.</strong>
+              <span>Step 1</span>
+              <strong>If the broad market is below its 10-month average, do not buy. Stay in cash.</strong>
             </li>
             <li>
-              <span>Rank</span>
-              <strong>Put the strongest eligible stocks at the top of the list.</strong>
+              <span>Step 2</span>
+              <strong>Score each eligible stock by how strong it was from 13 months ago to 1 month ago.</strong>
             </li>
             <li>
-              <span>Buy</span>
-              <strong>Keep the top eight names and give them equal weight.</strong>
+              <span>Step 3</span>
+              <strong>Buy the top 8 names and give each the same weight.</strong>
             </li>
             <li>
-              <span>Sell</span>
-              <strong>At the next monthly check, sell anything that no longer makes the cut.</strong>
-            </li>
-            <li>
-              <span>Wait</span>
-              <strong>If the broad market sits below its 10-month average, the strategy stays in cash instead of buying.</strong>
+              <span>Step 4</span>
+              <strong>At the next monthly check, sell anything that no longer ranks in the top 8.</strong>
             </li>
           </ul>
+
+          <div class="strategy-mini-example">
+            <p class="section-kicker">Tiny example</p>
+            <div class="score-example" aria-label="Momentum example">
+              <div>
+                <span>13 months ago</span>
+                <strong>100</strong>
+              </div>
+              <div class="score-example-arrow">-&gt;</div>
+              <div>
+                <span>1 month ago</span>
+                <strong>130</strong>
+              </div>
+              <div class="score-example-arrow">-&gt;</div>
+              <div class="score-example-result">
+                <span>Score</span>
+                <strong>+30%</strong>
+              </div>
+            </div>
+            <p class="score-example-note">That score helps rank recent winners. The latest month is left out on purpose.</p>
+          </div>
         </aside>
       </div>
     </section>
 
-    <section class="section reveal delay-2">
+    <section class="section reveal delay-2 strategy-section">
       <div class="section-head">
         <div>
-          <p class="section-kicker">How it works</p>
-          <h2>What happens each month</h2>
+          <p class="section-kicker">The loop</p>
+          <h2>What happens at month end</h2>
         </div>
-        <p class="section-intro">The rule set is intentionally simple. The explanation below keeps the jargon out of the way.</p>
+        <p class="section-intro">Read the cards left to right. They are the exact monthly actions, without technical labels.</p>
       </div>
 
-      <div class="phase-ladder">
-        <article class="phase-step">
-          <span class="phase-label">1. Measure</span>
-          <strong class="phase-value">Check who has been strongest recently</strong>
-          <p class="phase-note">For every eligible stock, compare the price from 12 months ago with the price from 1 month ago. That captures the trend while skipping the latest month.</p>
+      <div class="playbook-grid">
+        <article class="playbook-card">
+          <span class="playbook-number">1</span>
+          <span class="playbook-label">Safety check</span>
+          <h3>Is the market healthy?</h3>
+          <p>If the broad market is below its 10-month average, do not open new positions. Stay in cash and wait for next month.</p>
         </article>
-        <article class="phase-step">
-          <span class="phase-label">2. Sort</span>
-          <strong class="phase-value">Put the strongest stocks first</strong>
-          <p class="phase-note">Only the eligible names are ranked, after tradability, capacity, and data checks have passed.</p>
+        <article class="playbook-card">
+          <span class="playbook-number">2</span>
+          <span class="playbook-label">Score the stocks</span>
+          <h3>Measure recent strength</h3>
+          <p>For each eligible stock, compare the price from 13 months ago with the price from 1 month ago. Bigger rise means a higher score.</p>
         </article>
-        <article class="phase-step">
-          <span class="phase-label">3. Hold</span>
-          <strong class="phase-value">Own the top 8 equally</strong>
-          <p class="phase-note">The selected names each get the same weight, so no single stock dominates the portfolio.</p>
+        <article class="playbook-card">
+          <span class="playbook-number">3</span>
+          <span class="playbook-label">Build the basket</span>
+          <h3>Keep the top 8</h3>
+          <p>Buy the eight strongest names and give each the same weight so no single stock takes over the portfolio.</p>
         </article>
-        <article class="phase-step">
-          <span class="phase-label">4. Sell</span>
-          <strong class="phase-value">Remove anything that no longer qualifies</strong>
-          <p class="phase-note">At the next rebalance, anything no longer in the top 8 is sold. If the market filter is off, the strategy can stay in cash.</p>
+        <article class="playbook-card">
+          <span class="playbook-number">4</span>
+          <span class="playbook-label">Repeat</span>
+          <h3>Sell the dropouts</h3>
+          <p>At the next monthly check, sell anything that no longer makes the top 8. Then start the loop again.</p>
         </article>
       </div>
 
       <div class="section-callout">
-        <strong>Plain-English takeaway:</strong> each month the portfolio looks for recent winners, keeps the best eight, and steps aside when the broad market looks weak.
+        <strong>Plain-English takeaway:</strong> the strategy is a monthly leaderboard. If the market is healthy, keep the eight strongest eligible names. If not, wait in cash.
       </div>
     </section>
 
-    <section class="section reveal delay-3">
+    <section class="section reveal delay-3 strategy-section">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">The scoreboard</p>
+          <h2>How the ranking and the safety switch fit together</h2>
+        </div>
+        <p class="section-intro">The score looks back over most of the last year, but skips the most recent month so one noisy move does not decide everything.</p>
+      </div>
+
+      <div class="scoreboard-grid">
+        <article class="scoreboard-card">
+          <p class="section-kicker">The score</p>
+          <h3>Look at 13 months ago and 1 month ago</h3>
+          <div class="score-visual">
+            <div class="score-bar">
+              <span class="score-bar-label">13 months ago</span>
+              <div class="score-track"><span style="width: 44%"></span></div>
+              <strong>100</strong>
+            </div>
+            <div class="score-bar">
+              <span class="score-bar-label">1 month ago</span>
+              <div class="score-track"><span style="width: 68%"></span></div>
+              <strong>130</strong>
+            </div>
+            <div class="score-bar">
+              <span class="score-bar-label">Momentum score</span>
+              <div class="score-track score-track-accent"><span style="width: 82%"></span></div>
+              <strong>+30%</strong>
+            </div>
+          </div>
+          <p class="scoreboard-note">A bigger score means the stock was stronger over the measured stretch, even if the final month was messy.</p>
+        </article>
+
+        <article class="scoreboard-card">
+          <p class="section-kicker">Green light or cash</p>
+          <h3>The market switch decides whether the strategy can buy at all</h3>
+          <div class="decision-mini">
+            <span class="decision-pill">Above the 10-month average</span>
+            <p>Rank the eligible stocks, buy the top 8, and keep moving.</p>
+          </div>
+          <div class="decision-mini">
+            <span class="decision-pill warm">Below the 10-month average</span>
+            <p>Do not buy. Hold cash and wait for the next monthly check.</p>
+          </div>
+          <ul class="decision-list">
+            <li>Check the market first.</li>
+            <li>Only then rank the stocks.</li>
+            <li>If the switch is off, step aside.</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="section-callout muted-callout">
+        <strong>Simple rule:</strong> the market filter acts like a safety switch. When it is off, the portfolio stays out of the way instead of forcing trades.
+      </div>
+    </section>
+
+    <section class="section reveal delay-3 strategy-section">
       <div class="section-head">
         <div>
           <p class="section-kicker">Lead and shadow</p>
           <h2>Why there are two books</h2>
         </div>
-        <p class="section-intro">The lead is the focused candidate. The shadow keeps the broader Nordic control visible so the comparison stays honest.</p>
+        <p class="section-intro">The lead is the version being followed. The shadow keeps the broader Nordic comparison visible so the test stays honest.</p>
       </div>
 
-      <div class="comparison-grid">
-        <article class="comparison-card">
+      <div class="comparison-grid strategy-book-grid">
+        <article class="comparison-card lead-card">
           <p class="label">Lead thesis</p>
           <h3 class="comparison-title">Ex-Norway</h3>
           <p class="comparison-meta">Sweden and Denmark only. This is the tighter version of the same rule set.</p>
@@ -135,7 +223,8 @@
             <span>Market safety switch</span>
           </div>
         </article>
-        <article class="comparison-card">
+
+        <article class="comparison-card shadow-card">
           <p class="label">Shadow control</p>
           <h3 class="comparison-title">Baseline</h3>
           <p class="comparison-meta">Sweden, Denmark, and Norway. It exists as the broader comparison book, not as a separate strategy.</p>
@@ -148,7 +237,7 @@
       </div>
 
       <div class="note footer-note">
-        <strong>One-sentence pitch:</strong> every month the strategy ranks eligible Nordic stocks by recent strength, buys the top eight equally weighted, and sells anything that falls out, with a market safety switch that can keep the book in cash when the market looks weak.
+        <strong>One-sentence pitch:</strong> every month the strategy checks the market, ranks eligible Nordic stocks by recent strength, buys the top eight equally weighted, and sells anything that falls out, with cash as the fallback when the market looks weak.
       </div>
 
       <div class="cta-row">
