@@ -2701,7 +2701,7 @@ def render_evidence_stack_html(
     holdout_passed = bool(holdout_phase4.get("phase4_eligible"))
 
     selection_link_html = (
-        f' <a href="{html.escape(selection_href, quote=True)}">Open certification summary</a>.'
+        f' <a href="{html.escape(selection_href, quote=True)}">Open Phase 2 dashboard</a>.'
         if selection_href
         else ""
     )
@@ -2844,7 +2844,7 @@ def render_phase_map_html(
         else ""
     )
     selection_link = (
-        f' <a href="{html.escape(selection_href, quote=True)}">Open Phase 2 certification.</a>'
+        f' <a href="{html.escape(selection_href, quote=True)}">Open Phase 2 dashboard.</a>'
         if selection_href
         else ""
     )
@@ -6402,17 +6402,34 @@ def run_research_engine(
             )
             for profile_name, profile_summary in render_summaries.items():
                 filename, page_title, page_subtitle = profile_page_metadata(profile_name)
-                (thesis_dir / f"{filename}.html").write_text(
-                    build_profile_dashboard(
-                        summary=profile_summary,
-                        holdout=holdout,
-                        title=page_title,
-                        subtitle=page_subtitle,
-                        back_href="dashboard.html",
-                        back_label="Back to thesis dashboard",
-                    ),
-                    encoding="utf-8",
-                )
+                if profile_name == "certification_baseline":
+                    (thesis_dir / f"{filename}.html").write_text(
+                        """<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="refresh" content="0; url=dashboard.html">
+  <script>window.location.replace("dashboard.html");</script>
+  <title>Phase 2 Dashboard</title>
+  <style>body { display:none; }</style>
+</head>
+<body>Redirecting to the Phase 2 dashboard...</body>
+</html>
+""",
+                        encoding="utf-8",
+                    )
+                else:
+                    (thesis_dir / f"{filename}.html").write_text(
+                        build_profile_dashboard(
+                            summary=profile_summary,
+                            holdout=holdout,
+                            title=page_title,
+                            subtitle=page_subtitle,
+                            back_href="dashboard.html",
+                            back_label="Back to thesis dashboard",
+                        ),
+                        encoding="utf-8",
+                    )
             (thesis_dir / "holdout_results.html").write_text(
                 build_holdout_dashboard(
                     holdout=holdout,
@@ -6537,17 +6554,34 @@ def run_research_engine(
             }
         for profile_name, profile_summary in summaries.items():
             filename, page_title, page_subtitle = profile_page_metadata(profile_name)
-            (thesis_dir / f"{filename}.html").write_text(
-                build_profile_dashboard(
-                    summary=profile_summary,
-                    holdout=holdout,
-                    title=page_title,
-                    subtitle=page_subtitle,
-                    back_href="dashboard.html",
-                    back_label="Back to thesis dashboard",
-                ),
-                encoding="utf-8",
-            )
+            if profile_name == "certification_baseline":
+                (thesis_dir / f"{filename}.html").write_text(
+                    """<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="refresh" content="0; url=dashboard.html">
+  <script>window.location.replace("dashboard.html");</script>
+  <title>Phase 2 Dashboard</title>
+  <style>body { display:none; }</style>
+</head>
+<body>Redirecting to the Phase 2 dashboard...</body>
+</html>
+""",
+                    encoding="utf-8",
+                )
+            else:
+                (thesis_dir / f"{filename}.html").write_text(
+                    build_profile_dashboard(
+                        summary=profile_summary,
+                        holdout=holdout,
+                        title=page_title,
+                        subtitle=page_subtitle,
+                        back_href="dashboard.html",
+                        back_label="Back to thesis dashboard",
+                    ),
+                    encoding="utf-8",
+                )
         serialize_json(thesis_dir / "holdout_results.json", holdout)
         (thesis_dir / "holdout_results.html").write_text(
             build_holdout_dashboard(

@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -54,13 +54,13 @@
         <div class="muted">Phase 3 summary diagnostics are available for the untouched holdout window 2018-01 to 2026-01. If a historical rebuild snapshot did not preserve monthly return arrays, the holdout page will say so and use a clearly labeled replay only for path diagnostics.</div>
       </div>
     </section>
-    <section><h2>Phase Map</h2><div class="grid"><div class="card"><div class="label">Phase 1</div><div class="value">Infrastructure &amp; Data</div><div class="muted">Gate this cycle with <code>validate.py</code>. This stage checks the engine and core artifacts before any research result is trusted. <a href="phase1_summary.html">Open Phase 1 validation.</a></div></div><div class="card"><div class="label">Phase 2</div><div class="value">Research Certification</div><div class="muted">Selection boundary 2000-01 to 2017-12. Validation windows 2008-01 to 2017-12. <a href="selection_summary.html">Open Phase 2 certification.</a></div></div><div class="card"><div class="label">Phase 3</div><div class="value">Untouched Holdout</div><div class="muted">Official holdout window 2018-01 to 2026-01. <a href="walk_forward_results.html">Open Phase 3 holdout.</a></div></div><div class="card"><div class="label">Phase 4</div><div class="value">Paper Trading</div><div class="muted">Only unlock after the frozen Phase 3 result is accepted.</div></div></div></section>
+    <section><h2>Phase Map</h2><div class="grid"><div class="card"><div class="label">Phase 1</div><div class="value">Infrastructure &amp; Data</div><div class="muted">Gate this cycle with <code>validate.py</code>. This stage checks the engine and core artifacts before any research result is trusted. <a href="phase1_summary.html">Open Phase 1 validation.</a></div></div><div class="card"><div class="label">Phase 2</div><div class="value">Research Dashboard</div><div class="muted">Selection boundary 2000-01 to 2017-12. Validation windows 2008-01 to 2017-12. <a href="dashboard.html">Open Phase 2 dashboard.</a></div></div><div class="card"><div class="label">Phase 3</div><div class="value">Untouched Holdout</div><div class="muted">Official holdout window 2018-01 to 2026-01. <a href="walk_forward_results.html">Open Phase 3 holdout.</a></div></div><div class="card"><div class="label">Phase 4</div><div class="value">Paper Trading</div><div class="muted">Only unlock after the frozen Phase 3 result is accepted.</div></div></div></section>
     <section>
       <h2>Artifact Map</h2>
       <p class="muted">These links jump between the shared Phase 1 page, the richer Phase 2 diagnostics, and the dedicated Phase 3 holdout page for this cadence pair.</p>
       <div class="grid">
         <a class="card" href="phase1_summary.html"><div class="label">Phase 1</div><div class="value">Open validation checks</div></a>
-        <a class="card" href="selection_summary.html"><div class="label">Selection Summary</div><div class="value">Open selection summary</div></a>
+        <a class="card" href="dashboard.html"><div class="label">Phase 2 Dashboard</div><div class="value">Open Phase 2 dashboard</div></a>
         <a class="card" href="quick_summary.html"><div class="label">Quick Profile</div><div class="value">Open quick diagnostics</div></a>
         <a class="card" href="mega_summary.html"><div class="label">Mega Profile</div><div class="value">Open mega diagnostics</div></a>
         <a class="card" href="walk_forward_results.html"><div class="label">Holdout</div><div class="value">Open holdout diagnostics</div></a>
@@ -68,10 +68,10 @@
     </section>
     <section>
       <h2>Diagnostics Overview (Rebuild)</h2>
-      <div style="margin:10px 0 12px; padding:10px 12px; border-radius:14px; border:1px solid rgba(176,107,29,.28); background:#fff7eb; color:#5b6762;"><strong style="color:#4b4031;">Timeframe:</strong> These cards combine Phase 2 certification outputs over 2008-01 to 2017-12 with the current Phase 3 status for 2018-01 to 2026-01.</div>
+      <div style="margin:10px 0 12px; padding:10px 12px; border-radius:14px; border:1px solid rgba(176,107,29,.28); background:#fff7eb; color:#5b6762;"><strong style="color:#4b4031;">Timeframe:</strong> These cards combine Phase 2 dashboard outputs over 2008-01 to 2017-12 with the current Phase 3 status for 2018-01 to 2026-01.</div>
       <div class="grid">
         <div class="card">
-          <div class="label">Certification PBO</div>
+          <div class="label">Phase 2 PBO</div>
           <div class="value">13.1%</div>
           <div class="muted">Threshold 30.0% · Passes: True</div>
           <div class="muted">Slices 10 · Slice length 12.0 months · Combos 252</div>
@@ -101,7 +101,7 @@
         <div class="card">
           <div class="label">Hard-Gate Winners</div>
           <div class="value">13</div>
-          <div class="muted">Candidates clearing all certification gates.</div>
+          <div class="muted">Candidates clearing all Phase 2 gates.</div>
         </div>
         <div class="card">
           <div class="label">Top Candidate Blockers</div>
@@ -121,7 +121,7 @@
         <div class="card">
           <div class="label">Model Confidence Score (Proxy)</div>
           <div class="value">100 / 100</div>
-          <div class="muted">Composite of the four certification gates (fold/boot/deflated/controls).</div>
+          <div class="muted">Composite of the four Phase 2 gates (fold/boot/deflated/controls).</div>
         </div>
       </div>
     </section>
@@ -144,7 +144,7 @@
           <svg viewBox="0 0 560 160" width="100%" height="160" preserveAspectRatio="none"><polyline points="0.0,154.3 4.7,155.4 9.3,155.7 14.0,155.9 18.7,155.5 23.3,155.9 28.0,159.6 32.7,159.6 37.3,159.6 42.0,159.6 46.7,159.6 51.3,159.6 56.0,159.1 60.7,159.4 65.3,160.0 70.0,159.7 74.7,158.5 79.3,158.1 84.0,158.2 88.7,157.9 93.3,157.9 98.0,158.0 102.7,157.8 107.3,157.5 112.0,157.4 116.7,157.3 121.3,157.5 126.0,156.8 130.7,156.7 135.3,157.3 140.0,157.5 144.7,156.9 149.3,157.1 154.0,156.8 158.7,156.7 163.3,156.6 168.0,156.1 172.7,156.3 177.3,156.6 182.0,156.3 186.7,156.0 191.3,156.2 196.0,156.6 200.7,157.1 205.3,157.8 210.0,158.3 214.7,158.0 219.3,157.8 224.0,157.7 228.7,157.2 233.3,156.7 238.0,156.8 242.7,156.9 247.3,157.6 252.0,157.1 256.7,156.8 261.3,156.7 266.0,156.6 270.7,156.6 275.3,156.4 280.0,156.2 284.7,155.6 289.3,155.7 294.0,155.6 298.7,155.4 303.3,155.2 308.0,155.7 312.7,155.0 317.3,155.1 322.0,154.8 326.7,154.4 331.3,154.1 336.0,153.9 340.7,154.2 345.3,153.6 350.0,153.2 354.7,153.0 359.3,152.5 364.0,152.5 368.7,152.5 373.3,152.3 378.0,152.2 382.7,152.3 387.3,151.9 392.0,151.9 396.7,150.9 401.3,149.9 406.0,149.2 410.7,149.4 415.3,149.0 420.0,149.8 424.7,149.0 429.3,150.6 434.0,151.0 438.7,150.2 443.3,149.9 448.0,150.8 452.7,151.3 457.3,151.1 462.0,151.4 466.7,151.1 471.3,150.9 476.0,151.0 480.7,150.5 485.3,150.6 490.0,150.7 494.7,150.9 499.3,150.7 504.0,150.1 508.7,150.2 513.3,149.6 518.0,149.5 522.7,148.7 527.3,148.1 532.0,148.4 536.7,148.7 541.3,148.7 546.0,148.1 550.7,147.8 555.3,148.4 560.0,148.5" fill="none" stroke="#9a8c6a" stroke-width="2" stroke-dasharray="4 4" /><polyline points="0.0,154.3 4.7,154.3 9.3,154.3 14.0,154.3 18.7,154.3 23.3,154.3 28.0,154.3 32.7,154.3 37.3,154.3 42.0,154.3 46.7,154.3 51.3,154.3 56.0,154.3 60.7,154.3 65.3,154.3 70.0,154.3 74.7,153.9 79.3,153.4 84.0,152.9 88.7,152.4 93.3,152.1 98.0,151.5 102.7,150.7 107.3,150.3 112.0,150.2 116.7,150.5 121.3,150.6 126.0,148.4 130.7,147.8 135.3,149.6 140.0,149.7 144.7,147.9 149.3,148.4 154.0,145.6 158.7,144.0 163.3,143.9 168.0,142.2 172.7,142.3 177.3,142.4 182.0,141.1 186.7,140.1 191.3,139.8 196.0,139.9 200.7,139.9 205.3,139.9 210.0,139.9 214.7,139.9 219.3,139.9 224.0,139.9 228.7,138.6 233.3,138.4 238.0,138.2 242.7,137.0 247.3,137.1 252.0,138.0 256.7,137.7 261.3,136.7 266.0,136.8 270.7,134.4 275.3,133.9 280.0,132.7 284.7,130.9 289.3,127.9 294.0,125.8 298.7,124.6 303.3,121.4 308.0,122.4 312.7,117.3 317.3,118.5 322.0,112.0 326.7,108.2 331.3,107.3 336.0,105.6 340.7,104.9 345.3,102.0 350.0,101.2 354.7,96.4 359.3,90.1 364.0,89.1 368.7,94.0 373.3,91.8 378.0,93.5 382.7,86.3 387.3,84.9 392.0,76.4 396.7,74.0 401.3,55.7 406.0,46.6 410.7,44.5 415.3,35.1 420.0,37.0 424.7,29.8 429.3,30.6 434.0,30.6 438.7,30.6 443.3,30.6 448.0,30.6 452.7,30.6 457.3,30.6 462.0,30.6 466.7,30.6 471.3,30.6 476.0,30.6 480.7,26.2 485.3,23.3 490.0,18.2 494.7,25.6 499.3,31.6 504.0,26.5 508.7,13.9 513.3,0.9 518.0,5.8 522.7,0.0 527.3,6.5 532.0,11.4 536.7,13.4 541.3,12.2 546.0,12.5 550.7,6.2 555.3,26.8 560.0,26.5" fill="none" stroke="#b06b1d" stroke-width="2.5" /></svg>
         </div>
         <div class="card">
-          <div class="label">Certification</div>
+          <div class="label">Phase 2</div>
           <svg viewBox="0 0 560 160" width="100%" height="160" preserveAspectRatio="none"><polyline points="0.0,154.3 4.7,155.4 9.3,155.7 14.0,155.9 18.7,155.5 23.3,155.9 28.0,159.6 32.7,159.6 37.3,159.6 42.0,159.6 46.7,159.6 51.3,159.6 56.0,159.1 60.7,159.4 65.3,160.0 70.0,159.7 74.7,158.5 79.3,158.1 84.0,158.2 88.7,157.9 93.3,157.9 98.0,158.0 102.7,157.8 107.3,157.5 112.0,157.4 116.7,157.3 121.3,157.5 126.0,156.8 130.7,156.7 135.3,157.3 140.0,157.5 144.7,156.9 149.3,157.1 154.0,156.8 158.7,156.7 163.3,156.6 168.0,156.1 172.7,156.3 177.3,156.6 182.0,156.3 186.7,156.0 191.3,156.2 196.0,156.6 200.7,157.1 205.3,157.8 210.0,158.3 214.7,158.0 219.3,157.8 224.0,157.7 228.7,157.2 233.3,156.7 238.0,156.8 242.7,156.9 247.3,157.6 252.0,157.1 256.7,156.8 261.3,156.7 266.0,156.6 270.7,156.6 275.3,156.4 280.0,156.2 284.7,155.6 289.3,155.7 294.0,155.6 298.7,155.4 303.3,155.2 308.0,155.7 312.7,155.0 317.3,155.1 322.0,154.8 326.7,154.4 331.3,154.1 336.0,153.9 340.7,154.2 345.3,153.6 350.0,153.2 354.7,153.0 359.3,152.5 364.0,152.5 368.7,152.5 373.3,152.3 378.0,152.2 382.7,152.3 387.3,151.9 392.0,151.9 396.7,150.9 401.3,149.9 406.0,149.2 410.7,149.4 415.3,149.0 420.0,149.8 424.7,149.0 429.3,150.6 434.0,151.0 438.7,150.2 443.3,149.9 448.0,150.8 452.7,151.3 457.3,151.1 462.0,151.4 466.7,151.1 471.3,150.9 476.0,151.0 480.7,150.5 485.3,150.6 490.0,150.7 494.7,150.9 499.3,150.7 504.0,150.1 508.7,150.2 513.3,149.6 518.0,149.5 522.7,148.7 527.3,148.1 532.0,148.4 536.7,148.7 541.3,148.7 546.0,148.1 550.7,147.8 555.3,148.4 560.0,148.5" fill="none" stroke="#9a8c6a" stroke-width="2" stroke-dasharray="4 4" /><polyline points="0.0,154.3 4.7,154.3 9.3,154.3 14.0,154.3 18.7,154.3 23.3,154.3 28.0,154.3 32.7,154.3 37.3,154.3 42.0,154.3 46.7,154.3 51.3,154.3 56.0,154.3 60.7,154.3 65.3,154.3 70.0,154.3 74.7,153.9 79.3,153.4 84.0,152.9 88.7,152.4 93.3,152.1 98.0,151.5 102.7,150.7 107.3,150.3 112.0,150.2 116.7,150.5 121.3,150.6 126.0,148.4 130.7,147.8 135.3,149.6 140.0,149.7 144.7,147.9 149.3,148.4 154.0,145.6 158.7,144.0 163.3,143.9 168.0,142.2 172.7,142.3 177.3,142.4 182.0,141.1 186.7,140.1 191.3,139.8 196.0,139.9 200.7,139.9 205.3,139.9 210.0,139.9 214.7,139.9 219.3,139.9 224.0,139.9 228.7,138.6 233.3,138.4 238.0,138.2 242.7,137.0 247.3,137.1 252.0,138.0 256.7,137.7 261.3,136.7 266.0,136.8 270.7,134.4 275.3,133.9 280.0,132.7 284.7,130.9 289.3,127.9 294.0,125.8 298.7,124.6 303.3,121.4 308.0,122.4 312.7,117.3 317.3,118.5 322.0,112.0 326.7,108.2 331.3,107.3 336.0,105.6 340.7,104.9 345.3,102.0 350.0,101.2 354.7,96.4 359.3,90.1 364.0,89.1 368.7,94.0 373.3,91.8 378.0,93.5 382.7,86.3 387.3,84.9 392.0,76.4 396.7,74.0 401.3,55.7 406.0,46.6 410.7,44.5 415.3,35.1 420.0,37.0 424.7,29.8 429.3,30.6 434.0,30.6 438.7,30.6 443.3,30.6 448.0,30.6 452.7,30.6 457.3,30.6 462.0,30.6 466.7,30.6 471.3,30.6 476.0,30.6 480.7,26.2 485.3,23.3 490.0,18.2 494.7,25.6 499.3,31.6 504.0,26.5 508.7,13.9 513.3,0.9 518.0,5.8 522.7,0.0 527.3,6.5 532.0,11.4 536.7,13.4 541.3,12.2 546.0,12.5 550.7,6.2 555.3,26.8 560.0,26.5" fill="none" stroke="#b06b1d" stroke-width="2.5" /></svg>
         </div>
       </div>
@@ -176,14 +176,14 @@
         <tbody>
           <tr><td>Quick</td><td>l12_s1_n8_strat=trend_filter</td><td>L=12 / skip=1 / top_n=8 / strat=trend_filter / trend_ma=10</td><td>2.246</td><td>11.207</td><td>0.162</td><td>13.1%</td></tr>
 <tr><td>Mega</td><td>l12_s1_n8_strat=trend_filter</td><td>L=12 / skip=1 / top_n=8 / strat=trend_filter / trend_ma=10</td><td>2.246</td><td>11.207</td><td>0.162</td><td>13.1%</td></tr>
-<tr><td>Certification</td><td>l12_s1_n8_strat=trend_filter</td><td>L=12 / skip=1 / top_n=8 / strat=trend_filter / trend_ma=10</td><td>2.246</td><td>11.207</td><td>0.162</td><td>13.1%</td></tr>
+<tr><td>Phase 2</td><td>l12_s1_n8_strat=trend_filter</td><td>L=12 / skip=1 / top_n=8 / strat=trend_filter / trend_ma=10</td><td>2.246</td><td>11.207</td><td>0.162</td><td>13.1%</td></tr>
         </tbody>
       </table>
-      <p class="muted" style="margin-top:10px;">This shows how the top candidate changes across the quick, mega, and certification profiles.</p>
+      <p class="muted" style="margin-top:10px;">This shows how the top candidate changes across the quick, mega, and dashboard profiles.</p>
     </section>
     <section>
-      <h2>Top Candidates (Certification)</h2>
-      <div style="margin:10px 0 12px; padding:10px 12px; border-radius:14px; border:1px solid rgba(176,107,29,.28); background:#fff7eb; color:#5b6762;"><strong style="color:#4b4031;">Timeframe:</strong> Certification candidates below are ranked only on the Phase 2 validation evidence over 2008-01 to 2017-12.</div>
+      <h2>Top Candidates (Phase 2)</h2>
+      <div style="margin:10px 0 12px; padding:10px 12px; border-radius:14px; border:1px solid rgba(176,107,29,.28); background:#fff7eb; color:#5b6762;"><strong style="color:#4b4031;">Timeframe:</strong> Phase 2 candidates below are ranked only on the validation evidence over 2008-01 to 2017-12.</div>
       <table>
         <thead>
           <tr><th>Candidate</th><th>Params</th><th>Median Sharpe</th><th>Fold Passes</th><th>Bootstrap</th><th>Deflated</th></tr>
@@ -201,3 +201,5 @@
   </main>
 </body>
 </html>
+
+

@@ -995,14 +995,18 @@ def main() -> int:
                 encoding="utf-8",
             )
             (output_dir / "selection_summary.html").write_text(
-                build_profile_dashboard(
-                    summary=pair.get("certification", {}),
-                    holdout=pair.get("holdout", {}),
-                    title="Certification Summary",
-                    subtitle="Phase 2: certification gate outputs for this cadence pair.",
-                    back_href="dashboard.html",
-                    back_label="Back to pair dashboard",
-                ),
+                """<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="refresh" content="0; url=dashboard.html">
+  <script>window.location.replace("dashboard.html");</script>
+  <title>Phase 2 Dashboard</title>
+  <style>body { display:none; }</style>
+</head>
+<body>Redirecting to the Phase 2 dashboard...</body>
+</html>
+""",
                 encoding="utf-8",
             )
             (output_dir / "quick_summary.html").write_text(
@@ -1169,14 +1173,18 @@ def main() -> int:
             _serialize_json(output_dir / "mega_summary.json", mega)
             _serialize_json(output_dir / "walk_forward_results.json", holdout)
             (output_dir / "selection_summary.html").write_text(
-                build_profile_dashboard(
-                    summary=certification,
-                    holdout=holdout,
-                    title="Certification Summary",
-                    subtitle="Phase 2: certification gate outputs for this cadence pair.",
-                    back_href="dashboard.html",
-                    back_label="Back to pair dashboard",
-                ),
+                """<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="refresh" content="0; url=dashboard.html">
+  <script>window.location.replace("dashboard.html");</script>
+  <title>Phase 2 Dashboard</title>
+  <style>body { display:none; }</style>
+</head>
+<body>Redirecting to the Phase 2 dashboard...</body>
+</html>
+""",
                 encoding="utf-8",
             )
             (output_dir / "quick_summary.html").write_text(

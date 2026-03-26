@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -68,16 +68,16 @@
       <div class="callout"><strong>PBO note.</strong><div class="muted">PBO is evaluated with good < 30.0% and hard cutoff >= 50.0%.</div></div>
     </section>
     <section><h2>Validation Verdict (Hard Gates)</h2><div class="verdict-panel"><span class="badge good">PASS</span><span class="badge-detail">All hard gates cleared.</span></div><p class="verdict-note"><strong>Candidate:</strong> l12_s1_n8_strat=trend_filter</p><p class="verdict-note"><strong>Passing grade:</strong> all hard gates below must be PASS. PBO >= 50.0% is automatic FAIL; 30.0% - 50.0% = PASS with caution.</p><ul class="verdict-list"><li class="verdict-item"><span class="verdict-label">Walk-forward Sharpe gate</span><span class="badge good">PASS</span><span class="badge-detail">5/5 folds >= 0.40 (need 4)</span></li><li class="verdict-item"><span class="verdict-label">Bootstrap CI gate</span><span class="badge good">PASS</span><span class="badge-detail">CI low 1.015 > 0</span></li><li class="verdict-item"><span class="verdict-label">Deflated Sharpe gate</span><span class="badge good">PASS</span><span class="badge-detail">score 0.248 > 0</span></li><li class="verdict-item"><span class="verdict-label">Negative controls gate</span><span class="badge good">PASS</span><span class="badge-detail">cross_sectional_shuffle 0.0% (max 20.0%)</span></li><li class="verdict-item"><span class="verdict-label">PBO hard cutoff</span><span class="badge good">PASS</span><span class="badge-detail">PBO 12.3% (good < 30.0%; hard cutoff >= 50.0%)</span></li></ul></section>
-    <section><h2>Phase Map</h2><div class="grid"><div class="card"><div class="label">Phase 1</div><div class="value">Infrastructure &amp; Data</div><div class="muted">Gate this cycle with <code>validate.py</code>. This stage checks the engine and core artifacts before any research result is trusted. <a href="phase1_summary.html">Open Phase 1 validation.</a></div></div><div class="card"><div class="label">Phase 2</div><div class="value">Research Certification</div><div class="muted">Selection boundary 2000-01 to 2017-12. Validation windows 2008-01 to 2017-12. <a href="selection_summary.html">Open Phase 2 certification.</a></div></div><div class="card"><div class="label">Phase 3</div><div class="value">Untouched Holdout</div><div class="muted">Official holdout window 2018-01 to 2026-01. <a href="walk_forward_results.html">Open Phase 3 holdout.</a></div></div><div class="card"><div class="label">Phase 4</div><div class="value">Paper Trading</div><div class="muted">Only unlock after the frozen Phase 3 result is accepted.</div></div></div></section>
+    <section><h2>Phase Map</h2><div class="grid"><div class="card"><div class="label">Phase 1</div><div class="value">Infrastructure &amp; Data</div><div class="muted">Gate this cycle with <code>validate.py</code>. This stage checks the engine and core artifacts before any research result is trusted. <a href="phase1_summary.html">Open Phase 1 validation.</a></div></div><div class="card"><div class="label">Phase 2</div><div class="value">Research Dashboard</div><div class="muted">Selection boundary 2000-01 to 2017-12. Validation windows 2008-01 to 2017-12. <a href="dashboard.html">Open Phase 2 dashboard.</a></div></div><div class="card"><div class="label">Phase 3</div><div class="value">Untouched Holdout</div><div class="muted">Official holdout window 2018-01 to 2026-01. <a href="walk_forward_results.html">Open Phase 3 holdout.</a></div></div><div class="card"><div class="label">Phase 4</div><div class="value">Paper Trading</div><div class="muted">Only unlock after the frozen Phase 3 result is accepted.</div></div></div></section>
     
     <section>
       <h2>Phase 1-4 Validation Funnel</h2>
-      <p class="muted">This report uses a strict phase ladder before any paper trading. Phase 1 is the infrastructure/data gate, Phase 2 is research certification on 2000-01 to 2017-12, Phase 3 is the untouched final holdout on 2018-01 to 2026-01, and Phase 4 only starts after Phase 3 passes.</p>
+      <p class="muted">This report uses a strict phase ladder before any paper trading. Phase 1 is the infrastructure/data gate, Phase 2 is validation on 2000-01 to 2017-12, Phase 3 is the untouched final holdout on 2018-01 to 2026-01, and Phase 4 only starts after Phase 3 passes.</p>
       <div class="grid">
         <div class="card">
           <div class="label">Phase 1. Data / Engine Gate</div>
           <div class="value">2000-01 to 2017-12</div>
-          <div class="muted">This page assumes `validate.py` is already green. Parameters are chosen only after the Phase 1 data/engine gate is clear. Candidates tested: 42. <a href="selection_summary.html">Open certification summary</a>.</div>
+          <div class="muted">This page assumes `validate.py` is already green. Parameters are chosen only after the Phase 1 data/engine gate is clear. Candidates tested: 42. <a href="dashboard.html">Open Phase 2 dashboard</a>.</div>
         </div>
         <div class="card">
           <div class="label">Phase 2A. Repeated OOS Folds</div>
@@ -198,3 +198,5 @@
   </main>
 </body>
 </html>
+
+

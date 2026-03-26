@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -70,7 +70,7 @@
       
       <div class="grid">
         <div class="card"><div class="label">Selection Status</div><div class="value">selected</div></div>
-        <div class="card"><div class="label">Certification PBO</div><div class="value">n/a (single candidate)</div></div>
+        <div class="card"><div class="label">Phase 2 PBO</div><div class="value">n/a (single candidate)</div></div>
         <div class="card"><div class="label">PBO Band</div><div class="value">n/a</div></div>
         <div class="card"><div class="label">Holdout Sharpe</div><div class="value">0.820</div></div>
         <div class="card"><div class="label">Locked Params</div><div class="value">Ex-Norway Momentum (Top 8, trend filter, MA10)</div></div>
@@ -82,16 +82,16 @@
       <div class="callout"><strong>Integrity note.</strong><div class="muted">Crisis windows (2008-2009) are retained in validation; asterisked folds below are a context marker only.</div></div>
     </section>
     <section><h2>Validation Verdict (Hard Gates)</h2><div class="verdict-panel"><span class="badge good">PASS</span><span class="badge-detail">All hard gates cleared.</span></div><p class="verdict-note"><strong>Candidate:</strong> Ex-Norway Momentum (Top 8, trend filter)</p><p class="verdict-note"><strong>Passing grade:</strong> all hard gates below must be PASS. PBO >= 50.0% is automatic FAIL; 30.0% - 50.0% = PASS with caution.</p><ul class="verdict-list"><li class="verdict-item"><span class="verdict-label">Walk-forward Sharpe gate</span><span class="badge good">PASS</span><span class="badge-detail">4/5 folds >= 0.40 (need 4)</span></li><li class="verdict-item"><span class="verdict-label">Bootstrap CI gate</span><span class="badge good">PASS</span><span class="badge-detail">CI low 0.660 > 0</span></li><li class="verdict-item"><span class="verdict-label">Deflated Sharpe gate</span><span class="badge good">PASS</span><span class="badge-detail">score 0.392 > 0</span></li><li class="verdict-item"><span class="verdict-label">Negative controls gate</span><span class="badge good">PASS</span><span class="badge-detail">cross_sectional_shuffle 0.2% (max 20.0%)</span></li><li class="verdict-item"><span class="verdict-label">PBO hard cutoff</span><span class="badge neutral">N/A</span><span class="badge-detail">PBO not applicable because this replay freezes one exact candidate instead of ranking a grid.</span></li></ul></section>
-    <section><h2>Phase Map</h2><div class="grid"><div class="card"><div class="label">Phase 1</div><div class="value">Infrastructure &amp; Data</div><div class="muted">Gate this cycle with <code>validate.py</code>. This stage checks the engine and core artifacts before any research result is trusted. <a href="phase1_summary.html">Open Phase 1 validation.</a></div></div><div class="card"><div class="label">Phase 2</div><div class="value">Research Certification</div><div class="muted">Selection boundary 2000-01 to 2017-12. Validation windows 2008-01 to 2017-12. <a href="selection_summary.html">Open Phase 2 certification.</a></div></div><div class="card"><div class="label">Phase 3</div><div class="value">Untouched Holdout</div><div class="muted">Official holdout window 2018-01 to 2026-01. <a href="../../phase3_dashboard.html">Open Phase 3 holdout.</a></div></div><div class="card"><div class="label">Phase 4</div><div class="value">Paper Trading</div><div class="muted">Only unlock after the frozen Phase 3 result is accepted.</div></div></div></section>
+    <section><h2>Phase Map</h2><div class="grid"><div class="card"><div class="label">Phase 1</div><div class="value">Infrastructure &amp; Data</div><div class="muted">Gate this cycle with <code>validate.py</code>. This stage checks the engine and core artifacts before any research result is trusted. <a href="phase1_summary.html">Open Phase 1 validation.</a></div></div><div class="card"><div class="label">Phase 2</div><div class="value">Research Dashboard</div><div class="muted">Selection boundary 2000-01 to 2017-12. Validation windows 2008-01 to 2017-12. <a href="dashboard.html">Open Phase 2 dashboard.</a></div></div><div class="card"><div class="label">Phase 3</div><div class="value">Untouched Holdout</div><div class="muted">Official holdout window 2018-01 to 2026-01. <a href="../../phase3_dashboard.html">Open Phase 3 holdout.</a></div></div><div class="card"><div class="label">Phase 4</div><div class="value">Paper Trading</div><div class="muted">Only unlock after the frozen Phase 3 result is accepted.</div></div></div></section>
     
     <section>
       <h2>Phase 1-4 Validation Funnel</h2>
-      <p class="muted">This report uses a strict phase ladder before any paper trading. Phase 1 is the infrastructure/data gate, Phase 2 is research certification on 2000-01 to 2017-12, Phase 3 is the untouched final holdout on 2018-01 to 2026-01, and Phase 4 only starts after Phase 3 passes.</p>
+      <p class="muted">This report uses a strict phase ladder before any paper trading. Phase 1 is the infrastructure/data gate, Phase 2 is validation on 2000-01 to 2017-12, Phase 3 is the untouched final holdout on 2018-01 to 2026-01, and Phase 4 only starts after Phase 3 passes.</p>
       <div class="grid">
         <div class="card">
           <div class="label">Phase 1. Data / Engine Gate</div>
           <div class="value">2000-01 to 2017-12</div>
-          <div class="muted">This page assumes `validate.py` is already green. Parameters are chosen only after the Phase 1 data/engine gate is clear. Candidates tested: 1. <a href="selection_summary.html">Open certification summary</a>.</div>
+          <div class="muted">This page assumes `validate.py` is already green. Parameters are chosen only after the Phase 1 data/engine gate is clear. Candidates tested: 1. <a href="dashboard.html">Open Phase 2 dashboard</a>.</div>
         </div>
         <div class="card">
           <div class="label">Phase 2A. Repeated OOS Folds</div>
@@ -132,10 +132,10 @@
     </section>
     <section>
       <h2>Diagnostics Overview</h2>
-      <div style="margin:10px 0 12px; padding:10px 12px; border-radius:14px; border:1px solid rgba(176,107,29,.28); background:#fff7eb; color:#5b6762;"><strong style="color:#4b4031;">Timeframe:</strong> These cards combine Phase 2 certification outputs over 2008-01 to 2017-12 with the current Phase 3 status for 2018-01 to 2026-01.</div>
+      <div style="margin:10px 0 12px; padding:10px 12px; border-radius:14px; border:1px solid rgba(176,107,29,.28); background:#fff7eb; color:#5b6762;"><strong style="color:#4b4031;">Timeframe:</strong> These cards combine Phase 2 dashboard outputs over 2008-01 to 2017-12 with the current Phase 3 status for 2018-01 to 2026-01.</div>
       <div class="grid">
         <div class="card">
-          <div class="label">Certification PBO</div>
+          <div class="label">Phase 2 PBO</div>
           <div class="value">n/a (single candidate)</div>
           <div class="muted">Band n/a Â· Good &lt; 30.0% Â· Hard cutoff &gt;= 50.0%</div>
           <div class="muted">Slices None Â· Slice length n/a months Â· Combos 0</div>
@@ -159,7 +159,7 @@
         <div class="card">
           <div class="label">Hard-Gate Winners</div>
           <div class="value">1</div>
-          <div class="muted">Candidates clearing all certification gates.</div>
+          <div class="muted">Candidates clearing all Phase 2 gates.</div>
         </div>
         <div class="card">
           <div class="label">Top Candidate Blockers</div>
@@ -260,14 +260,14 @@
           <svg viewBox="0 0 560 160" width="100%" height="160" preserveAspectRatio="none"><polyline points="0.0,151.0 4.7,152.8 9.3,153.1 14.0,153.5 18.7,152.8 23.3,153.5 28.0,159.4 32.7,159.4 37.3,159.4 42.0,159.4 46.7,159.4 51.3,159.3 56.0,158.6 60.7,159.0 65.3,160.0 70.0,159.6 74.7,157.6 79.3,157.0 84.0,157.1 88.7,156.7 93.3,156.7 98.0,156.8 102.7,156.5 107.3,156.1 112.0,155.9 116.7,155.8 121.3,156.1 126.0,154.9 130.7,154.7 135.3,155.7 140.0,156.0 144.7,155.0 149.3,155.3 154.0,154.9 158.7,154.7 163.3,154.5 168.0,153.8 172.7,154.2 177.3,154.6 182.0,154.1 186.7,153.7 191.3,154.0 196.0,154.6 200.7,155.4 205.3,156.5 210.0,157.3 214.7,156.8 219.3,156.5 224.0,156.3 228.7,155.5 233.3,154.7 238.0,154.9 242.7,155.1 247.3,156.3 252.0,155.4 256.7,155.0 261.3,154.8 266.0,154.7 270.7,154.6 275.3,154.3 280.0,153.9 284.7,153.0 289.3,153.1 294.0,153.1 298.7,152.7 303.3,152.4 308.0,153.1 312.7,152.1 317.3,152.2 322.0,151.8 326.7,151.1 331.3,150.6 336.0,150.3 340.7,150.9 345.3,149.8 350.0,149.2 354.7,148.9 359.3,148.1 364.0,148.1 368.7,148.2 373.3,147.9 378.0,147.7 382.7,147.8 387.3,147.2 392.0,147.1 396.7,145.5 401.3,144.0 406.0,142.9 410.7,143.2 415.3,142.6 420.0,143.9 424.7,142.6 429.3,145.1 434.0,145.7 438.7,144.4 443.3,144.0 448.0,145.4 452.7,146.2 457.3,145.9 462.0,146.4 466.7,146.0 471.3,145.5 476.0,145.8 480.7,145.0 485.3,145.2 490.0,145.3 494.7,145.6 499.3,145.3 504.0,144.3 508.7,144.4 513.3,143.6 518.0,143.3 522.7,142.1 527.3,141.1 532.0,141.6 536.7,142.1 541.3,142.2 546.0,141.2 550.7,140.7 555.3,141.6 560.0,141.7" fill="none" stroke="#9a8c6a" stroke-width="2" stroke-dasharray="4 4" /><polyline points="0.0,151.0 4.7,151.0 9.3,151.0 14.0,151.0 18.7,151.0 23.3,151.0 28.0,151.0 32.7,151.0 37.3,151.0 42.0,151.0 46.7,151.0 51.3,151.0 56.0,151.0 60.7,151.0 65.3,151.0 70.0,151.0 74.7,151.0 79.3,150.7 84.0,150.2 88.7,149.0 93.3,148.6 98.0,147.7 102.7,146.4 107.3,145.9 112.0,145.7 116.7,146.2 121.3,146.2 126.0,142.8 130.7,142.0 135.3,144.7 140.0,146.5 144.7,146.6 149.3,147.2 154.0,143.7 158.7,141.8 163.3,141.4 168.0,138.8 172.7,139.1 177.3,138.6 182.0,136.9 186.7,136.2 191.3,135.5 196.0,136.9 200.7,137.0 205.3,137.0 210.0,137.0 214.7,137.0 219.3,137.0 224.0,137.0 228.7,137.0 233.3,136.5 238.0,136.3 242.7,134.8 247.3,135.2 252.0,135.4 256.7,135.3 261.3,134.1 266.0,134.0 270.7,131.2 275.3,129.2 280.0,127.9 284.7,125.1 289.3,121.6 294.0,118.9 298.7,117.6 303.3,113.3 308.0,114.6 312.7,107.9 317.3,109.5 322.0,101.4 326.7,96.1 331.3,95.2 336.0,93.0 340.7,90.8 345.3,89.4 350.0,88.4 354.7,82.3 359.3,77.6 364.0,76.8 368.7,81.5 373.3,79.9 378.0,82.3 382.7,73.7 387.3,71.6 392.0,61.6 396.7,58.4 401.3,36.0 406.0,26.3 410.7,22.6 415.3,14.4 420.0,23.2 424.7,15.6 429.3,19.4 434.0,20.4 438.7,20.4 443.3,20.4 448.0,20.4 452.7,20.4 457.3,20.4 462.0,20.4 466.7,20.4 471.3,20.4 476.0,20.4 480.7,20.4 485.3,18.9 490.0,15.0 494.7,22.7 499.3,29.0 504.0,23.6 508.7,13.2 513.3,0.0 518.0,5.1 522.7,1.7 527.3,9.1 532.0,13.9 536.7,11.1 541.3,9.6 546.0,10.0 550.7,3.5 555.3,25.1 560.0,23.2" fill="none" stroke="#b06b1d" stroke-width="2.5" /></svg>
         </div>
         <div class="card">
-          <div class="label">Certification</div>
+          <div class="label">Phase 2</div>
           <svg viewBox="0 0 560 160" width="100%" height="160" preserveAspectRatio="none"><polyline points="0.0,151.0 4.7,152.8 9.3,153.1 14.0,153.5 18.7,152.8 23.3,153.5 28.0,159.4 32.7,159.4 37.3,159.4 42.0,159.4 46.7,159.4 51.3,159.3 56.0,158.6 60.7,159.0 65.3,160.0 70.0,159.6 74.7,157.6 79.3,157.0 84.0,157.1 88.7,156.7 93.3,156.7 98.0,156.8 102.7,156.5 107.3,156.1 112.0,155.9 116.7,155.8 121.3,156.1 126.0,154.9 130.7,154.7 135.3,155.7 140.0,156.0 144.7,155.0 149.3,155.3 154.0,154.9 158.7,154.7 163.3,154.5 168.0,153.8 172.7,154.2 177.3,154.6 182.0,154.1 186.7,153.7 191.3,154.0 196.0,154.6 200.7,155.4 205.3,156.5 210.0,157.3 214.7,156.8 219.3,156.5 224.0,156.3 228.7,155.5 233.3,154.7 238.0,154.9 242.7,155.1 247.3,156.3 252.0,155.4 256.7,155.0 261.3,154.8 266.0,154.7 270.7,154.6 275.3,154.3 280.0,153.9 284.7,153.0 289.3,153.1 294.0,153.1 298.7,152.7 303.3,152.4 308.0,153.1 312.7,152.1 317.3,152.2 322.0,151.8 326.7,151.1 331.3,150.6 336.0,150.3 340.7,150.9 345.3,149.8 350.0,149.2 354.7,148.9 359.3,148.1 364.0,148.1 368.7,148.2 373.3,147.9 378.0,147.7 382.7,147.8 387.3,147.2 392.0,147.1 396.7,145.5 401.3,144.0 406.0,142.9 410.7,143.2 415.3,142.6 420.0,143.9 424.7,142.6 429.3,145.1 434.0,145.7 438.7,144.4 443.3,144.0 448.0,145.4 452.7,146.2 457.3,145.9 462.0,146.4 466.7,146.0 471.3,145.5 476.0,145.8 480.7,145.0 485.3,145.2 490.0,145.3 494.7,145.6 499.3,145.3 504.0,144.3 508.7,144.4 513.3,143.6 518.0,143.3 522.7,142.1 527.3,141.1 532.0,141.6 536.7,142.1 541.3,142.2 546.0,141.2 550.7,140.7 555.3,141.6 560.0,141.7" fill="none" stroke="#9a8c6a" stroke-width="2" stroke-dasharray="4 4" /><polyline points="0.0,151.0 4.7,151.0 9.3,151.0 14.0,151.0 18.7,151.0 23.3,151.0 28.0,151.0 32.7,151.0 37.3,151.0 42.0,151.0 46.7,151.0 51.3,151.0 56.0,151.0 60.7,151.0 65.3,151.0 70.0,151.0 74.7,151.0 79.3,150.7 84.0,150.2 88.7,149.0 93.3,148.6 98.0,147.7 102.7,146.4 107.3,145.9 112.0,145.7 116.7,146.2 121.3,146.2 126.0,142.8 130.7,142.0 135.3,144.7 140.0,146.5 144.7,146.6 149.3,147.2 154.0,143.7 158.7,141.8 163.3,141.4 168.0,138.8 172.7,139.1 177.3,138.6 182.0,136.9 186.7,136.2 191.3,135.5 196.0,136.9 200.7,137.0 205.3,137.0 210.0,137.0 214.7,137.0 219.3,137.0 224.0,137.0 228.7,137.0 233.3,136.5 238.0,136.3 242.7,134.8 247.3,135.2 252.0,135.4 256.7,135.3 261.3,134.1 266.0,134.0 270.7,131.2 275.3,129.2 280.0,127.9 284.7,125.1 289.3,121.6 294.0,118.9 298.7,117.6 303.3,113.3 308.0,114.6 312.7,107.9 317.3,109.5 322.0,101.4 326.7,96.1 331.3,95.2 336.0,93.0 340.7,90.8 345.3,89.4 350.0,88.4 354.7,82.3 359.3,77.6 364.0,76.8 368.7,81.5 373.3,79.9 378.0,82.3 382.7,73.7 387.3,71.6 392.0,61.6 396.7,58.4 401.3,36.0 406.0,26.3 410.7,22.6 415.3,14.4 420.0,23.2 424.7,15.6 429.3,19.4 434.0,20.4 438.7,20.4 443.3,20.4 448.0,20.4 452.7,20.4 457.3,20.4 462.0,20.4 466.7,20.4 471.3,20.4 476.0,20.4 480.7,20.4 485.3,18.9 490.0,15.0 494.7,22.7 499.3,29.0 504.0,23.6 508.7,13.2 513.3,0.0 518.0,5.1 522.7,1.7 527.3,9.1 532.0,13.9 536.7,11.1 541.3,9.6 546.0,10.0 550.7,3.5 555.3,25.1 560.0,23.2" fill="none" stroke="#b06b1d" stroke-width="2.5" /></svg>
         </div>
       </div>
       <p class="muted" style="margin-top:10px;">Gold line = candidate; dashed = XACT Norden if available.</p>
     </section>
     <section>
-      <h2>Fold Diagnostics (Top Certification Candidate)</h2>
+      <h2>Fold Diagnostics (Top Phase 2 Candidate)</h2>
       <div style="margin:10px 0 12px; padding:10px 12px; border-radius:14px; border:1px solid rgba(176,107,29,.28); background:#fff7eb; color:#5b6762;"><strong style="color:#4b4031;">Timeframe:</strong> Fold diagnostics cover the five fixed Phase 2 validation windows inside 2008-01 to 2017-12.</div>
       <table>
         <thead>
@@ -309,14 +309,14 @@
         <tbody>
           <tr><td>Quick</td><td>Ex-Norway Momentum (Top 8, trend filter)</td><td>100</td><td>50</td><td>skipped</td><td>n/a</td></tr>
 <tr><td>Mega</td><td>Ex-Norway Momentum (Top 8, trend filter)</td><td>500</td><td>200</td><td>skipped</td><td>n/a</td></tr>
-<tr><td>Certification</td><td>Ex-Norway Momentum (Top 8, trend filter)</td><td>500</td><td>200</td><td>ok</td><td>n/a</td></tr>
+<tr><td>Phase 2</td><td>Ex-Norway Momentum (Top 8, trend filter)</td><td>500</td><td>200</td><td>ok</td><td>n/a</td></tr>
         </tbody>
       </table>
-      <p class="muted" style="margin-top:10px;">This rerun freezes one exact candidate tuple, so the top candidate is expected to be identical across Quick, Mega, and Certification. The real differences here are diagnostic depth and whether walk-forward ran.</p>
+      <p class="muted" style="margin-top:10px;">This rerun freezes one exact candidate tuple, so the top candidate is expected to be identical across Quick, Mega, and Dashboard. The real differences here are diagnostic depth and whether walk-forward ran.</p>
     </section>
     <section>
-      <h2>Top Candidates (Certification)</h2>
-      <div style="margin:10px 0 12px; padding:10px 12px; border-radius:14px; border:1px solid rgba(176,107,29,.28); background:#fff7eb; color:#5b6762;"><strong style="color:#4b4031;">Timeframe:</strong> Certification candidates below are ranked only on the Phase 2 validation evidence over 2008-01 to 2017-12.</div>
+      <h2>Top Candidates (Phase 2)</h2>
+      <div style="margin:10px 0 12px; padding:10px 12px; border-radius:14px; border:1px solid rgba(176,107,29,.28); background:#fff7eb; color:#5b6762;"><strong style="color:#4b4031;">Timeframe:</strong> Phase 2 candidates below are ranked only on the validation evidence over 2008-01 to 2017-12.</div>
       <table>
         <thead>
           <tr><th>Candidate</th><th>Params</th><th>Median Sharpe</th><th>Fold Passes</th><th>Bootstrap</th><th>Deflated</th></tr>
@@ -330,6 +330,8 @@
   </main>
 </body>
 </html>
+
+
 
 
 

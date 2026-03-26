@@ -1162,7 +1162,7 @@ def build_phase3_dashboard(
         <a href="{portfolio_home_href}">Home</a>
         <a href="{employer_package_href}">Employer Package</a>
         <a href="{analysis_suite_href}">Evidence</a>
-        <a href="{selection_href}">Phase 2 Certification</a>
+        <a href="{selection_href}">Phase 2 Dashboard</a>
         <a href="{raw_holdout_href}">Raw Artifact</a>
       </nav>
     </header>
@@ -1178,7 +1178,7 @@ def build_phase3_dashboard(
           {source_note_html}
           <div class="meta-note"><strong>Locked params:</strong> {format_params(official_holdout.get('selected_params'))}</div>
           <div class="actions">
-            <a class="button primary" href="{selection_href}">Open Phase 2 certification</a>
+            <a class="button primary" href="{selection_href}">Open Phase 2 dashboard</a>
             <a class="button secondary" href="{raw_holdout_href}">Open raw artifact</a>
             <a class="button ghost" href="{back_href}">Back</a>
           </div>
