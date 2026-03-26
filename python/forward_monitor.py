@@ -2250,7 +2250,7 @@ def build_portfolio_package_dashboard_html(
         </div>
       </div>
       <nav class="nav-links" aria-label="Primary">
-        <a href="../index.html">Portfolio Home</a>
+        <a href="../index.html">Home</a>
         <a href="README.html">Package README</a>
         <a href="PROJECT_STATUS.html">Project Status</a>
         <a href="research_audit_dossier.html">Dossier</a>

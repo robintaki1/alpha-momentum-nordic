@@ -1159,7 +1159,7 @@ def build_phase3_dashboard(
         </div>
       </div>
       <nav class="nav-links" aria-label="Primary">
-        <a href="{portfolio_home_href}">Portfolio Home</a>
+        <a href="{portfolio_home_href}">Home</a>
         <a href="{employer_package_href}">Employer Package</a>
         <a href="{analysis_suite_href}">Analysis Suite</a>
         <a href="{selection_href}">Phase 2 Certification</a>
