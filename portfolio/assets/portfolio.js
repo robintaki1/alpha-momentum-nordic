@@ -27,34 +27,78 @@
     })} SEK`;
   }
 
+  function formatSignedCurrency(value) {
+    const numericValue = Number(value);
+    if (!Number.isFinite(numericValue)) {
+      return value || "n/a";
+    }
+
+    const magnitude = Math.abs(numericValue).toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+    return `${numericValue >= 0 ? "+" : "-"}${magnitude} SEK`;
+  }
+
+  function formatSignedPercent(value) {
+    const numericValue = Number(value);
+    if (!Number.isFinite(numericValue)) {
+      return value || "n/a";
+    }
+
+    const magnitude = Math.abs(numericValue).toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+    return `${numericValue >= 0 ? "+" : "-"}${magnitude}%`;
+  }
+
   function cleanText(value) {
     const text = value == null ? "" : String(value).trim();
     return text.length ? text : "n/a";
   }
 
-  function renderLedgerCard(row) {
+  function renderLedgerCard(row, index, rows) {
     const article = document.createElement("article");
     article.className = "snapshot-card";
 
     const label = document.createElement("span");
     label.className = "snapshot-label";
-    label.textContent = cleanText(row.trade_date);
+    label.textContent = `Execution date ${cleanText(row.trade_date)}`;
 
     const value = document.createElement("strong");
     value.className = "snapshot-value";
     value.textContent = formatCurrency(row.portfolio_value_after_sek);
 
+    const metrics = document.createElement("div");
+    metrics.className = "metric-inline";
+
+    const currentAfter = Number(row.portfolio_value_after_sek);
+    const currentBefore = Number(row.portfolio_value_before_sek);
+    const previousAfter = index > 0 ? Number(rows[index - 1].portfolio_value_after_sek) : currentBefore;
+    const monthPnl = currentAfter - previousAfter;
+    const tradeDrag = currentAfter - currentBefore;
+    const periodReturnPct = Number(row.period_return) * 100;
+
+    [
+      `Holding month ${cleanText(row.holding_month)}`,
+      `Month P/L after costs ${formatSignedCurrency(monthPnl)}`,
+      `Period return ${formatSignedPercent(periodReturnPct)}`,
+    ].forEach((text) => {
+      const chip = document.createElement("span");
+      chip.textContent = text;
+      metrics.append(chip);
+    });
+
     const note = document.createElement("p");
     note.className = "snapshot-note";
     note.textContent = [
-      `Holding month ${cleanText(row.holding_month)}.`,
-      `Before ${formatCurrency(row.portfolio_value_before_sek)}.`,
-      `After costs ${formatCurrency(row.portfolio_value_after_sek)}.`,
-      `Total cost ${formatCurrency(row.total_cost_sek)}.`,
+      `Before rebalance ${formatCurrency(row.portfolio_value_before_sek)}.`,
+      `Trade drag ${formatSignedCurrency(tradeDrag)}.`,
       `Cash ${formatCurrency(row.cash_sek)}.`,
     ].join(" ");
 
-    article.append(label, value, note);
+    article.append(label, value, metrics, note);
     return article;
   }
 
@@ -76,7 +120,7 @@
         return;
       }
 
-      grid.replaceChildren(...rows.map(renderLedgerCard));
+      grid.replaceChildren(...rows.map((row, index) => renderLedgerCard(row, index, rows)));
     } catch {
       // Keep the static fallback cards if the CSV is unavailable.
     }
