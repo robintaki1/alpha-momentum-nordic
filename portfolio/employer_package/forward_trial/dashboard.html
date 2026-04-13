@@ -6,6 +6,7 @@
   <title>Systematic Nordic Equity Research &amp; Validation Forward Trial</title>
   <link rel="stylesheet" href="../../assets/portfolio.css" />
   <link rel="stylesheet" href="../../assets/portfolio-theme.css" />
+  <script src="../../assets/portfolio.js" defer></script>
 </head>
 <body class="am-theme">
   <main class="page-shell">
@@ -31,19 +32,19 @@
         <div>
           <span class="eyebrow">Forward trial dashboard</span>
           <h1 class="hero-title">Frozen books on new months</h1>
-          <p class="hero-subtitle">Lead and shadow candidates monitored after the historical validation work is done.</p>
-          <p class="lede">This page is about observing the frozen books, not finding a better one: no retuning, just monitoring on new months.</p>
+          <p class="hero-subtitle">Lead and shadow candidates monitored after the historical validation work is done. The visible snapshot shows the 2026-03-02 rebalance that followed the 2026-02 signal month.</p>
+          <p class="lede">This page is about observing the frozen books, not finding a better one: no retuning, just monitoring on new months, with one rebalance batch per month.</p>
 
           <div class="snapshot-grid">
             <article class="snapshot-card">
               <span class="snapshot-label">Monitor start</span>
               <strong class="snapshot-value">2026-02</strong>
-              <p class="snapshot-note">Paper-trial tracking begins after the holdout window.</p>
+              <p class="snapshot-note">Paper-trial tracking begins after the holdout window and advances once per month.</p>
             </article>
             <article class="snapshot-card">
               <span class="snapshot-label">Current pick month</span>
               <strong class="snapshot-value">2026-03</strong>
-              <p class="snapshot-note">Latest completed realized month is 2026-02.</p>
+              <p class="snapshot-note">Latest completed realized month is 2026-02. The latest rebalance executed on 2026-03-02.</p>
             </article>
             <article class="snapshot-card">
               <span class="snapshot-label">Current overlap</span>
@@ -51,9 +52,14 @@
               <p class="snapshot-note">100.0% of the smaller book is currently shared with the n15 shadow book.</p>
             </article>
             <article class="snapshot-card">
-              <span class="snapshot-label">Legacy cadence read</span>
-              <strong class="snapshot-value">No full cadence pass</strong>
-              <p class="snapshot-note">No cadence pair currently passes Phase 2 validation plus holdout under the legacy cost model.</p>
+              <span class="snapshot-label">Last rebalance</span>
+              <strong class="snapshot-value">2026-03-02</strong>
+              <p class="snapshot-note">The 2026-02 signal turned into the 2026-03 holding month on the next trading day.</p>
+            </article>
+            <article class="snapshot-card">
+              <span class="snapshot-label">Latest portfolio value</span>
+              <strong class="snapshot-value">56,317.34 SEK</strong>
+              <p class="snapshot-note">Value after costs at the latest rebalance on 2026-03-02.</p>
             </article>
           </div>
 
@@ -77,6 +83,10 @@
               <strong>Ex-Norway n15, a wider same-family control.</strong>
             </li>
             <li>
+              <span>Cadence</span>
+              <strong>One trade batch per month: signal month, next execution date, then the new holding month.</strong>
+            </li>
+            <li>
               <span>Earliest review</span>
               <strong>August 2026 after six paper months.</strong>
             </li>
@@ -89,7 +99,107 @@
       </div>
     </section>
 
-    <section class="section reveal delay-2">
+    <section class="section reveal delay-2 rebalance-ledger" data-history-source="../../../papertrading/portfolio_history.csv">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Rebalance ledger</p>
+          <h2>Portfolio value at each rebalance</h2>
+        </div>
+        <p class="section-intro">This monthly paper-trade log is shown here as well, so the forward-trial route makes the rebalance dates and values impossible to miss.</p>
+      </div>
+
+      <div class="snapshot-grid" data-history-grid>
+        <article class="snapshot-card">
+          <span class="snapshot-label">2026-02-02</span>
+          <strong class="snapshot-value">49,793.36 SEK</strong>
+          <p class="snapshot-note">Holding month 2026-02. Before 50,000.00 SEK. After costs 49,793.36 SEK. Total cost 206.64 SEK. Cash 0.86 SEK.</p>
+        </article>
+        <article class="snapshot-card">
+          <span class="snapshot-label">2026-03-02</span>
+          <strong class="snapshot-value">56,317.34 SEK</strong>
+          <p class="snapshot-note">Holding month 2026-03. Before 56,587.52 SEK. After costs 56,317.34 SEK. Total cost 270.18 SEK. Cash 0.49 SEK.</p>
+        </article>
+      </div>
+
+      <div class="section-callout">
+        <strong>Source:</strong> <code>papertrading/portfolio_history.csv</code>. The monthly log updates whenever the tracker records a new rebalance.
+      </div>
+    </section>
+
+    <section class="section reveal delay-3">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Trust checks</p>
+          <h2>How it operates</h2>
+        </div>
+        <p class="section-intro">This is point-in-time replay, not a broker feed. The page shows the data source, execution timing, friction model, and look-ahead guardrails in one place.</p>
+      </div>
+
+      <div class="comparison-grid">
+        <article class="comparison-card">
+          <div class="comparison-head">
+            <div>
+              <h3 class="comparison-title">Data provenance</h3>
+              <p class="comparison-meta">Historical daily parquet snapshots in `data/`, replayed as they were available at the monthly check.</p>
+            </div>
+            <span class="badge good">Point-in-time</span>
+          </div>
+          <div class="metric-inline">
+            <span>Not a live broker feed</span>
+            <span>As-of checks required</span>
+            <span>Fresh rows only</span>
+          </div>
+        </article>
+
+        <article class="comparison-card">
+          <div class="comparison-head">
+            <div>
+              <h3 class="comparison-title">Execution model</h3>
+              <p class="comparison-meta">The monthly trade batch uses the next available trading day and prices at next open.</p>
+            </div>
+            <span class="badge good">next_open</span>
+          </div>
+          <div class="metric-inline">
+            <span>Signal month 2026-02</span>
+            <span>Execution date 2026-03-02</span>
+            <span>Holding month 2026-03</span>
+          </div>
+        </article>
+
+        <article class="comparison-card">
+          <div class="comparison-head">
+            <div>
+              <h3 class="comparison-title">Friction model</h3>
+              <p class="comparison-meta">Tiered one-way costs are added on top of the trade prices to simulate brokerage and market impact.</p>
+            </div>
+            <span class="badge warn">Costs</span>
+          </div>
+          <div class="metric-inline">
+            <span>Avg one-way cost 41.8 bps</span>
+            <span>Estimated drag 12.4 bps</span>
+            <span>Tiered v1 + FX</span>
+          </div>
+        </article>
+
+        <article class="comparison-card">
+          <div class="comparison-head">
+            <div>
+              <h3 class="comparison-title">Look-ahead guard</h3>
+              <p class="comparison-meta">The audit shows no stale, missing-as-of, or missing-ADV names in the current lead book.</p>
+            </div>
+            <span class="badge good">Clean</span>
+          </div>
+          <div class="metric-inline">
+            <span>0 stale as-of</span>
+            <span>0 missing as-of</span>
+            <span>0 missing ADV</span>
+            <span>Duplicate-month guard active</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section reveal delay-4">
       <div class="section-head">
         <div>
           <p class="section-kicker">Current books</p>
@@ -103,12 +213,13 @@
           <div class="comparison-head">
             <div>
               <h3 class="comparison-title">Lead book: Ex-Norway n8</h3>
-              <p class="comparison-meta">Removes Norway while keeping the simple price-momentum implementation.</p>
+              <p class="comparison-meta">Removes Norway while keeping the simple price-momentum implementation. The monthly batch executes on the next open.</p>
             </div>
             <span class="badge good">Lead</span>
           </div>
           <div class="metric-inline">
             <span>Signal month 2026-02</span>
+            <span>Execution date 2026-03-02</span>
             <span>Holding month 2026-03</span>
             <span>Eligible names 152</span>
             <span>New entry BOL.ST</span>
@@ -120,12 +231,13 @@
           <div class="comparison-head">
             <div>
               <h3 class="comparison-title">Shadow book: Ex-Norway n15</h3>
-              <p class="comparison-meta">Same family with broader breadth, used as the live shadow control.</p>
+              <p class="comparison-meta">Same family with broader breadth, used as the live shadow control. The monthly batch executes on the next open.</p>
             </div>
             <span class="badge neutral">Shadow</span>
           </div>
           <div class="metric-inline">
             <span>Signal month 2026-02</span>
+            <span>Execution date 2026-03-02</span>
             <span>Holding month 2026-03</span>
             <span>Eligible names 154</span>
             <span>Entries FLS.CO / MAERSK-B.CO / NKT.CO</span>
@@ -137,7 +249,7 @@
           <div class="comparison-head">
             <div>
               <h3 class="comparison-title">Overlap</h3>
-              <p class="comparison-meta">The current n8 book is fully nested inside the current n15 book.</p>
+              <p class="comparison-meta">The current n8 book is fully nested inside the current n15 book after the 2026-03-02 rebalance.</p>
             </div>
             <span class="badge good">100.0%</span>
           </div>
@@ -211,7 +323,7 @@
       </details>
     </section>
 
-    <section class="section reveal delay-2">
+    <section class="section reveal delay-5">
       <div class="section-head">
         <div>
           <p class="section-kicker">Pre-trade audit</p>
@@ -257,7 +369,7 @@
       </div>
     </section>
 
-    <section class="section reveal delay-3">
+    <section class="section reveal delay-6">
       <div class="section-head">
         <div>
           <p class="section-kicker">Holdout breadth</p>
@@ -346,7 +458,7 @@
       </details>
     </section>
 
-    <section class="section reveal delay-3">
+    <section class="section reveal delay-7">
       <div class="section-head">
         <div>
           <p class="section-kicker">Live read</p>

@@ -19,6 +19,7 @@
   <link rel="canonical" href="https://alpha-momentum-nordic.vercel.app/" />
   <link rel="stylesheet" href="assets/portfolio.css" />
   <link rel="stylesheet" href="assets/portfolio-theme.css" />
+  <script src="assets/portfolio.js" defer></script>
 </head>
 <body class="am-theme">
   <main class="page-shell">
@@ -39,7 +40,44 @@
       </nav>
     </header>
 
-    <section class="hero reveal delay-1">
+    <section class="section operating-banner reveal delay-1">
+      <div class="operating-banner-head">
+        <div>
+          <p class="section-kicker">Operating model</p>
+          <h2>Live vs paper vs historical replay</h2>
+          <p class="section-intro">This portfolio is paper-trading in public. There is no live broker connection here; the current mode replays point-in-time historical data, prices the next available open, and applies friction before results are recorded.</p>
+        </div>
+        <div class="operating-banner-pill">
+          <span>Current state</span>
+          <strong>Paper trading active</strong>
+          <p>No live broker feed. State updates monthly in <code>papertrading/</code>.</p>
+        </div>
+      </div>
+
+      <div class="operating-grid">
+        <article class="mode-card mode-card-off">
+          <span class="badge warn">Live broker trading</span>
+          <strong>OFF</strong>
+          <p>Nothing in this repo routes orders to a real brokerage account.</p>
+        </article>
+        <article class="mode-card mode-card-on">
+          <span class="badge good">Paper trading</span>
+          <strong>ACTIVE</strong>
+          <p>The frozen book rebalances monthly and writes its state to disk.</p>
+        </article>
+        <article class="mode-card mode-card-replay">
+          <span class="badge neutral">Historical replay</span>
+          <strong>IN USE</strong>
+          <p>Signals come from point-in-time daily data, then execute on the next available open with friction included.</p>
+        </article>
+      </div>
+
+      <div class="section-callout">
+        <strong>Trust checks:</strong> as-of availability checks, next-open pricing, one-way friction, and duplicate-month protection keep the run honest.
+      </div>
+    </section>
+
+    <section class="hero reveal delay-2">
       <div class="hero-grid">
         <div>
           <span class="eyebrow">Employer route</span>
@@ -67,6 +105,16 @@
               <span class="snapshot-label">Current mode</span>
               <strong class="snapshot-value">Paper trial active</strong>
               <p class="snapshot-note">Frozen strategy monitored on new months.</p>
+            </article>
+            <article class="snapshot-card">
+              <span class="snapshot-label">Operating model</span>
+              <strong class="snapshot-value">Point-in-time replay</strong>
+              <p class="snapshot-note">Historical daily data, next-open execution, tiered friction, no live broker feed.</p>
+            </article>
+            <article class="snapshot-card">
+              <span class="snapshot-label">Latest rebalance</span>
+              <strong class="snapshot-value">2026-03-02</strong>
+              <p class="snapshot-note">Portfolio value after costs: 56,317.34 SEK.</p>
             </article>
           </div>
 
@@ -111,7 +159,34 @@
       </div>
     </section>
 
-    <section class="section reveal delay-2">
+    <section class="section reveal delay-3 rebalance-ledger" data-history-source="../papertrading/portfolio_history.csv">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Rebalance ledger</p>
+          <h2>Portfolio value at each rebalance</h2>
+        </div>
+        <p class="section-intro">These cards are hydrated from the monthly paper-trade CSV when the page can fetch it, so the rebalance dates and values stay tied to the actual log.</p>
+      </div>
+
+      <div class="snapshot-grid" data-history-grid>
+        <article class="snapshot-card">
+          <span class="snapshot-label">2026-02-02</span>
+          <strong class="snapshot-value">49,793.36 SEK</strong>
+          <p class="snapshot-note">Holding month 2026-02. Before 50,000.00 SEK. After costs 49,793.36 SEK. Total cost 206.64 SEK. Cash 0.86 SEK.</p>
+        </article>
+        <article class="snapshot-card">
+          <span class="snapshot-label">2026-03-02</span>
+          <strong class="snapshot-value">56,317.34 SEK</strong>
+          <p class="snapshot-note">Holding month 2026-03. Before 56,587.52 SEK. After costs 56,317.34 SEK. Total cost 270.18 SEK. Cash 0.49 SEK.</p>
+        </article>
+      </div>
+
+      <div class="section-callout">
+        <strong>Source:</strong> <code>papertrading/portfolio_history.csv</code>. The monthly log updates whenever the tracker records a new rebalance.
+      </div>
+    </section>
+
+    <section class="section reveal delay-4">
       <div class="section-head">
         <div>
           <p class="section-kicker">4-step route</p>
