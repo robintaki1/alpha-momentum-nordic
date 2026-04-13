@@ -40,44 +40,7 @@
       </nav>
     </header>
 
-    <section class="section operating-banner reveal delay-1">
-      <div class="operating-banner-head">
-        <div>
-          <p class="section-kicker">Operating model</p>
-          <h2>Live vs paper vs historical replay</h2>
-          <p class="section-intro">This portfolio is paper-trading in public. There is no live broker connection here; the current mode replays point-in-time historical data, prices the next available open, and applies friction before results are recorded.</p>
-        </div>
-        <div class="operating-banner-pill">
-          <span>Current state</span>
-          <strong>Paper trading active</strong>
-          <p>No live broker feed. State updates monthly in <code>papertrading/</code>.</p>
-        </div>
-      </div>
-
-      <div class="operating-grid">
-        <article class="mode-card mode-card-off">
-          <span class="badge warn">Live broker trading</span>
-          <strong>OFF</strong>
-          <p>Nothing in this repo routes orders to a real brokerage account.</p>
-        </article>
-        <article class="mode-card mode-card-on">
-          <span class="badge good">Paper trading</span>
-          <strong>ACTIVE</strong>
-          <p>The frozen book rebalances monthly and writes its state to disk.</p>
-        </article>
-        <article class="mode-card mode-card-replay">
-          <span class="badge neutral">Historical replay</span>
-          <strong>IN USE</strong>
-          <p>Signals come from point-in-time daily data, then execute on the next available open with friction included.</p>
-        </article>
-      </div>
-
-      <div class="section-callout">
-        <strong>Trust checks:</strong> as-of availability checks, next-open pricing, one-way friction, and duplicate-month protection keep the run honest.
-      </div>
-    </section>
-
-    <section class="hero reveal delay-2">
+    <section class="hero reveal delay-1">
       <div class="hero-grid">
         <div>
           <span class="eyebrow">Employer route</span>
@@ -156,6 +119,43 @@
             </li>
           </ul>
         </aside>
+      </div>
+    </section>
+
+    <section class="section operating-banner reveal delay-2">
+      <div class="operating-banner-head">
+        <div>
+          <p class="section-kicker">Operating model</p>
+          <h2>Live vs paper vs historical replay</h2>
+          <p class="section-intro">This portfolio is paper-trading in public. There is no live broker connection here; the current mode replays point-in-time historical data, prices the next available open, and applies friction before results are recorded.</p>
+        </div>
+        <div class="operating-banner-pill">
+          <span>Current state</span>
+          <strong>Paper trading active</strong>
+          <p>No live broker feed. State updates monthly in <code>papertrading/</code>.</p>
+        </div>
+      </div>
+
+      <div class="operating-grid">
+        <article class="mode-card mode-card-off">
+          <span class="badge warn">Live broker trading</span>
+          <strong>OFF</strong>
+          <p>Nothing in this repo routes orders to a real brokerage account.</p>
+        </article>
+        <article class="mode-card mode-card-on">
+          <span class="badge good">Paper trading</span>
+          <strong>ACTIVE</strong>
+          <p>The frozen book rebalances monthly and writes its state to disk.</p>
+        </article>
+        <article class="mode-card mode-card-replay">
+          <span class="badge neutral">Historical replay</span>
+          <strong>IN USE</strong>
+          <p>Signals come from point-in-time daily data, then execute on the next available open with friction included.</p>
+        </article>
+      </div>
+
+      <div class="section-callout">
+        <strong>Trust checks:</strong> as-of availability checks, next-open pricing, one-way friction, and duplicate-month protection keep the run honest.
       </div>
     </section>
 
