@@ -62,7 +62,7 @@
         <div>
           <span class="eyebrow">Legacy Monitor / Reference Package</span>
           <h1>Systematic Nordic Equity Research & Validation<br>Legacy Monthly Monitor</h1>
-          <p>This page preserves the old monthly candidate definitions for reference. The stricter cadence review is now authoritative, and there is no active validated lead yet.</p>
+          <p>This page preserves the old monthly candidate definitions for reference. The stricter cadence review is now authoritative, and there is no active validated lead yet. The trade batch advances once a month: signal month, next execution date, then holding month.</p>
           <div class="meta">
             <div><span>Selected strategy</span><strong>Ex-Norway (Sweden and Denmark only) | 12-1 price momentum | Top 8 | trend filter (MA10)</strong></div>
             <div><span>Lead thesis</span><strong>Ex-Norway (Sweden and Denmark only)</strong></div>
@@ -72,12 +72,12 @@
             <div><span>Preferred review</span><strong>Feb 2027 (after 12 paper months)</strong></div>
             <div><span>Latest completed month</span><strong>2026-02</strong></div>
             <div><span>Current pick month</span><strong>2026-03</strong></div>
-            <div><span>Generated</span><strong>2026-03-24T18:40:25.986310+00:00</strong></div>
+            <div><span>Generated</span><strong>2026-04-21T14:56:50.035653+00:00</strong></div>
           </div>
         </div>
         <div class="card">
           <div class="head"><h3>What This Is For</h3><span class="badge warn">Watch</span></div>
-          <p>This page is for inspecting the preserved monthly books, their audit trail, and the shadow comparison without treating any of it as an active mandate.</p>
+          <p>This page is for inspecting the preserved monthly books, their audit trail, and the shadow comparison without treating any of it as an active mandate. The trade batch advances once a month: signal month, next execution date, then holding month.</p>
           <p style="margin-top:12px;"><strong>Decision clock:</strong> if the frozen lead stays accepted, the earliest live-trading review window opens in Aug 2026; the more conservative 12-month review lands in Feb 2027.</p>
           <div class="metrics">
             <div><span>Current overlap</span><strong>5 names</strong></div>
@@ -104,7 +104,7 @@
     <div><span>Signal month</span><strong>2026-02</strong></div>
     <div><span>Holding month</span><strong>2026-03</strong></div>
     <div><span>Eligible names</span><strong>152</strong></div>
-    <div><span>Execution date</span><strong>2026-03-02T00:00:00</strong></div>
+    <div><span>Execution date</span><strong>2026-03-02</strong></div>
     <div><span>New entries</span><strong>BOL.ST</strong></div>
     <div><span>Exits vs last realized month</span><strong>BEIA-B.ST</strong></div>
   </div>
@@ -130,7 +130,7 @@
     <div><span>Signal month</span><strong>2026-02</strong></div>
     <div><span>Holding month</span><strong>2026-03</strong></div>
     <div><span>Eligible names</span><strong>228</strong></div>
-    <div><span>Execution date</span><strong>2026-03-02T00:00:00</strong></div>
+    <div><span>Execution date</span><strong>2026-03-02</strong></div>
     <div><span>New entries</span><strong>B2I.OL, HSHP.OL, PAAL-B.CO, VWS.CO</strong></div>
     <div><span>Exits vs last realized month</span><strong>NORBT.OL, PEXIP.OL, PROT.OL, ZAP.OL</strong></div>
   </div>
@@ -143,6 +143,7 @@
 </article>
 </div>
     </section>
+    <section class="section"><div class="head"><div><h2>How It Operates</h2><p>This is the trust layer: it shows the data source, execution timing, friction model, and anti-look-ahead checks in plain sight.</p></div><span class="badge good">Point-in-time</span></div><div class="grid"><article class="card"><div class="head"><h3>Data Provenance</h3><span class="badge muted">Replay</span></div><ul><li>Historical daily parquet snapshots in `data/`.</li><li>Point-in-time replay, not a live broker feed.</li><li>Trades use the next available trading day and the `next_open` execution model.</li></ul></article><article class="card"><div class="head"><h3>Friction Model</h3><span class="badge warn">Costs</span></div><ul><li>Current book average one-way cost: 41.8 bps.</li><li>Estimated rebalance drag: 12.4 bps.</li><li>Cost model: `tiered_v1` with brokerage, spread, participation, FX, and low-price friction.</li></ul></article><article class="card"><div class="head"><h3>Look-Ahead Guard</h3><span class="badge good">Checks</span></div><ul><li>Signal month `2026-02` maps to execution date `2026-03-02` and holding month `2026-03`.</li><li>Anti-look-ahead audit: stale as-of `0`, missing as-of `0`, missing ADV `0`.</li><li>Duplicate months are blocked by the paper-trade state guard on `last_trade_date` and `last_holding_month`.</li></ul></article><article class="card"><div class="head"><h3>Current Snapshot</h3><span class="badge good">Live snapshot</span></div><div class="metrics"><div><span>Signal month</span><strong>2026-02</strong></div><div><span>Execution date</span><strong>2026-03-02</strong></div><div><span>Holding month</span><strong>2026-03</strong></div><div><span>Generated</span><strong>2026-04-21T14:56:50.035653+00:00</strong></div></div></article></div></section>
     <section class="section"><div class="head"><div><h2>Pre-Trade Audit</h2><p>These checks are allowed because they stress the frozen live books without reopening the search space.</p></div><span class="badge warn">Watch</span></div><div class="grid">
 <article class="card">
   <div class="head">

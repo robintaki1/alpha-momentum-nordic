@@ -73,13 +73,14 @@ Any change to the strategy definition must be treated as a new research cycle, n
 Run this only when auditing the preserved candidate or comparing it against a future
 revalidation cycle.
 
-1. Run `run_forward_monitor.bat`
-2. Open `results/forward_monitor/dashboard.html`
-3. Open `portfolio/alpha_momentum_validation_package/research_audit_dossier.html`
-4. Open `portfolio/alpha_momentum_validation_package/PROJECT_STATUS.html`
-5. Review the frozen lead and shadow books side by side
-6. Record the month in the monitoring log
-7. Do not change the strategy definition
+1. Run `run_monthly_rebalance.bat`
+2. This rebuilds the forward monitor and applies the next paper-trade rebalance only if a new holding month is available
+3. Open `results/forward_monitor/dashboard.html`
+4. Open `portfolio/alpha_momentum_validation_package/research_audit_dossier.html`
+5. Open `portfolio/alpha_momentum_validation_package/PROJECT_STATUS.html`
+6. Review the frozen lead and shadow books side by side
+7. Record the month in the monitoring log
+8. Do not change the strategy definition
 
 ## 5. Monthly Review Rubric
 

@@ -2,7 +2,7 @@
   "authoritative_active_validated_strategy": false,
   "authoritative_validation_model": "legacy_entry_exit_costs",
   "authoritative_verdict": "No cadence pair currently passes certification plus holdout under `legacy_entry_exit_costs`.",
-  "generated_at_utc": "2026-03-24T18:40:25.986310+00:00",
+  "generated_at_utc": "2026-04-21T14:56:50.035653+00:00",
   "governance": {
     "legacy_reference_only": true,
     "notes": [

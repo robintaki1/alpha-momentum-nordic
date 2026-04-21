@@ -22,6 +22,7 @@ Core Python pipeline:
 - Research + selection: `C:\Users\robin\Desktop\alpha momentum\python\research_engine.py`, `C:\Users\robin\Desktop\alpha momentum\python\grid_search.py`, `C:\Users\robin\Desktop\alpha momentum\python\walk_forward.py`
 - Cadence comparison: `C:\Users\robin\Desktop\alpha momentum\python\cadence_engine.py`, `C:\Users\robin\Desktop\alpha momentum\python\run_cadence_compare.py`
 - Forward monitor + paper trading: `C:\Users\robin\Desktop\alpha momentum\python\forward_monitor.py`, `C:\Users\robin\Desktop\alpha momentum\python\paper_trade_tracker.py`
+- Automatic monthly refresh + rebalance entry point: `C:\Users\robin\Desktop\alpha momentum\python\monthly_rebalance_runner.py` via `C:\Users\robin\Desktop\alpha momentum\run_monthly_rebalance.bat`
 
 Configuration:
 - Python source of truth: `C:\Users\robin\Desktop\alpha momentum\config.py`
