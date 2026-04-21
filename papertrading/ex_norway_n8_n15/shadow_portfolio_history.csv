@@ -1,3 +1,4 @@
 trade_date,holding_month,portfolio_value_before_sek,portfolio_value_after_sek,period_return,total_cost_sek,cash_sek,notes
 2026-02-02,2026-02,50000.00,49801.63,0.000000,198.37,0.79,
 2026-03-02,2026-03,52217.19,52109.46,0.048504,107.73,0.32,
+2026-04-01,2026-04,49826.24,49638.37,-0.043816,187.86,0.38,
