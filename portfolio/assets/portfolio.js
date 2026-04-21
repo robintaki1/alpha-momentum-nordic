@@ -102,9 +102,35 @@
     return article;
   }
 
+  function renderHistoryRow(row, index, rows) {
+    const currentAfter = Number(row.portfolio_value_after_sek);
+    const currentBefore = Number(row.portfolio_value_before_sek);
+    const previousAfter = index > 0 ? Number(rows[index - 1].portfolio_value_after_sek) : currentBefore;
+    const monthPnl = currentAfter - previousAfter;
+    const periodReturnPct = Number(row.period_return) * 100;
+
+    const tr = document.createElement("tr");
+    [
+      cleanText(row.holding_month),
+      cleanText(row.trade_date),
+      formatCurrency(row.portfolio_value_before_sek),
+      formatCurrency(row.portfolio_value_after_sek),
+      formatSignedCurrency(monthPnl),
+      formatSignedPercent(periodReturnPct),
+      formatCurrency(row.total_cost_sek),
+      formatCurrency(row.cash_sek),
+    ].forEach((text) => {
+      const td = document.createElement("td");
+      td.textContent = text;
+      tr.append(td);
+    });
+    return tr;
+  }
+
   async function hydrateLedgerSection(section) {
     const source = section.dataset.historySource;
     const grid = section.querySelector("[data-history-grid]");
+    const tableBody = section.querySelector("[data-history-table-body]");
     if (!source || !grid) {
       return;
     }
@@ -121,6 +147,9 @@
       }
 
       grid.replaceChildren(...rows.map((row, index) => renderLedgerCard(row, index, rows)));
+      if (tableBody) {
+        tableBody.replaceChildren(...rows.map((row, index) => renderHistoryRow(row, index, rows)));
+      }
     } catch {
       // Keep the static fallback cards if the CSV is unavailable.
     }
